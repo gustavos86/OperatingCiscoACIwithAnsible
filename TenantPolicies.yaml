@@ -1,0 +1,264 @@
+################################################################################
+# TenantPolicies.yaml v0.2 2021-May-04                                         #
+# This Ansible playbook comes with no guarantees                               #
+# The use of this Ansible playbook is responsibility solely of who executes it #
+# No liabilities shall be deemed to the creator of this Ansible playbook       #
+#                                                                              #
+################################################################################
+
+- name: ACI Tenant Policies
+  hosts: apicsim_sandbox
+  connection: local
+  gather_facts: no  
+
+  vars:
+    aci_login: &aci_login
+      hostname: "{{ ansible_host }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+    ##################
+    #                #
+    #     CONTROL    #
+    #                #
+    ##################
+
+    ########################################################################
+    # whattodo possible choices are: 
+    # present - Policies are created only if these are not already configured
+    # absent - Policies are removed
+    # query - Query for status
+    whattodo: present
+
+    run_Tenants_and_VRFs_task:           yes
+    run_BridgeDomains_and_Subnets_task:  yes
+    run_AppProfiles_and_EPGs_task:       yes
+    run_Domains_and_EPG_Static_Bindings: yes
+
+    ########################################################################
+    
+    ##################
+    #                #
+    #      DATA      #
+    #                #
+    ##################
+
+    ########################################################################
+    # Tenants and VRFs
+    Tenants_VRFs:
+    - { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV  }
+    - { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST }
+    - { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV  }
+    - { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST }
+
+    ########################################################################
+
+    ########################################################################
+    # Bridge Domains and Subnets
+    #
+    # Optional parameters specific for individual entries in BridgeDomains_Subnets
+    #
+    # 'scope' options are:
+    # leave it empty
+    # scope: public          This is "Advertised Externally"
+    # scope: shared          This is "Shared Between VRFs"
+    # scope: "public,shared" This is "Advertised Externally" & "Shared Between VRFs". Quoting the parameter "" is important.
+    #
+    # arp_flooding: no or yes                   # default is no
+    # l2_unknown_unicast: proxy or flood        # default is proxy
+    # l3_unknown_multicast: flood or opt-flood  # default is flood
+
+    # Optional. Comment to ommit.
+    #Gateway_MAC_address: 02:00:25:00:11:28
+
+    BridgeDomains_Subnets:
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1005_192_168_5_0_24_BD, bd_subnet: 192.168.5.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1006_192_168_6_0_24_BD, bd_subnet: 192.168.6.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1007_192_168_7_0_24_BD, bd_subnet: 192.168.7.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1008_192_168_8_0_24_BD, bd_subnet: 192.168.8.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+
+    ########################################################################
+
+    ########################################################################
+
+    # Application Profiles and EPGs. Attach Domain and add Static Bindings to EPGs.
+    #
+    # Optional parameters:
+    # VMM_deploy_immediacy:          lazy or immediate                   # default is lazy
+    # VMM_resolution_immediacy:      lazy or immediate or pre-provision  # default is lazy
+    # port_profile_deploy_immediacy: lazy or immediate                   # default is lazy 
+    #
+    # Config (uncomment if required):
+    # VMM_deploy_immediacy:          immediate
+    # VMM_resolution_immediacy:      pre-provision 
+    # port_profile_deploy_immediacy: immediate
+    #
+    # Use Static_Binding: "{{ port_profile_dummy }}" when associating to a VMM domain. Workaround to playbook logic.
+
+    AppProfiles_EPGs_Domains_Static_Bindings:
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain,  domain_type: phys, Encap_VLAN: 1005,   Static_Binding: "{{ port_profile_1 }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware, Static_Binding: "{{ port_profile_dummy }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1003,   Static_Binding: "{{ port_profile_1 }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1004,   Static_Binding: "{{ port_profile_1 }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1015,   Static_Binding: "{{ port_profile_1 }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1006,   Static_Binding: "{{ port_profile_1 }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1007,   Static_Binding: "{{ port_profile_1 }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1008,   Static_Binding: "{{ port_profile_1 }}" }
+    - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_DEV_AP001,  EPG_name: Hector_EPG,                  BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1009,   Static_Binding: "{{ port_profile_1 }}" }
+
+    ########################################################################
+
+    ########################################################################
+    # Port-Profiles. Trunk VLANs on links
+    port_profile_1:
+    - { Pod_ID: 1, Switch_ID: 112, interface_type: switch_port, port: 1/20 }
+    - { Pod_ID: 1, Switch_ID: 113, interface_type: switch_port, port: 1/30 }
+    - { Pod_ID: 1, Switch_ID: 111, interface_type: port_channel, port: 101_102_eth_4_5_PC }
+    - { Pod_ID: 1, Switch_ID: [111,112], interface_type: vpc, port: 101_102_eth_6_vPC }
+    # Don't remove. Workaround to playbook logic.
+    port_profile_dummy:
+    - dummy
+
+    ########################################################################
+
+  ###################################
+  #                                 #
+  #         Ansible Tasks           #
+  #                                 #
+  ###################################
+
+  tasks:
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_tenant_module.html#ansible-collections-cisco-aci-aci-tenant-module
+  # APIC
+  # Tenants > ALL TENANTS
+  - name: Tenants
+    cisco.aci.aci_tenant:
+      <<: *aci_login
+      tenant: "{{ item.Tenant_name }}"
+      state: '{{ whattodo }}'
+    when: run_Tenants_and_VRFs_task
+    with_items: "{{ Tenants_VRFs }}"
+
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_vrf_module.html#ansible-collections-cisco-aci-aci-vrf-module
+  # APIC
+  # Tenants > Tenant > Networking > VRFs
+  - name: VRFs
+    cisco.aci.aci_vrf:
+      <<: *aci_login
+      tenant: "{{ item.Tenant_name }}"
+      vrf: "{{ item.VRF_name }}"
+      state: '{{ whattodo }}'
+    when: run_Tenants_and_VRFs_task
+    with_items: "{{ Tenants_VRFs }}"
+
+
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_module.html#ansible-collections-cisco-aci-aci-bd-module
+  # APIC
+  # Tenants > Tenant > Networking > Bridge Domains
+  - name: Bridge Domains
+    cisco.aci.aci_bd:
+      <<: *aci_login
+      tenant: "{{ item.Tenant_name }}"
+      vrf: "{{ item.VRF_name }}"
+      bd: "{{ item.BD_name }}"
+      enable_routing: "{{ item.enable_routing }}"
+      mac_address: "{{ Gateway_MAC_address | default('00:22:BD:F8:19:FF') }}"
+      arp_flooding: "{{ item.arp_flooding | default('no') }}"
+      l2_unknown_unicast: "{{ item.l2_unknown_unicast | default('proxy') }}"
+      l3_unknown_multicast: "{{ item.l3_unknown_multicast | default('flood') }}"
+      state: '{{ whattodo }}'
+    when: run_BridgeDomains_and_Subnets_task
+    with_items: "{{ BridgeDomains_Subnets }}"
+
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_subnet_module.html#ansible-collections-cisco-aci-aci-bd-subnet-module
+  # APIC
+  # Tenants > Tenant > Networking > Bridge Domains > Subnets
+  - name: Bridge Domain Subnets
+    cisco.aci.aci_bd_subnet:
+      <<: *aci_login
+      tenant: "{{ item.Tenant_name }}"
+      bd: "{{ item.BD_name }}"
+      gateway: "{{ item.bd_subnet }}"
+      mask: "{{ item.bd_subnet_mask }}"
+      scope: "{{ item.scope | default(private) }}"
+      state: '{{ whattodo }}'
+    when: run_BridgeDomains_and_Subnets_task
+    with_items: "{{ BridgeDomains_Subnets }}"
+
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_ap_module.html#ansible-collections-cisco-aci-aci-ap-module
+  # APIC
+  # Tenants > Tenant > Application Profiles
+  - name: Application Profiles
+    cisco.aci.aci_ap:
+      <<: *aci_login
+      tenant: "{{ item.Tenant_name }}"
+      ap: "{{ item.AppProfile_name }}"
+      state: '{{ whattodo }}'
+    when: run_AppProfiles_and_EPGs_task
+    with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_module.html#ansible-collections-cisco-aci-aci-epg-module
+  # APIC
+  # Tenants > Tenant > Application Profiles > Application EPGs
+  - name: EPGs
+    cisco.aci.aci_epg:
+      <<: *aci_login
+      tenant: "{{ item.Tenant_name }}"
+      ap: "{{ item.AppProfile_name }}"
+      epg: "{{ item.EPG_name }}"
+      bd: "{{ item.BD_name }}"
+      state: '{{ whattodo }}'
+    when: run_AppProfiles_and_EPGs_task
+    with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_domain_module.html#ansible-collections-cisco-aci-aci-epg-to-domain-module
+  # APIC
+  # Tenants > Tenant > Application Profiles > Application EPGs > Domains
+  - name: Domain to EPG
+    cisco.aci.aci_epg_to_domain:
+      <<: *aci_login
+      tenant: "{{ item.Tenant_name }}"
+      ap: "{{ item.AppProfile_name }}"
+      epg: "{{ item.EPG_name }}"
+      domain: "{{ item.domain_name }}"
+      domain_type: "{{ item.domain_type }}"
+      vm_provider: "{{ item.VM_platform | default(omit) }}"
+      deploy_immediacy: "{{ VMM_deploy_immediacy | default('lazy') }}"
+      resolution_immediacy: "{{ VMM_resolution_immediacy | default('lazy') }}"
+      state: '{{ whattodo }}'
+    when: run_Domains_and_EPG_Static_Bindings
+    with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+
+  # Ansible
+  # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_static_binding_to_epg_module.html#ansible-collections-cisco-aci-aci-static-binding-to-epg-module
+  # APIC
+  # Tenants > Tenant > Application Profiles > Application EPGs > Static Ports
+  - name: EPG add Static Binding
+    cisco.aci.aci_static_binding_to_epg:
+      <<: *aci_login
+      tenant: "{{ item.0.Tenant_name }}"
+      ap: "{{ item.0.AppProfile_name }}"
+      epg: "{{ item.0.EPG_name }}"
+      encap_id: "{{ item.0.Encap_VLAN }}"
+      pod_id: "{{ item.1.Pod_ID }}"
+      leafs: "{{ item.1.Switch_ID }}"
+      interface_type: "{{ item.1.interface_type}}"
+      interface: "{{ item.1.port }}"
+      deploy_immediacy: "{{ port_profile_deploy_immediacy | default('lazy') }}" 
+      state: '{{ whattodo }}'
+    when: (run_Domains_and_EPG_Static_Bindings) and (item.0.domain_type == 'phys')
+    with_subelements: 
+    - "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+    - Static_Binding
+
