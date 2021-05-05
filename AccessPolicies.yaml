@@ -41,7 +41,7 @@
     run_Pools_task:                        yes
 
     # Access Policies (required just one time)
-    # CDP, LLDP, Fibre Channel, MCP, Link Lebel, Port Channel, Spanning Tree Interface
+    # CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, Spanning Tree Interface
     run_Interface_Policies_task:           yes
 
     ########################################################################
@@ -339,7 +339,7 @@
       cdp_policy: "{{ item.cdp_policy }}"
       lldp_policy: "{{ item.lldp_policy }}"
       mcp_policy: "{{ item.mcp_policy }}"
-      stp_interface_policy: "{{ item.stp_interface_policy }}"
+      stp_interface_policy: "{{ item.stp_interface_policy | default('') }}"
       state: "{{ whattodo }}"       
     when: run_Interface_Policy_Group_task
     with_items: "{{ Interface_Policy_Group_task_config }}"
