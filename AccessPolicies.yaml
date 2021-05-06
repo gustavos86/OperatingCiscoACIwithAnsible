@@ -1,5 +1,5 @@
 ################################################################################
-# AccessPolicies.yaml v0.2 2021-May-04                                         #
+# AccessPolicies.yaml v0.3 2021-May-06                                         #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -31,9 +31,10 @@
     whattodo: present
 
     # Interfaces (regular operation)
-    run_Interface_Policy_Group_task:       yes   # Create Interface Access Port, Port-Channels and vPCs
-    run_Interface_Selector_task:           yes   # Assign the previous items to specific ports on the Switches
-    run_Switch_and_Interface_Profile_task: yes   # Switches (needed when adding new switches to ACI)
+    run_Interface_Policy_Group_task:       yes  # Create Interface Access Port, Port-Channels and vPCs
+    run_Interface_Selector_task:           yes  # Assign the previous items to specific ports on the Switches
+    run_Switch_and_Interface_Profile_task: yes  # Switches (needed when adding new switches to ACI)
+    run_enable_or_disable_ports_task:      yes
 
     # AAEPs, Domains and VLAN Pools
     run_AAEPs_task:                        yes
@@ -56,15 +57,18 @@
     # Switches and Interfaces mapping
 
     # Optional. Policy Group attach to Switch Profile. Comment if not needed.
-    All_Leaf_Switches_Policy_Group: default
+    #All_Leaf_Switches_Policy_Group: default
 
-     # Must have below to have port_list empty and avoid error in playbook.
-     #  ports_list:
-     #  - continue
+    # Must have below to have port_list empty and avoid error in playbook.
+    #  ports_list:
+    #  - continue
+
+    # port_state can be: enabled or disabled
 
     Switches_and_Interfaces_map:
       - switch_name: HGSG111LEAF
-        switch_node_id: 111
+        pod: 1
+        switch_node_id: 101
         ports_list:
         - continue
         #- { port: 1, port_description: ,interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
@@ -72,29 +76,34 @@
         #- { port: 3, port_description: ,interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
 
       - switch_name: HGSG112LEAF
-        switch_node_id: 112
+        pod: 1      
+        switch_node_id: 102
         ports_list:
-        - { port: 20, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-        - { port: 21, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-        - { port: 22, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-        - { port: 23, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+        - { port: 18, port_state: enabled }
+        - { port: 19, port_state: enabled }
+        - { port: 20, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+        - { port: 21, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+        - { port: 22, port_state: enabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
+        - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
 
       - switch_name: HGSG113LEAF
-        switch_node_id: 113
+        pod: 1
+        switch_node_id: 103
         ports_list:
-        - { port: 30, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-        - { port: 31, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-        - { port: 32, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-        - { port: 33, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+        - { port: 30, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+        - { port: 31, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+        - { port: 32, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
+        - { port: 33, port_state: disabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
 
 
       - switch_name: HGSG114LEAF
-        switch_node_id: 114
+        pod: 1
+        switch_node_id: 104
         ports_list:
-        - { port: 40, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-        - { port: 41, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-        - { port: 42, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-        - { port: 43, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+        - { port: 40, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+        - { port: 41, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+        - { port: 42, port_state: enabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
+        - { port: 43, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
 
 
     # Add new Interface Policy Groups
@@ -413,7 +422,7 @@
       interface_type: "{{ item.1.interface_type }}"
       policy_group: "{{ item.1.interface_policy_group }}"
       state: "{{ whattodo }}"       
-    when: (run_Interface_Selector_task) and (item.1 != 'continue')
+    when: (run_Interface_Selector_task) and (item.1 != 'continue') and (item.1.interface_type is defined and item.1.interface_policy_group is defined)
     with_subelements: 
       - "{{ Switches_and_Interfaces_map }}"
       - ports_list
@@ -514,3 +523,44 @@
       - "{{ AAEP_task_config | map(attribute='domains') | list | sum(start=[]) | map(attribute='vlan_pools') | list | sum(start=[]) }}"
       - vlans
 
+  # Ansible
+  # Module not available
+  # APIC
+  # 
+  - name: Disable ports
+    cisco.aci.aci_rest:
+      <<: *aci_login
+      path: /api/node/mo/uni/fabric/outofsvc.json
+      method: post
+      content: |
+        {
+          "fabricRsOosPath": {
+            "attributes": {
+              "tDn":"topology/pod-{{item.0.pod}}/paths-{{item.0.switch_node_id}}/pathep-[eth1/{{item.1.port}}]","lc":"blacklist"
+            }
+          }
+        }
+    when: (run_enable_or_disable_ports_task and item.1 != 'continue') and ( item.1.port_state == 'disabled' )
+    with_subelements: 
+      - "{{ Switches_and_Interfaces_map }}"
+      - ports_list
+
+
+
+  - name: Enable ports
+    cisco.aci.aci_rest:
+      <<: *aci_login
+      path: /api/node/mo/uni/fabric/outofsvc.json
+      method: post
+      content: |
+        {
+          "fabricRsOosPath": {
+            "attributes": {
+              "dn":"uni/fabric/outofsvc/rsoosPath-[topology/pod-{{item.0.pod}}/paths-{{item.0.switch_node_id}}/pathep-[eth1/{{item.1.port}}]]","status":"deleted"
+            }
+          }
+        }
+    when: (run_enable_or_disable_ports_task and item.1 != 'continue') and ( item.1.port_state == 'enabled' )
+    with_subelements: 
+      - "{{ Switches_and_Interfaces_map }}"
+      - ports_list
