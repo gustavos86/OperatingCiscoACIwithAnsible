@@ -11,4 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- fixd typo in a comment
+- fixed typo in a comment
+
+## [AccessPolicies.yaml v0.4] - 2021-05-06
+
+### Added
+
+- run_enable_or_disable_ports_task and port_state to enable or disable the state of ports
