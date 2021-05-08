@@ -105,7 +105,42 @@ ansible --version
 ansible-galaxy collection install cisco.aci
 ```
 
-4. Run the Ansible Playbook
+4. In **host_vars/apicsim_sandbox_example.yaml** you can follow the structure and replace it with your own and desired configurations.
+
+5. In **aci_playbook.yaml** chose the Roles you would like to use. Otherwise comment any entry.
+
+```
+  roles:
+  ###############################
+  #                             #
+  #       Access Policies       #
+  #                             #
+  ###############################
+
+  - Interface_Policies              # CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, Spanning Tree Interface policies
+  - Switch_and_Interface_Profiles   # Add Switches Profiles and Interface Profiles (needed when adding new switches to ACI)
+
+  - Interface_Selectors             # Assigns the previous items to specific ports on the Switches
+  - Interface_Policy_Groups         # Creates Interface Access Port, Port-Channels and vPCs
+  - enable_or_disable_ports         # Interfaces (regular operation)
+
+  - AAEPs                           # AAEPs, Domains and VLAN Pools
+  - Domains
+  - VLAN_Pools
+
+  ###############################
+  #                             #
+  #           Tenants           #
+  #                             #
+  ###############################
+
+  - Tenants_and_VRFs
+  - BridgeDomains_and_Subnets
+  - AppProfiles_and_EPGs
+  - Domains_and_EPG_Static_Bindings
+```
+
+6. Run the Ansible Playbook with:
 
 ```
 ansible-playbook aci_playbook.yaml -i inventory
