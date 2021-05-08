@@ -98,16 +98,16 @@ If you would like to use this Ansiible playbook to your own APIC controller, you
 
 ```
 - name: ACI playbook
-  hosts: my_apic_controller   <<< define a relevant name here
+  hosts: my_apic_controller   <<< define your own relevant name here
 ```
 
-2. In inventory file, add an entry with the specified value from last step and the credentials you use to authenticate to your APIC controller
+2. In inventory file, add an entry with the value you specified for **hosts:** in the previious step and use the credentials to authenticate to your APIC controller
 
 ```
 my_apic_controller ansible_host=url_or_IP_address username=yourusername password=yourpassword
 ```
 
-3. Copy or replace host_vars/apicsim_sandbox_example.yaml to host_vars/my_apic_controller.yaml (or the name you chosed)
+3. Copy or replace host_vars/apicsim_sandbox_example.yaml to host_vars/my_apic_controller.yaml meaning using the name you chosed for **host:** instead.
 
 ## Run
 
