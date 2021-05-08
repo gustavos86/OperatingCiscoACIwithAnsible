@@ -18,3 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - run_enable_or_disable_ports_task and port_state to enable or disable the state of ports
+
+## [v0.5] - 2021-05-08
+
+### Changed
+
+- re-estructure Ansible to use Roles
+- 'state:' is commented and in such case the default is 'present'
