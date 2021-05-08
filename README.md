@@ -1,60 +1,5 @@
 # OperatingCiscoACIwithAnsible
 
-
-
-## Directory tree
-
-```
-$ tree OperatingCiscoACIwithAnsible/
-
-OperatingCiscoACIwithAnsible/
-├── CHANGELOG.md
-├── README.md
-├── aci_playbook.yaml
-├── host_vars
-│   └── apicsim_sandbox_example.yaml
-├── inventory
-└── roles
-    ├── AAEPs
-    │   └── tasks
-    │       └── main.yaml
-    ├── AppProfiles_and_EPGs
-    │   └── tasks
-    │       └── main.yaml
-    ├── BridgeDomains_and_Subnets
-    │   └── tasks
-    │       └── main.yaml
-    ├── Domains
-    │   └── tasks
-    │       └── main.yaml
-    ├── Domains_and_EPG_Static_Bindings
-    │   └── tasks
-    │       └── main.yaml
-    ├── Interface_Policies
-    │   └── tasks
-    │       └── main.yaml
-    ├── Interface_Policy_Groups
-    │   └── tasks
-    │       └── main.yaml
-    ├── Interface_Selectors
-    │   └── tasks
-    │       └── main.yaml
-    ├── Switch_and_Interface_Profiles
-    │   └── tasks
-    │       └── main.yaml
-    ├── Tenants_and_VRFs
-    │   └── tasks
-    │       └── main.yaml
-    ├── VLAN_Pools
-    │   └── tasks
-    │       └── main.yaml
-    └── enable_or_disable_ports
-        └── tasks
-            └── main.yaml
-
-26 directories, 17 files
-```
-
 ## Install
 
 1. Install Python. I.e.
@@ -150,6 +95,59 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
 
 ```
 ansible-playbook aci_playbook.yaml -i inventory
+```
+
+## Directory tree
+
+```
+$ tree OperatingCiscoACIwithAnsible/
+
+OperatingCiscoACIwithAnsible/
+├── CHANGELOG.md
+├── README.md
+├── aci_playbook.yaml
+├── host_vars
+│   └── apicsim_sandbox_example.yaml
+├── inventory
+└── roles
+    ├── AAEPs
+    │   └── tasks
+    │       └── main.yaml
+    ├── AppProfiles_and_EPGs
+    │   └── tasks
+    │       └── main.yaml
+    ├── BridgeDomains_and_Subnets
+    │   └── tasks
+    │       └── main.yaml
+    ├── Domains
+    │   └── tasks
+    │       └── main.yaml
+    ├── Domains_and_EPG_Static_Bindings
+    │   └── tasks
+    │       └── main.yaml
+    ├── Interface_Policies
+    │   └── tasks
+    │       └── main.yaml
+    ├── Interface_Policy_Groups
+    │   └── tasks
+    │       └── main.yaml
+    ├── Interface_Selectors
+    │   └── tasks
+    │       └── main.yaml
+    ├── Switch_and_Interface_Profiles
+    │   └── tasks
+    │       └── main.yaml
+    ├── Tenants_and_VRFs
+    │   └── tasks
+    │       └── main.yaml
+    ├── VLAN_Pools
+    │   └── tasks
+    │       └── main.yaml
+    └── enable_or_disable_ports
+        └── tasks
+            └── main.yaml
+
+26 directories, 17 files
 ```
 
 
