@@ -1,30 +1,6 @@
 # OperatingCiscoACIwithAnsible
 
-By default, this Ansible playbook is pointing to [ACI Simulator AlwaysOn Sandbox](https://devnetsandbox.cisco.com/RM/Diagram/Index/5a229a7c-95d5-4cfd-a651-5ee9bc1b30e2?diagramType=Topology) which is free to use for testing purposes.
 
-```
-URL:      https://sandboxapicdc.cisco.com/
-Username: admin
-Password: ciscopsdt
-```
-[Cisco DevNet Sandbox labs](https://devnetsandbox.cisco.com/RM/Topology)
-
-If you would like to use this Ansiible playbook to your own APIC controller, you should modify the followin:
-
-1. In aci_playbook.yaml file, modify the **hosts:** value with any name you wish
-
-```
-- name: ACI playbook
-  hosts: my_apic_controller   <<< define a relevant name here
-```
-
-2. In inventory file, add an entry with the specified value from last step and the credentials you use to authenticate to your APIC controller
-
-```
-my_apic_controller ansible_host=url_or_IP_address username=yourusername password=yourpassword
-```
-
-3. Copy or replace host_vars/apicsim_sandbox_example.yaml to host_vars/my_apic_controller.yaml (or the name you chosed)
 
 ## Directory tree
 
@@ -105,9 +81,39 @@ ansible --version
 ansible-galaxy collection install cisco.aci
 ```
 
-4. In **host_vars/apicsim_sandbox_example.yaml** you can follow the structure and replace it with your own and desired configurations.
+## Configure
 
-5. In **aci_playbook.yaml** chose the Roles you would like to use. Otherwise comment any entry.
+By default, this Ansible playbook is pointing to [ACI Simulator AlwaysOn Sandbox](https://devnetsandbox.cisco.com/RM/Diagram/Index/5a229a7c-95d5-4cfd-a651-5ee9bc1b30e2?diagramType=Topology) which is free to use for testing purposes.
+
+```
+URL:      https://sandboxapicdc.cisco.com/
+Username: admin
+Password: ciscopsdt
+```
+[Cisco DevNet Sandbox labs](https://devnetsandbox.cisco.com/RM/Topology)
+
+If you would like to use this Ansiible playbook to your own APIC controller, you should modify the followin:
+
+1. In aci_playbook.yaml file, modify the **hosts:** value with any name you wish
+
+```
+- name: ACI playbook
+  hosts: my_apic_controller   <<< define a relevant name here
+```
+
+2. In inventory file, add an entry with the specified value from last step and the credentials you use to authenticate to your APIC controller
+
+```
+my_apic_controller ansible_host=url_or_IP_address username=yourusername password=yourpassword
+```
+
+3. Copy or replace host_vars/apicsim_sandbox_example.yaml to host_vars/my_apic_controller.yaml (or the name you chosed)
+
+## Run
+
+1. In **host_vars/apicsim_sandbox_example.yaml** (or the file you have created in **host_vars**)you can follow the structure and replace it with your own and desired configurations.
+
+2. In **aci_playbook.yaml** chose the Roles you would like to use. Otherwise comment any entry.
 
 ```
   roles:
@@ -140,7 +146,7 @@ ansible-galaxy collection install cisco.aci
   - Domains_and_EPG_Static_Bindings
 ```
 
-6. Run the Ansible Playbook with:
+3. Run the Ansible Playbook with:
 
 ```
 ansible-playbook aci_playbook.yaml -i inventory
