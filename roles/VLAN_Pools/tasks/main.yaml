@@ -1,0 +1,34 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_vlan_pool_module.html#ansible-collections-cisco-aci-aci-vlan-pool-module
+# APIC
+# Fabric > Access Policies > Pools > VLAN
+- name: VLAN Pools
+  cisco.aci.aci_vlan_pool:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    pool: "{{ item.1.vlan_pool_name }}"
+    pool_allocation_mode: "{{ item.1.vlan_pool_allocation_mode }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_subelements: 
+    - "{{ AAEP_task_config | map(attribute='domains') | list | sum(start=[]) }}"
+    - vlan_pools
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_vlan_pool_encap_block_module.html#ansible-collections-cisco-aci-aci-vlan-pool-encap-block-module
+# APIC
+# Fabric > Access Policies > Pools > VLAN
+- name: Blocks of VLANs in VLAN Pools
+  cisco.aci.aci_vlan_pool_encap_block:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    pool: "{{ item.0.vlan_pool_name }}"
+    block_start: "{{ item.1.vlan_range_start }}"
+    block_end: "{{ item.1.vlan_range_end }}"
+    block_name: "{{ ( item.1.vlan_range_start|string + '_' + item.1.vlan_range_end|string + '_blk' ) }}"
+    pool_allocation_mode: "{{ item.0.vlan_pool_allocation_mode }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_subelements: 
+    - "{{ AAEP_task_config | map(attribute='domains') | list | sum(start=[]) | map(attribute='vlan_pools') | list | sum(start=[]) }}"
+    - vlans

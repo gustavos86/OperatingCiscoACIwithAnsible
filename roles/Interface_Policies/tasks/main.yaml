@@ -1,0 +1,100 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_cdp_module.html#ansible-collections-cisco-aci-aci-interface-policy-cdp-module
+# APIC
+# Fabric > Access Policies > Policies > Interface > CDP Interface
+- name: CDP Interface policies
+  cisco.aci.aci_interface_policy_cdp:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    name: "{{ item.name }}"
+    admin_state: "{{ item.admin_state }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ CDP_config }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_lldp_module.html#ansible-collections-cisco-aci-aci-interface-policy-lldp-module
+# APIC
+# Fabric > Access Policies > Policies > Interface > LLDP Interface
+- name: LLDP Interface policies
+  cisco.aci.aci_interface_policy_lldp:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    lldp_policy: "{{ item.name }}"
+    transmit_state: "{{ item.transmit_state }}"
+    receive_state: "{{ item.receive_state }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ LLDP_config }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_fc_module.html#ansible-collections-cisco-aci-aci-interface-policy-fc-module
+# APIC
+# Fabric > Access Policies > Policies > Interface > Fibre Channel Interface
+- name: Fibre Channel Interface policies
+  cisco.aci.aci_interface_policy_fc:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    fc_policy: "{{ item.name }}"
+    port_mode: "{{ item.port_mode }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Fibre_Channel_config }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_mcp_module.html#ansible-collections-cisco-aci-aci-interface-policy-mcp-module
+# APIC
+# Fabric > Access Policies > Policies > Interface > MCP Interface
+- name: MCP Interface policies
+  cisco.aci.aci_interface_policy_mcp:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    mcp: "{{ item.name }}"
+    admin_state: "{{ item.admin_state }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ MCP_config }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_link_level_module.html#ansible-collections-cisco-aci-aci-interface-policy-link-level-module
+# APIC
+# Fabric > Access Policies > Policies > Interface > Link Level
+- name: Link Level policies
+  cisco.aci.aci_interface_policy_link_level:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    link_level_policy: "{{ item.name }}"
+    speed: "{{ item.speed }}"
+    auto_negotiation: yes
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Link_Level_config }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_port_channel_module.html#ansible-collections-cisco-aci-aci-interface-policy-port-channel-module
+# APIC
+# Fabric > Access Policies > Policies > Interface > Port Channel
+- name: Port Channel policies
+  cisco.aci.aci_interface_policy_port_channel:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    port_channel: "{{ item.name }}"
+    mode: "{{ item.mode }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Port_Channel_config }}"
+
+# Ansible
+# Module not available
+# APIC
+# Fabric > Access Policies > Policies > Interface > Spanning Tree Interface
+- name: Spanning Tree Interface policies
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    path: /api/mo/uni.xml
+    method: post
+    content: |
+       <polUni>     <infraInfra>         <stpIfPol name="{{item.name}}" descr="" ctrl="{{item.stp_control}}" status="{{ 'deleted' if whattodo|default('present', true) == 'absent' else '' }}"/>     </infraInfra> </polUni>
+  with_items: "{{ Spanning_Tree_Interface_config }}"

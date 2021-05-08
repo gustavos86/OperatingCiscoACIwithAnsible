@@ -1,0 +1,36 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_module.html#ansible-collections-cisco-aci-aci-bd-module
+# APIC
+# Tenants > Tenant > Networking > Bridge Domains
+- name: Bridge Domains
+  cisco.aci.aci_bd:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    vrf: "{{ item.VRF_name }}"
+    bd: "{{ item.BD_name }}"
+    enable_routing: "{{ item.enable_routing }}"
+    mac_address: "{{ Gateway_MAC_address | default('00:22:BD:F8:19:FF') }}"
+    arp_flooding: "{{ item.arp_flooding | default('no') }}"
+    l2_unknown_unicast: "{{ item.l2_unknown_unicast | default('proxy') }}"
+    l3_unknown_multicast: "{{ item.l3_unknown_multicast | default('flood') }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ BridgeDomains_Subnets }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_subnet_module.html#ansible-collections-cisco-aci-aci-bd-subnet-module
+# APIC
+# Tenants > Tenant > Networking > Bridge Domains > Subnets
+- name: Bridge Domain Subnets
+  cisco.aci.aci_bd_subnet:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    bd: "{{ item.BD_name }}"
+    gateway: "{{ item.bd_subnet }}"
+    mask: "{{ item.bd_subnet_mask }}"
+    scope: "{{ item.scope | default(private) }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ BridgeDomains_Subnets }}"

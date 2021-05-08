@@ -1,0 +1,23 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_leaf_policy_group_module.html#ansible-collections-cisco-aci-aci-interface-policy-leaf-policy-group-module
+# APIC
+# Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > Leaf Access Port
+# Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > PC Interface
+# Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > VPC Interface
+- name: Access Ports, Port-Channels & vPCs
+  cisco.aci.aci_interface_policy_leaf_policy_group:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    policy_group: "{{ item.interface_policy_group }}"
+    lag_type: "{{ item.lag_type }}"
+    # port_channel_policy is only for Port-Channel & vPC
+    port_channel_policy: "{{ item.port_channel_policy | default(omit) }}"
+    aep: "{{ item.AAEP }}"
+    link_level_policy: "{{ item.link_level_policy }}"
+    cdp_policy: "{{ item.cdp_policy }}"
+    lldp_policy: "{{ item.lldp_policy }}"
+    mcp_policy: "{{ item.mcp_policy }}"
+    stp_interface_policy: "{{ item.stp_interface_policy | default('') }}"
+    state: "{{ whattodo | default('present', true) }}"      
+  with_items: "{{ Interface_Policy_Group_task_config }}"

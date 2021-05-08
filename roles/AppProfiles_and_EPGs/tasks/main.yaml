@@ -1,0 +1,29 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_ap_module.html#ansible-collections-cisco-aci-aci-ap-module
+# APIC
+# Tenants > Tenant > Application Profiles
+- name: Application Profiles
+  cisco.aci.aci_ap:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    ap: "{{ item.AppProfile_name }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_module.html#ansible-collections-cisco-aci-aci-epg-module
+# APIC
+# Tenants > Tenant > Application Profiles > Application EPGs
+- name: EPGs
+  cisco.aci.aci_epg:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    ap: "{{ item.AppProfile_name }}"
+    epg: "{{ item.EPG_name }}"
+    bd: "{{ item.BD_name }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"

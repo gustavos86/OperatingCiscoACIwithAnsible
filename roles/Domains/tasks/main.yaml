@@ -1,0 +1,33 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_domain_module.html#ansible-collections-cisco-aci-aci-domain-module
+# APIC
+# Fabric > Access Policies > Physical and External Domains
+- name: Domains
+  cisco.aci.aci_domain:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    domain: "{{ item.1.domain_name }}"
+    domain_type: "{{ item.1.domain_type }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_subelements: 
+    - "{{ AAEP_task_config }}"
+    - domains
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_domain_to_vlan_pool_module.html#ansible-collections-cisco-aci-aci-domain-to-vlan-pool-module
+# APIC
+# Fabric > Access Policies > Physical and External Domains
+- name: Attach VLAN pools to Domains
+  cisco.aci.aci_domain_to_vlan_pool:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    domain_type: "{{ item.0.domain_type }}"
+    domain: "{{ item.0.domain_name }}"
+    pool: "{{ item.1.vlan_pool_name }}"
+    pool_allocation_mode: "{{ item.1.vlan_pool_allocation_mode }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_subelements: 
+    - "{{ AAEP_task_config | map(attribute='domains') | list | sum(start=[]) }}"
+    - vlan_pools

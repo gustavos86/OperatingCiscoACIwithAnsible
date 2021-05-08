@@ -1,0 +1,41 @@
+################################################################################
+# v0.5 2021-May-08                                                             #
+# This Ansible playbook comes with no guarantees                               #
+# The use of this Ansible playbook is responsibility solely of who executes it #
+# No liabilities shall be deemed to the creator of this Ansible playbook       #
+#                                                                              #
+################################################################################
+
+- name: ACI playbook
+  hosts: apicsim_sandbox_example
+  connection: local
+  gather_facts: no
+
+  roles:
+  ###############################
+  #                             #
+  #       Access Policies       #
+  #                             #
+  ###############################
+
+  - Interface_Policies              # CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, Spanning Tree Interface policies
+  - Switch_and_Interface_Profiles   # Add Switches Profiles and Interface Profiles (needed when adding new switches to ACI)
+
+  - Interface_Selectors             # Assigns the previous items to specific ports on the Switches
+  - Interface_Policy_Groups         # Creates Interface Access Port, Port-Channels and vPCs
+  - enable_or_disable_ports         # Interfaces (regular operation)
+
+  - AAEPs                           # AAEPs, Domains and VLAN Pools
+  - Domains
+  - VLAN_Pools
+
+  ###############################
+  #                             #
+  #           Tenants           #
+  #                             #
+  ###############################
+
+  - Tenants_and_VRFs
+  - BridgeDomains_and_Subnets
+  - AppProfiles_and_EPGs
+  - Domains_and_EPG_Static_Bindings

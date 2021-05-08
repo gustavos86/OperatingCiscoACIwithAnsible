@@ -1,0 +1,43 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_domain_module.html#ansible-collections-cisco-aci-aci-epg-to-domain-module
+# APIC
+# Tenants > Tenant > Application Profiles > Application EPGs > Domains
+- name: Attach Domain to EPGs
+  cisco.aci.aci_epg_to_domain:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    ap: "{{ item.AppProfile_name }}"
+    epg: "{{ item.EPG_name }}"
+    domain: "{{ item.domain_name }}"
+    domain_type: "{{ item.domain_type }}"
+    vm_provider: "{{ item.VM_platform | default(omit) }}"
+    deploy_immediacy: "{{ VMM_deploy_immediacy | default('lazy') }}"
+    resolution_immediacy: "{{ VMM_resolution_immediacy | default('lazy') }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_static_binding_to_epg_module.html#ansible-collections-cisco-aci-aci-static-binding-to-epg-module
+# APIC
+# Tenants > Tenant > Application Profiles > Application EPGs > Static Ports
+- name: Add Static Bindings to EPGs
+  cisco.aci.aci_static_binding_to_epg:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.0.Tenant_name }}"
+    ap: "{{ item.0.AppProfile_name }}"
+    epg: "{{ item.0.EPG_name }}"
+    encap_id: "{{ item.0.Encap_VLAN }}"
+    pod_id: "{{ item.1.Pod_ID }}"
+    leafs: "{{ item.1.Switch_ID }}"
+    interface_type: "{{ item.1.interface_type}}"
+    interface: "{{ item.1.port }}"
+    deploy_immediacy: "{{ port_profile_deploy_immediacy | default('lazy') }}" 
+    state: "{{ whattodo | default('present', true) }}"
+  when: item.0.domain_type == 'phys'
+  with_subelements: 
+  - "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+  - Static_Binding

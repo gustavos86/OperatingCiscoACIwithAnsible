@@ -1,0 +1,45 @@
+# Ansible
+# Module not available
+# APIC
+# 
+- name: Disable ports
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    path: /api/node/mo/uni/fabric/outofsvc.json
+    method: post
+    content: |
+      {
+        "fabricRsOosPath": {
+          "attributes": {
+            "tDn":"topology/pod-{{item.0.pod}}/paths-{{item.0.switch_node_id}}/pathep-[eth1/{{item.1.port}}]","lc":"blacklist"
+          }
+        }
+      }
+  when: (item.1 != 'continue') and ( item.1.port_state == 'disabled' )
+  with_subelements: 
+    - "{{ Switches_and_Interfaces_map }}"
+    - ports_list
+
+
+
+- name: Enable ports
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    path: /api/node/mo/uni/fabric/outofsvc.json
+    method: post
+    content: |
+      {
+        "fabricRsOosPath": {
+          "attributes": {
+            "dn":"uni/fabric/outofsvc/rsoosPath-[topology/pod-{{item.0.pod}}/paths-{{item.0.switch_node_id}}/pathep-[eth1/{{item.1.port}}]]","status":"deleted"
+          }
+        }
+      }
+  when: (item.1 != 'continue') and ( item.1.port_state == 'enabled' )
+  with_subelements: 
+    - "{{ Switches_and_Interfaces_map }}"
+    - ports_list

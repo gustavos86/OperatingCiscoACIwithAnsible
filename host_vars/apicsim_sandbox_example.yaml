@@ -1,0 +1,285 @@
+################################################################################
+# v0.5 2021-May-08                                                             #
+# This Ansible playbook comes with no guarantees                               #
+# The use of this Ansible playbook is responsibility solely of who executes it #
+# No liabilities shall be deemed to the creator of this Ansible playbook       #
+#                                                                              #
+################################################################################
+
+# whattodo (defaults to 'present') possible choices are: 
+# present - Policies are created only if these are not already configured
+# absent - Policies are removed
+# query - Query for status
+# whattodo: present
+
+###############################
+#                             #
+#       Access Policies       #
+#                             #
+###############################
+
+###################################
+# roles:                          #
+# - Interface_Selectors           #
+# - Switch_and_Interface_Profiles #
+# - enable_or_disable_ports       #
+###################################
+
+### Switches and Interfaces mapping ###
+# Optional. Switch Policy Group attached to all Switch Profiles. Comment if not needed.
+
+#All_Leaf_Switches_Policy_Group: default
+
+# Must have below to have port_list empty and avoid error in playbook.
+#  ports_list:
+#  - continue
+
+# port_state can be: enabled or disabled
+
+Switches_and_Interfaces_map:
+  - switch_name: HGSG111LEAF
+    pod: 1
+    switch_node_id: 101
+    ports_list:
+    - continue
+    #- { port: 1, port_description: ,interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    #- { port: 2, port_description: ,interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
+    #- { port: 3, port_description: ,interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+  - switch_name: HGSG112LEAF
+    pod: 1      
+    switch_node_id: 102
+    ports_list:
+    - { port: 18, port_state: enabled }
+    - { port: 19, port_state: enabled }
+    - { port: 20, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 21, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 22, port_state: enabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
+    - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+  - switch_name: HGSG113LEAF
+    pod: 1
+    switch_node_id: 103
+    ports_list:
+    - { port: 30, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 31, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 32, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
+    - { port: 33, port_state: disabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+  - switch_name: HGSG114LEAF
+    pod: 1
+    switch_node_id: 104
+    ports_list:
+    - { port: 40, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 41, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 42, port_state: enabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
+    - { port: 43, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+
+
+###################################
+# roles                           #
+# - Interface_Policy_Groups       #
+###################################
+
+# Add new Interface Policy Groups
+# Specially useful to add Port-Channels and vPCs
+
+### Individual Ports ###
+# "lag_type: leaf" is for Access Ports
+# Do not add "port_channel_policy" parameter here
+
+Interface_Policy_Group_task_config:
+  - interface_policy_group: Auto_CDP_LLDP_AccessPort
+    lag_type: leaf
+    AAEP: DC_AAEP
+    link_level_policy: Auto_Link_Policy
+    cdp_policy: CDP_On
+    lldp_policy: LLDP_On
+    mcp_policy: MCP_Off
+    stp_interface_policy: default
+
+### Port-Channels ###
+#"lag_type: link" is for Port-Channels
+
+  - interface_policy_group: 101_102_eth_4_5_PC
+    lag_type: link
+    port_channel_policy: Static_Mode
+    AAEP: DC_AAEP
+    link_level_policy: Auto_Link_Policy
+    cdp_policy: CDP_On
+    lldp_policy: LLDP_On
+    mcp_policy: MCP_Off
+    stp_interface_policy: default
+
+###      vPCs     ###
+# vPCs. "lag_type: node" is for vPCs
+
+  - interface_policy_group: 101_102_eth_6_vPC
+    lag_type: node
+    port_channel_policy: Static_Mode
+    AAEP: DC_AAEP
+    link_level_policy: Auto_Link_Policy
+    cdp_policy: CDP_On
+    lldp_policy: LLDP_On
+    mcp_policy: MCP_Off
+    stp_interface_policy: default
+
+
+###################################
+# roles:                          #
+# - AAEPs                         #
+# - Domains                       #
+# - VLAN_Pools                    #
+###################################
+
+# AAEPs, Domains and VLAN Pools
+AAEP_task_config:
+  - name: DC_AAEP
+    domains:
+      - domain_type: phys
+        domain_name: PhysicalDomain
+        vlan_pools:
+        - vlan_pool_name: Phys_StaticVlanPool
+          vlan_pool_allocation_mode: static    # dynamic for VMM integration
+          vlans:
+          - { vlan_range_start: 1001, vlan_range_end: 1049 }
+          - { vlan_range_start: 1050, vlan_range_end: 1099 }
+          - { vlan_range_start: 1100, vlan_range_end: 1149 }
+          - { vlan_range_start: 1150, vlan_range_end: 1199 }
+          - { vlan_range_start: 1200, vlan_range_end: 1250 }   
+      - domain_type: l3dom
+        domain_name: RoutedDomain
+        vlan_pools:
+        - vlan_pool_name: Routed_StaticVlanPool
+          vlan_pool_allocation_mode: static
+          vlans:
+          - { vlan_range_start: 200, vlan_range_end: 249 }
+          - { vlan_range_start: 250, vlan_range_end: 299 }
+          - { vlan_range_start: 300, vlan_range_end: 349 }
+          - { vlan_range_start: 350, vlan_range_end: 399 }                    
+
+###################################
+# roles:                          #
+# - Interface_Policies            #
+###################################
+
+# Interface Policies. Naming convention can be modified here.
+CDP_config:
+  - { name: CDP_On, admin_state: yes }
+  - { name: CDP_Off, admin_state: no }
+LLDP_config:
+  - { name: LLDP_On, transmit_state: yes, receive_state: yes }
+  - { name: LLDP_Off, transmit_state: no, receive_state: no }
+# Lacks option to configure Trunking
+Fibre_Channel_config:
+  - { name: FC_F_Port, port_mode: f }
+  - { name: FC_NP_Port, port_mode: np }
+MCP_config:
+  - { name: MCP_On, admin_state: yes }
+  - { name: MCP_Off, admin_state: no }
+Link_Level_config:
+  - {name: 100G_Link_Policy, speed: 100G }
+  - {name: 40G_Link_Policy, speed: 40G }
+  - {name: 25G_Link_Policy, speed: 25G }
+  - {name: 10G_Link_Policy, speed: 10G }
+  - {name: 1G_Link_Policy, speed: 1G }
+  - {name: 100M_Link_Policy, speed: 100M }
+  - {name: Auto_Link_Policy, speed: inherit }
+Port_Channel_config:
+  - {name: LACP_Active, mode: active }
+  - {name: LACP_Passive, mode: passive }
+  - {name: MAC_Pinning, mode: mac-pin }
+  - {name: MAC_Pinning_NIC_Load, mode: mac-pin-nicload }
+  - {name: Static_Mode, mode: Off }
+Spanning_Tree_Interface_config:
+  - {name: BPDU_Off, stp_control: ""}
+  - {name: BPDU_Filter, stp_control: bpdu-filter }
+  - {name: BPDU_Guard, stp_control: bpdu-guard }
+  - {name: BPDU_Filter_Guard, stp_control: "bpdu-filter,bpdu-guard" }
+
+
+
+###############################
+#                             #
+#           Tenants           #
+#                             #
+###############################
+
+###################################
+# roles:                          #
+# - Tenants_and_VRFs              #
+###################################
+
+Tenants_VRFs:
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV  }
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST }
+- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV  }
+- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST }
+
+###################################
+# roles:                          #
+# - BridgeDomains_and_Subnets     #
+###################################
+#
+# Optional parameters specific for individual entries in BridgeDomains_Subnets
+#
+# 'scope' options are:
+# leave it empty
+# scope: public          This is "Advertised Externally"
+# scope: shared          This is "Shared Between VRFs"
+# scope: "public,shared" This is "Advertised Externally" & "Shared Between VRFs". Quoting the parameter "" is important.
+#
+# arp_flooding: no or yes                   # default is no
+# l2_unknown_unicast: proxy or flood        # default is proxy
+# l3_unknown_multicast: flood or opt-flood  # default is flood
+
+# Optional. Comment to ommit.
+#Gateway_MAC_address: 02:00:25:00:11:28
+
+BridgeDomains_Subnets:
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1005_192_168_5_0_24_BD, bd_subnet: 192.168.5.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1006_192_168_6_0_24_BD, bd_subnet: 192.168.6.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1007_192_168_7_0_24_BD, bd_subnet: 192.168.7.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1008_192_168_8_0_24_BD, bd_subnet: 192.168.8.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+
+#####################################
+# roles:                            #
+# - AppProfiles_and_EPGs            #
+# - Domains_and_EPG_Static_Bindings #
+#####################################
+#
+# Optional parameters:
+# VMM_deploy_immediacy:          lazy or immediate                   # default is lazy
+# VMM_resolution_immediacy:      lazy or immediate or pre-provision  # default is lazy
+# port_profile_deploy_immediacy: lazy or immediate                   # default is lazy 
+#
+# Config (uncomment if required):
+# VMM_deploy_immediacy:          immediate
+# VMM_resolution_immediacy:      pre-provision 
+# port_profile_deploy_immediacy: immediate
+#
+# Use Static_Binding: "{{ port_profile_dummy }}" when associating to a VMM domain. Workaround to playbook logic.
+
+AppProfiles_EPGs_Domains_Static_Bindings:
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain,  domain_type: phys, Encap_VLAN: 1005,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware, Static_Binding: "{{ port_profile_dummy }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1003,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1004,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1015,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1006,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1007,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1008,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_DEV_AP001,  EPG_name: Hector_EPG,                  BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1009,   Static_Binding: "{{ port_profile_1 }}" }
+
+# "Port-Profiles" Trunk VLANs on links
+# Create the "Port-Profiles" here:
+
+port_profile_1:
+- { Pod_ID: 1, Switch_ID: 112, interface_type: switch_port, port: 1/20 }
+- { Pod_ID: 1, Switch_ID: 113, interface_type: switch_port, port: 1/30 }
+- { Pod_ID: 1, Switch_ID: 111, interface_type: port_channel, port: 101_102_eth_4_5_PC }
+- { Pod_ID: 1, Switch_ID: [111,112], interface_type: vpc, port: 101_102_eth_6_vPC }
+# Don't remove. Workaround to playbook logic.
+port_profile_dummy:
+- dummy

@@ -1,0 +1,57 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_leaf_profile_module.html#ansible-collections-cisco-aci-aci-interface-policy-leaf-profile-module
+# APIC
+# Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles
+- name: Leaf Interface Profile
+  cisco.aci.aci_interface_policy_leaf_profile:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    interface_profile: "{{ (item.switch_name + '_' + item.switch_node_id|string + '_IntProf') }}"
+    state: "{{ whattodo | default('present', true) }}"    
+  with_items: "{{ Switches_and_Interfaces_map }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_switch_policy_leaf_profile_module.html#ansible-collections-cisco-aci-aci-switch-policy-leaf-profile-module
+# APIC
+# Fabric > Access Policies > Switches > Leaf Switches > Profiles
+- name: Switch Leaf Profile
+  cisco.aci.aci_switch_policy_leaf_profile:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    leaf_profile: "{{ (item.switch_name + '_' + item.switch_node_id|string + '_SwProf') }}"
+    state: "{{ whattodo | default('present', true) }}"       
+  with_items: "{{ Switches_and_Interfaces_map }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_switch_leaf_selector_module.html#ansible-collections-cisco-aci-aci-switch-leaf-selector-module
+# APIC
+# Fabric > Access Policies > Switches > Leaf Switches > Profiles > Leaf Selectors
+- name: Switch Leaf Profile > Leaf Selectors
+  cisco.aci.aci_switch_leaf_selector:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    leaf_profile: "{{ (item.switch_name + '_' + item.switch_node_id|string + '_SwProf') }}"
+    leaf: "{{ (item.switch_name + '_' + item.switch_node_id|string + '_SwSel') }}"
+    leaf_node_blk: blk
+    from: "{{ item.switch_node_id }}"
+    to: "{{ item.switch_node_id }}"
+    policy_group: "{{ All_Leaf_Switches_Policy_Group | default('') }}"
+    state: "{{ whattodo | default('present', true) }}"      
+  with_items: "{{ Switches_and_Interfaces_map }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_selector_to_switch_policy_leaf_profile_module.html#ansible-collections-cisco-aci-aci-interface-selector-to-switch-policy-leaf-profile-module
+# APIC
+# Fabric > Access Policies > Switches > Leaf Switches > Profiles > Associated Intreface Selector Profiles
+- name: Switch Leaf Profile > Associated Interface Selector Profiles
+  cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    leaf_profile: "{{ (item.switch_name + '_' + item.switch_node_id|string + '_SwProf') }}"
+    interface_selector: "{{ (item.switch_name + '_' + item.switch_node_id|string + '_IntProf') }}"
+    state: "{{ whattodo | default('present', true) }}"     
+  with_items: "{{ Switches_and_Interfaces_map }}"
