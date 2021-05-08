@@ -37,7 +37,7 @@ Password: ciscopsdt
 ```
 [Cisco DevNet Sandbox labs](https://devnetsandbox.cisco.com/RM/Topology)
 
-If you would like to use this Ansiible playbook to your own APIC controller, you should modify the followin:
+If you would like to use this Ansiible playbook to your own APIC controller, you should modify the following:
 
 1. In aci_playbook.yaml file, modify the **hosts:** value with any name you wish
 
@@ -58,7 +58,7 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
 
 1. In **host_vars/apicsim_sandbox_example.yaml** (or the file you have created in **host_vars**)you can follow the structure and replace it with your own and desired configurations.
 
-2. In **aci_playbook.yaml** chose the Roles you would like to use. Otherwise comment any entry.
+2. In **aci_playbook.yaml** under **roles:** are located the configurations that Ansible will perform in ACI. For a certain group of tasks that you want to ommit, you can simple remove it or even better prepend the entry with a hash (#) to tell Ansible to ignore it.
 
 ```
   roles:
