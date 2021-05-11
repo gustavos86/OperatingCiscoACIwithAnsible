@@ -1,5 +1,5 @@
 ################################################################################
-# v0.5 2021-May-08                                                             #
+# v0.6 2021-May-08                                                             #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -39,3 +39,4 @@
   - BridgeDomains_and_Subnets
   - AppProfiles_and_EPGs
   - Domains_and_EPG_Static_Bindings
+  - L3Outs
