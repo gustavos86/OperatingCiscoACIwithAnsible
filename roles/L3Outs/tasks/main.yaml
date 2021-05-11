@@ -16,39 +16,35 @@
           <l3extOut dn="uni/tn-{{ item.Tenant_name }}/out-{{ item.L3Out_name }}" name="{{ item.L3Out_name }}">
           <l3extRsEctx tnFvCtxName="{{ item.VRF_name }}"/>
           <l3extRsL3DomAtt tDn="uni/l3dom-{{ item.L3Domain_name }}"/>
+          
           <l3extLNodeP name="NodeProfile">
-            <l3extRsNodeL3OutAtt rtrId="{{ item.Switch_A_Router_ID }}" rtrIdLoopBack="yes" tDn="topology/pod-{{ item.Switch_A_Pod_ID }}/node-{{ item.Switch_A_Node_ID }}">
-            {% for route in item.Static_Routes %}
-              <ipRouteP aggregate="no" annotation="" descr="" ip="{{ route.Network }}" name="" nameAlias="" pref="1" rtCtrl="">
+            {% for NodeProfile in item.NodeProfiles %}
+            <l3extRsNodeL3OutAtt rtrId="{{ NodeProfile.Switch_Router_ID }}" rtrIdLoopBack="yes" tDn="topology/pod-{{ NodeProfile.Switch_Pod_ID }}/node-{{ NodeProfile.Switch_Node_ID }}">
+              {% for route in item.Static_Routes %}
+              <ipRouteP status="{{ route.status if route.status == 'deleted' else '' }}" aggregate="no" annotation="" descr="" ip="{{ route.Network }}" name="" nameAlias="" pref="1" rtCtrl="">
                 <ipNexthopP annotation="" descr="" name="" nameAlias="" nhAddr="{{ route.Next_Hop }}" pref="unspecified" type="prefix"/>
               </ipRouteP>            
-            {% endfor %}
+              {% endfor %}
             </l3extRsNodeL3OutAtt> 
-            <l3extRsNodeL3OutAtt rtrId="{{ item.Switch_B_Router_ID }}" rtrIdLoopBack="yes" tDn="topology/pod-{{ item.Switch_B_Pod_ID }}/node-{{ item.Switch_B_Node_ID }}">
-            {% for route in item.Static_Routes %}
-              <ipRouteP aggregate="no" annotation="" descr="" ip="{{ route.Network }}" name="" nameAlias="" pref="1" rtCtrl="">
-                <ipNexthopP annotation="" descr="" name="" nameAlias="" nhAddr="{{ route.Next_Hop }}" pref="unspecified" type="prefix"/>
-              </ipRouteP>            
-            {% endfor %} 
-            </l3extRsNodeL3OutAtt>           
+            {% endfor %}            
+
             <l3extLIfP name="InterfaceProfile">
-              <l3extRsPathL3OutAtt addr="0.0.0.0" autostate="disabled" encap="vlan-{{ item.VLAN_ID }}" encapScope="local" ifInstT="ext-svi" mac="00:22:BD:F8:19:FF" mode="regular" mtu="9216" tDn="topology/pod-{{ item.Switch_A_Pod_ID }}/protpaths-{{ item.Switch_A_Node_ID }}-{{ item.Switch_B_Node_ID }}/pathep-[{{ item.vPC_A }}]">
+              {% for vPC in item.vPCs %}
+              <l3extRsPathL3OutAtt addr="0.0.0.0" autostate="disabled" encap="vlan-{{ item.VLAN_ID }}" encapScope="local" ifInstT="ext-svi" mac="00:22:BD:F8:19:FF" mode="regular" mtu="9216" tDn="topology/pod-{{ vPC.Switch_Pod_ID }}/protpaths-{{ vPC.Switch_Node_A_ID }}-{{ vPC.Switch_Node_B_ID }}/pathep-[{{ vPC.vPC_Policy_Group }}]">
                 <l3extMember addr="{{ item.IP_address_B }}" side="B"/>
                 <l3extMember addr="{{ item.IP_address_A }}" side="A">
                   <l3extIp addr="{{ item.IP_address_VIP }}"/>
                 </l3extMember>
-                </l3extRsPathL3OutAtt>
-                <l3extRsPathL3OutAtt addr="0.0.0.0" autostate="disabled" encap="vlan-{{ item.VLAN_ID }}" encapScope="local" ifInstT="ext-svi" mac="00:22:BD:F8:19:FF" mode="regular" mtu="9216" tDn="topology/pod-{{ item.Switch_B_Pod_ID }}/protpaths-{{ item.Switch_A_Node_ID }}-{{ item.Switch_B_Node_ID }}/pathep-[{{ item.vPC_B }}]">
-                  <l3extMember addr="{{ item.IP_address_B }}" side="B"/>
-                  <l3extMember addr="{{ item.IP_address_A }}" side="A">
-                    <l3extIp addr="{{ item.IP_address_VIP }}"/>
-                  </l3extMember>
               </l3extRsPathL3OutAtt>
-             </l3extLIfP>
+              {% endfor %} 
+
+            </l3extLIfP>          
           </l3extLNodeP>
+
           <l3extInstP name="ExtEPG">
             <l3extSubnet ip="0.0.0.0/0" scope="import-security"/>
           </l3extInstP>
+          
           </l3extOut>
         </fvTenant>
       </polUni>
