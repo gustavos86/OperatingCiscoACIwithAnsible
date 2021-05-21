@@ -1,5 +1,5 @@
 ################################################################################
-# v0.7 2021-May-08                                                             #
+# v0.8 2021-May-21                                                             #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -36,8 +36,13 @@
 
 # port_state can be: enabled or disabled
 
+
+Switch_name_suffix: '_SwProf'
+Interface_name_suffix: '_IntProf'
+include_node_id_in_switch_profile_name: 'no'
+
 Switches_and_Interfaces_map:
-  - switch_name: HGSG111LEAF
+  - switch_name: Leaf101
     pod: 1
     switch_node_id: 101
     ports_list:
@@ -45,7 +50,10 @@ Switches_and_Interfaces_map:
     #- { port: 1, port_description: ,interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
     #- { port: 2, port_description: ,interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
     #- { port: 3, port_description: ,interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
-  - switch_name: HGSG112LEAF
+    #- { port: 4, port_state: enabled, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    #- { port: 5, port_state: enabled, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+
+  - switch_name: Leaf102
     pod: 1      
     switch_node_id: 102
     ports_list:
@@ -55,7 +63,7 @@ Switches_and_Interfaces_map:
     - { port: 21, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
     - { port: 22, port_state: enabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
     - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
-  - switch_name: HGSG113LEAF
+  - switch_name: Leaf103
     pod: 1
     switch_node_id: 103
     ports_list:
@@ -63,7 +71,7 @@ Switches_and_Interfaces_map:
     - { port: 31, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
     - { port: 32, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
     - { port: 33, port_state: disabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
-  - switch_name: HGSG114LEAF
+  - switch_name: Leaf104
     pod: 1
     switch_node_id: 104
     ports_list:
