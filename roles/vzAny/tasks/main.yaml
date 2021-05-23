@@ -1,0 +1,124 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_filter_module.html#ansible-collections-cisco-aci-aci-filter-module
+# APIC
+# Tenants > Contracts > Filters
+
+- name: vzAny Filter
+  cisco.aci.aci_filter:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    filter: default
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Tenants_VRFs }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_filter_entry_module.html#ansible-collections-cisco-aci-aci-filter-entry-module
+# APIC
+# Tenants > Contracts > Filters > Entries
+
+- name: vzAny Filter > Entry
+  cisco.aci.aci_filter_entry:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    filter: default
+    entry: default
+    ether_type: unspecified
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Tenants_VRFs }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_module.html#ansible-collections-cisco-aci-aci-contract-module
+# APIC
+# Tenants > Contracts
+
+- name: vzAny Contract
+  cisco.aci.aci_contract:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    contract: vzAny_CT
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Tenants_VRFs }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_subject_module.html#ansible-collections-cisco-aci-aci-contract-subject-module
+# APIC
+# Tenants > Contracts > Subjects
+
+- name: vzAny Contract > Subject
+  cisco.aci.aci_contract_subject:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    contract: vzAny_CT
+    subject: Subj
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Tenants_VRFs }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_subject_to_filter_module.html#ansible-collections-cisco-aci-aci-contract-subject-to-filter-module
+# APIC
+# Tenants > Contracts > Subjects > Filters
+
+- name: vzAny Contract > Subject > Filter
+  cisco.aci.aci_contract_subject_to_filter:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.Tenant_name }}"
+    contract: vzAny_CT
+    subject: Subj
+    filter: default
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ Tenants_VRFs }}"
+
+# Ansible
+# Module not available
+# APIC
+# Tenants > Networking > VRFs
+
+- name: vzAny add Contract as Provider & Consumer to the VRF
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    path: /api/mo/uni/tn-{{ item.Tenant_name }}.json
+    method: post
+    content: |
+      {
+          "totalCount": "1",
+          "imdata": [
+              {
+                  "vzAny": {
+                      "attributes": {
+                          "dn": "uni/tn-{{ item.Tenant_name }}/ctx-{{ item.VRF_name }}/any"
+                      },
+                      "children": [
+                          {
+                              "vzRsAnyToProv": {
+                                  "attributes": {
+                                      "tnVzBrCPName": "vzAny_CT",
+                                      "status": "{{ 'deleted' if not item.vzAny else '' }}"
+                                  },
+                              }
+                          },
+                          {
+                              "vzRsAnyToCons": {
+                                  "attributes": {
+                                      "tnVzBrCPName": "vzAny_CT",
+                                      "status": "{{ 'deleted' if not item.vzAny else '' }}"
+                                  }
+                              }
+                          }
+                      ]
+                  }
+              }
+          ]
+      }
+  with_items: "{{ Tenants_VRFs }}"

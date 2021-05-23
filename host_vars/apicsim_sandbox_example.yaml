@@ -216,10 +216,10 @@ Spanning_Tree_Interface_config:
 ###################################
 
 Tenants_VRFs:
-- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV  }
-- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST }
-- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV  }
-- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST }
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV , vzAny: yes }
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST, vzAny: yes }
+- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV , vzAny: yes }
+- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST, vzAny: yes }
 
 ###################################
 # roles:                          #
@@ -270,15 +270,15 @@ BridgeDomains_Subnets:
 # Use Static_Binding: "{{ port_profile_dummy }}" when associating to a VMM domain. Workaround to playbook logic.
 
 AppProfiles_EPGs_Domains_Static_Bindings:
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain,  domain_type: phys, Encap_VLAN: 1005,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware, Static_Binding: "{{ port_profile_dummy }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1003,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1004,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: VRF_DEV_AP001,  EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1015,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1006,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1007,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_TEST_AP001, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1008,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: VRF_DEV_AP001,  EPG_name: Hector_EPG,                  BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1009,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain,  domain_type: phys, Encap_VLAN: 1005,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware, Static_Binding: "{{ port_profile_dummy }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1003,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1004,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1015,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1006,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1007,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1008,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_9_0_24_EPG, BD_name: VLAN1008_192_168_9_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1009,   Static_Binding: "{{ port_profile_1 }}" }
 
 # "Port-Profiles" Trunk VLANs on links
 # Create the "Port-Profiles" here:

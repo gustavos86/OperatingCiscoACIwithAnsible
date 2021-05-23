@@ -39,4 +39,5 @@
   - BridgeDomains_and_Subnets
   - AppProfiles_and_EPGs
   - Domains_and_EPG_Static_Bindings
+  - vzAny
   - L3Outs
