@@ -1,5 +1,5 @@
 ################################################################################
-# v0.9 2021-May-23                                                             #
+# v0.10 2021-May-24                                                             #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -40,4 +40,10 @@
   - AppProfiles_and_EPGs
   - Domains_and_EPG_Static_Bindings
   - vzAny
-  - L3Outs
+  - Associate_L3Out_in_BridgeDomain
+
+  ############ L3Outs ############
+
+  - L3Out_vPC_SVI
+  - L3Out_PortChannel_SubIntf_OSPF
+  - L3Out_Port_SVI_BGP

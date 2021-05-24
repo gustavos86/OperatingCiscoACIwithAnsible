@@ -1,0 +1,16 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_to_l3out_module.html#ansible-collections-cisco-aci-aci-bd-to-l3out-module
+# APIC
+# Tenants > Tenant > Networking > Bridge Domains > Policy > L3 Configurations
+- name: Bridge Domains
+  cisco.aci.aci_bd_to_l3out:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    bd: "{{ item.BD_name }}"
+    l3out: "{{ item.advertise_via_l3out }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ BridgeDomains_Subnets }}"
+  when: item.advertise_via_l3out is defined

@@ -8,6 +8,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     filter: default
     state: "{{ whattodo | default('present', true) }}"
@@ -23,6 +24,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     filter: default
     entry: default
@@ -40,6 +42,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     contract: vzAny_CT
     state: "{{ whattodo | default('present', true) }}"
@@ -55,6 +58,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     contract: vzAny_CT
     subject: Subj
@@ -71,6 +75,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     contract: vzAny_CT
     subject: Subj
@@ -88,6 +93,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     path: /api/mo/uni/tn-{{ item.Tenant_name }}.json
     method: post
     content: |

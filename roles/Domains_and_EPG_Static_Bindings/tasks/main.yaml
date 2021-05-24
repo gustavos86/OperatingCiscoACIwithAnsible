@@ -7,6 +7,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     ap: "{{ item.AppProfile_name }}"
     epg: "{{ item.EPG_name }}"
@@ -27,6 +28,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.0.Tenant_name }}"
     ap: "{{ item.0.AppProfile_name }}"
     epg: "{{ item.0.EPG_name }}"

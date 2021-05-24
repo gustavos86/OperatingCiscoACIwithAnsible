@@ -7,6 +7,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     vrf: "{{ item.VRF_name }}"
     bd: "{{ item.BD_name }}"
@@ -27,6 +28,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     bd: "{{ item.BD_name }}"
     gateway: "{{ item.bd_subnet }}"
@@ -34,3 +36,4 @@
     scope: "{{ item.scope | default(private) }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ BridgeDomains_Subnets }}"
+  when: item.bd_subnet is defined and item.bd_subnet_mask is defined

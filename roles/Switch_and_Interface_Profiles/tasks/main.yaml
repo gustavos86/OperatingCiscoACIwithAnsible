@@ -7,6 +7,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     interface_profile: "{{ (item.switch_name + ('_' + item.switch_node_id|string if include_node_id_in_switch_profile_name == 'yes' else '') + Interface_name_suffix) }}"
     state: "{{ whattodo | default('present', true) }}"    
   with_items: "{{ Switches_and_Interfaces_map }}"
@@ -22,6 +23,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     leaf_profile: "{{ (item.switch_name + ('_' + item.switch_node_id|string if include_node_id_in_switch_profile_name == 'yes' else '') + Switch_name_suffix) }}"
     state: "{{ whattodo | default('present', true) }}"       
   with_items: "{{ Switches_and_Interfaces_map }}"
@@ -37,12 +39,13 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     leaf_profile: "{{ (item.switch_name + ('_' + item.switch_node_id|string if include_node_id_in_switch_profile_name == 'yes' else '') + Switch_name_suffix) }}"
     leaf: "{{ (item.switch_name + ('_' + item.switch_node_id|string if include_node_id_in_switch_profile_name == 'yes' else '') + Switch_name_suffix) }}"
     leaf_node_blk: blk
     from: "{{ item.switch_node_id }}"
     to: "{{ item.switch_node_id }}"
-    policy_group: "{{ All_Leaf_Switches_Policy_Group | default('') }}"
+    policy_group: "{{ All_Leaf_Switches_Policy_Group | default(omit) }}"
     state: "{{ whattodo | default('present', true) }}"      
   with_items: "{{ Switches_and_Interfaces_map }}"
   retries: 5
@@ -57,6 +60,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     leaf_profile: "{{ (item.switch_name + ('_' + item.switch_node_id|string if include_node_id_in_switch_profile_name == 'yes' else '') + Switch_name_suffix) }}"
     interface_selector: "{{ (item.switch_name + ('_' + item.switch_node_id|string if include_node_id_in_switch_profile_name == 'yes' else '') + Interface_name_suffix) }}"
     state: "{{ whattodo | default('present', true) }}"     

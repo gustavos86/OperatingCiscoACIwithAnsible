@@ -7,6 +7,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     interface_profile: "{{ interface_profile | default(item.0.switch_name + ('_' + item.0.switch_node_id|string if include_node_id_in_switch_profile_name == 'yes' else '') + Interface_name_suffix) }}"
     access_port_selector: "{{ item.1.port_description|default('eth1_' + item.1.port|string, true) }}"
     port_blk: "{{ ( item.1.port|string + '_blk' ) }}"

@@ -3,11 +3,12 @@
 # 
 # APIC
 # Tenants > Networking > L3Outs
-- name: L3Outs
+- name: L3Out_vPC_SVI
   cisco.aci.aci_rest:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     path: /api/mo/uni.xml
     method: post
     content: |
@@ -19,18 +20,20 @@
           
           <l3extLNodeP name="NodeProfile">
             {% for NodeProfile in item.NodeProfiles %}
-            <l3extRsNodeL3OutAtt rtrId="{{ NodeProfile.Switch_Router_ID }}" rtrIdLoopBack="yes" tDn="topology/pod-{{ NodeProfile.Switch_Pod_ID }}/node-{{ NodeProfile.Switch_Node_ID }}">
+            <l3extRsNodeL3OutAtt rtrId="{{ NodeProfile.Switch_Router_ID }}" rtrIdLoopBack="{{ item.Router_ID_as_Loopback }}" tDn="topology/pod-{{ NodeProfile.Switch_Pod_ID }}/node-{{ NodeProfile.Switch_Node_ID }}">
+              {% if item.Static_Routes is defined %}
               {% for route in item.Static_Routes %}
               <ipRouteP status="{{ route.status if route.status == 'deleted' else '' }}" aggregate="no" annotation="" descr="" ip="{{ route.Network }}" name="" nameAlias="" pref="1" rtCtrl="">
                 <ipNexthopP annotation="" descr="" name="" nameAlias="" nhAddr="{{ route.Next_Hop }}" pref="unspecified" type="prefix"/>
               </ipRouteP>            
               {% endfor %}
+              {% endif %}
             </l3extRsNodeL3OutAtt> 
             {% endfor %}            
 
             <l3extLIfP name="InterfaceProfile">
               {% for vPC in item.vPCs %}
-              <l3extRsPathL3OutAtt addr="0.0.0.0" autostate="disabled" encap="vlan-{{ item.VLAN_ID }}" encapScope="local" ifInstT="ext-svi" mac="00:22:BD:F8:19:FF" mode="regular" mtu="9216" tDn="topology/pod-{{ vPC.Switch_Pod_ID }}/protpaths-{{ vPC.Switch_Node_A_ID }}-{{ vPC.Switch_Node_B_ID }}/pathep-[{{ vPC.vPC_Policy_Group }}]">
+              <l3extRsPathL3OutAtt addr="0.0.0.0" autostate="disabled" encap="vlan-{{ item.VLAN_ID }}" encapScope="local" ifInstT="ext-svi" mac="00:22:BD:F8:19:FF" mode="regular" mtu="{{ item.MTU }}" tDn="topology/pod-{{ vPC.Switch_Pod_ID }}/protpaths-{{ vPC.Switch_Node_A_ID }}-{{ vPC.Switch_Node_B_ID }}/pathep-[{{ vPC.vPC_Policy_Group }}]">
                 <l3extMember addr="{{ item.IP_address_B }}" side="B"/>
                 <l3extMember addr="{{ item.IP_address_A }}" side="A">
                   <l3extIp addr="{{ item.IP_address_VIP }}"/>
@@ -49,4 +52,4 @@
         </fvTenant>
       </polUni>
   with_items:
-  - "{{ L3Outs }}"
+  - "{{ L3Out_vPC_SVI }}"

@@ -7,6 +7,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     pool: "{{ item.1.vlan_pool_name }}"
     pool_allocation_mode: "{{ item.1.vlan_pool_allocation_mode }}"
     state: "{{ whattodo | default('present', true) }}"
@@ -23,6 +24,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     pool: "{{ item.0.vlan_pool_name }}"
     block_start: "{{ item.1.vlan_range_start }}"
     block_end: "{{ item.1.vlan_range_end }}"

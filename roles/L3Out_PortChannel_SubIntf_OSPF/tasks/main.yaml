@@ -1,0 +1,58 @@
+---
+# Ansible
+# 
+# APIC
+# Tenants > Networking > L3Outs
+- name: L3Out_PortChannel_SubIntf_OSPF
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    path: /api/mo/uni.xml
+    method: post
+    content: |
+      <polUni>
+        <fvTenant name="{{ item.Tenant_name }}" status="modified">
+          <l3extOut dn="uni/tn-{{ item.Tenant_name }}/out-{{ item.L3Out_name }}"  name="{{ item.L3Out_name }}">
+          <l3extRsEctx tnFvCtxName="{{ item.VRF_name }}"/>
+          <l3extRsL3DomAtt tDn="uni/l3dom-{{ item.L3Domain_name }}"/>
+          <ospfExtP annotation="" areaCost="1" areaCtrl="redistribute,summary" areaId="0.0.0.23" areaType="nssa"/>
+
+          <l3extLNodeP name="NodeProfile">
+            {% for NodeProfile in item.NodeProfiles %}
+            <l3extRsNodeL3OutAtt rtrId="{{ NodeProfile.Switch_Router_ID }}" rtrIdLoopBack="{{ item.Router_ID_as_Loopback }}" tDn="topology/pod-{{ NodeProfile.Switch_Pod_ID }}/node-{{ NodeProfile.Switch_Node_ID }}">
+              {% if item.Static_Routes is defined %}
+              {% for route in item.Static_Routes %}
+              <ipRouteP status="{{ route.status if route.status == 'deleted' else '' }}" aggregate="no" annotation="" descr="" ip="{{ route.Network }}" name="" nameAlias="" pref="1" rtCtrl="">
+                <ipNexthopP annotation="" descr="" name="" nameAlias="" nhAddr="{{ route.Next_Hop }}" pref="unspecified" type="prefix"/>
+              </ipRouteP>            
+              {% endfor %}
+              {% endif %}
+            </l3extRsNodeL3OutAtt> 
+            {% endfor %}        
+
+            <l3extLIfP name="InterfaceProfile">
+
+            <ospfIfP authKeyId="1" authType="none">
+              <ospfRsIfPol tnOspfIfPolName="OSPF_P2P"/>
+            </ospfIfP>
+
+            {% for PC in item.PortChannels %}
+            <l3extRsPathL3OutAtt addr="{{ PC.IP_Address_Mask }}" autostate="disabled" encap="vlan-{{ PC.VLAN_ID }}" encapScope="local" ifInstT="sub-interface" mac="00:22:BD:F8:19:FF" mode="regular" mtu="{{ item.MTU }}" tDn="topology/pod-{{ PC.Switch_Pod_ID }}/paths-{{ PC.Switch_Node_ID }}/pathep-[{{ PC.PC_Policy_Group }}]"/>
+            {% endfor %}
+
+            </l3extLIfP>
+            </l3extLNodeP>
+
+          <l3extInstP name="ExtEPG">
+            <l3extSubnet ip="0.0.0.0/0" scope="import-security"/>
+          </l3extInstP>
+
+         </l3extOut>
+         <ospfIfPol cost="unspecified" ctrl="mtu-ignore" deadIntvl="6" dn="uni/tn-{{ item.Tenant_name }}/ospfIfPol-OSPF_P2P" helloIntvl="2" name="OSPF_P2P" nameAlias="" nwT="p2p" ownerKey="" pfxSuppress="inherit" prio="1" rexmitIntvl="5" xmitDelay="1"/>
+        </fvTenant>  
+      </polUni>
+
+  with_items:
+  - "{{ L3Out_PortChannel_SubIntf_OSPF }}"

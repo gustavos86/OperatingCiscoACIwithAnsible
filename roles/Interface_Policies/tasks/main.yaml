@@ -7,6 +7,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     name: "{{ item.name }}"
     admin_state: "{{ item.admin_state }}"
     state: "{{ whattodo | default('present', true) }}"
@@ -21,6 +22,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     lldp_policy: "{{ item.name }}"
     transmit_state: "{{ item.transmit_state }}"
     receive_state: "{{ item.receive_state }}"
@@ -36,6 +38,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     fc_policy: "{{ item.name }}"
     port_mode: "{{ item.port_mode }}"
     state: "{{ whattodo | default('present', true) }}"
@@ -50,6 +53,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     mcp: "{{ item.name }}"
     admin_state: "{{ item.admin_state }}"
     state: "{{ whattodo | default('present', true) }}"
@@ -64,6 +68,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     link_level_policy: "{{ item.name }}"
     speed: "{{ item.speed }}"
     auto_negotiation: yes
@@ -79,6 +84,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     port_channel: "{{ item.name }}"
     mode: "{{ item.mode }}"
     state: "{{ whattodo | default('present', true) }}"
@@ -93,6 +99,7 @@
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    validate_certs: no
     path: /api/mo/uni.xml
     method: post
     content: |
