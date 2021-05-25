@@ -1,5 +1,5 @@
 ################################################################################
-# v0.10 2021-May-24                                                            #
+# v0.11 2021-May-25                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -293,13 +293,12 @@ port_profile_dummy:
 - dummy
 
 
-
-###################################
-# roles:                          #
-# - L3Outs                        #
-###################################
-
-
+####################################
+# roles:                           #
+# - L3Out_vPC_SVI                  #
+# - L3Out_PortChannel_SubIntf_OSPF #
+# - L3Out_Port_SVI_BGP             #
+####################################
 
 L3Out_vPC_SVI:
 
@@ -330,7 +329,7 @@ L3Out_vPC_SVI:
     MTU: 9216
     Router_ID_as_Loopback: "yes"
     Static_Routes:
-    - { Network: 0.0.0.0/0,      Next_Hop: 10.0.1.200, status: '' }
+    - { Network: 0.0.0.0/0,       Next_Hop: 10.0.1.200, status: '' }
     - { Network: 192.168.91.0/24, Next_Hop: 10.0.1.200, status: '' }
     - { Network: 192.168.92.0/24, Next_Hop: 10.0.1.200, status: '' }
     - { Network: 192.168.93.0/24, Next_Hop: 10.0.1.200, status: '' }
@@ -373,6 +372,8 @@ L3Out_PortChannel_SubIntf_OSPF:
       VLAN_ID: 101
     Router_ID_as_Loopback: "no"
     MTU: 9216
+    OSPF_Area_ID: 0.0.0.23
+    OSPF_Area_Type: nssa      #nssa or regular or stub
 
 L3Out_Port_SVI_BGP:
 

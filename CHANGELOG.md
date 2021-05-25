@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.11] - 2021-05-25
+
+### Added
+
+- comments on file in host_vars
+- vars in L3Out_PortChannel_SubIntf_OSPF to control OSPF parameters OSPF_Area_ID and OSPF_Area_Type
 
 ## [v0.10] - 2021-05-24
 

@@ -17,7 +17,7 @@
           <l3extOut dn="uni/tn-{{ item.Tenant_name }}/out-{{ item.L3Out_name }}"  name="{{ item.L3Out_name }}">
           <l3extRsEctx tnFvCtxName="{{ item.VRF_name }}"/>
           <l3extRsL3DomAtt tDn="uni/l3dom-{{ item.L3Domain_name }}"/>
-          <ospfExtP annotation="" areaCost="1" areaCtrl="redistribute,summary" areaId="0.0.0.23" areaType="nssa"/>
+          <ospfExtP areaCost="1" areaCtrl="redistribute,summary" areaId="{{ item.OSPF_Area_ID }}" areaType="{{ item.OSPF_Area_Type }}"/>
 
           <l3extLNodeP name="NodeProfile">
             {% for NodeProfile in item.NodeProfiles %}
