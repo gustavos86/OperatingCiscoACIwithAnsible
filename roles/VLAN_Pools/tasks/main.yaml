@@ -29,6 +29,7 @@
     block_start: "{{ item.1.vlan_range_start }}"
     block_end: "{{ item.1.vlan_range_end }}"
     block_name: "{{ ( item.1.vlan_range_start|string + '_' + item.1.vlan_range_end|string + '_blk' ) }}"
+    description: "{{ item.1.description | default(omit) }}"
     pool_allocation_mode: "{{ item.0.vlan_pool_allocation_mode }}"
     state: "{{ whattodo | default('present', true) }}"
   with_subelements: 

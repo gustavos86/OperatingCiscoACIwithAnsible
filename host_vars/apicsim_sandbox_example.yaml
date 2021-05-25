@@ -1,5 +1,5 @@
 ################################################################################
-# v0.11 2021-May-25                                                            #
+# v0.12 2021-May-25                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -147,21 +147,21 @@ AAEP_task_config:
         - vlan_pool_name: Phys_StaticVlanPool
           vlan_pool_allocation_mode: static    # dynamic for VMM integration
           vlans:
-          - { vlan_range_start: 1001, vlan_range_end: 1049 }
-          - { vlan_range_start: 1050, vlan_range_end: 1099 }
-          - { vlan_range_start: 1100, vlan_range_end: 1149 }
-          - { vlan_range_start: 1150, vlan_range_end: 1199 }
-          - { vlan_range_start: 1200, vlan_range_end: 1250 }   
+          - { vlan_range_start: 1001, vlan_range_end: 1049, description: 'test' }
+          - { vlan_range_start: 1050, vlan_range_end: 1099, description: 'test' }
+          - { vlan_range_start: 1100, vlan_range_end: 1149, description: 'test' }
+          - { vlan_range_start: 1150, vlan_range_end: 1199, description: 'test' }
+          - { vlan_range_start: 1200, vlan_range_end: 1250, description: 'test' }   
       - domain_type: l3dom
         domain_name: RoutedDomain
         vlan_pools:
         - vlan_pool_name: Routed_StaticVlanPool
           vlan_pool_allocation_mode: static
           vlans:
-          - { vlan_range_start: 200, vlan_range_end: 249 }
-          - { vlan_range_start: 250, vlan_range_end: 299 }
-          - { vlan_range_start: 300, vlan_range_end: 349 }
-          - { vlan_range_start: 350, vlan_range_end: 399 }                    
+          - { vlan_range_start: 200, vlan_range_end: 249, description: 'test' }
+          - { vlan_range_start: 250, vlan_range_end: 299, description: 'test' }
+          - { vlan_range_start: 300, vlan_range_end: 349, description: 'test' }
+          - { vlan_range_start: 350, vlan_range_end: 399, description: 'test' }                    
 
 ###################################
 # roles:                          #
