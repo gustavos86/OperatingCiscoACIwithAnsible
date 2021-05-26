@@ -18,6 +18,8 @@
     l3_unknown_multicast: "{{ item.l3_unknown_multicast | default('flood') }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ BridgeDomains_Subnets }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_subnet_module.html#ansible-collections-cisco-aci-aci-bd-subnet-module
@@ -37,3 +39,5 @@
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ BridgeDomains_Subnets }}"
   when: item.bd_subnet is defined and item.bd_subnet_mask is defined
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

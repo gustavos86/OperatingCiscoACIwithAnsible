@@ -13,6 +13,8 @@
     filter: default
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_filter_entry_module.html#ansible-collections-cisco-aci-aci-filter-entry-module
@@ -31,6 +33,8 @@
     ether_type: unspecified
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_module.html#ansible-collections-cisco-aci-aci-contract-module
@@ -47,6 +51,8 @@
     contract: vzAny_CT
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_subject_module.html#ansible-collections-cisco-aci-aci-contract-subject-module
@@ -64,6 +70,8 @@
     subject: Subj
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_subject_to_filter_module.html#ansible-collections-cisco-aci-aci-contract-subject-to-filter-module
@@ -82,6 +90,8 @@
     filter: default
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # Module not available
@@ -128,3 +138,5 @@
           ]
       }
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

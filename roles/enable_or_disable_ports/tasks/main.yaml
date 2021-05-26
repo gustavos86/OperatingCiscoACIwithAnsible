@@ -22,7 +22,8 @@
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list
-
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 
 - name: Enable ports
@@ -45,3 +46,5 @@
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

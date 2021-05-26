@@ -1,5 +1,5 @@
 ################################################################################
-# v0.12 2021-May-25                                                             #
+# v0.13 2021-May-26                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -10,6 +10,9 @@
   hosts: apicsim_sandbox_example
   connection: local
   gather_facts: no
+
+  vars:
+    loop_control_pause: 0           # Adds a delay between loop iterations. Required when the APIC cannot handle the rate of all the connections
 
   roles:
   ###############################

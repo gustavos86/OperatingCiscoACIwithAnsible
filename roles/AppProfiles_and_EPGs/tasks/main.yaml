@@ -12,6 +12,8 @@
     ap: "{{ item.AppProfile_name }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_module.html#ansible-collections-cisco-aci-aci-epg-module
@@ -29,3 +31,5 @@
     bd: "{{ item.BD_name }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

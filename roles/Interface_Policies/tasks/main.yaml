@@ -12,6 +12,8 @@
     admin_state: "{{ item.admin_state }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ CDP_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_lldp_module.html#ansible-collections-cisco-aci-aci-interface-policy-lldp-module
@@ -28,6 +30,8 @@
     receive_state: "{{ item.receive_state }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ LLDP_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_fc_module.html#ansible-collections-cisco-aci-aci-interface-policy-fc-module
@@ -43,6 +47,8 @@
     port_mode: "{{ item.port_mode }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Fibre_Channel_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_mcp_module.html#ansible-collections-cisco-aci-aci-interface-policy-mcp-module
@@ -58,6 +64,8 @@
     admin_state: "{{ item.admin_state }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ MCP_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_link_level_module.html#ansible-collections-cisco-aci-aci-interface-policy-link-level-module
@@ -74,6 +82,8 @@
     auto_negotiation: yes
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Link_Level_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_port_channel_module.html#ansible-collections-cisco-aci-aci-interface-policy-port-channel-module
@@ -89,6 +99,8 @@
     mode: "{{ item.mode }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Port_Channel_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # Module not available
@@ -105,3 +117,5 @@
     content: |
        <polUni>     <infraInfra>         <stpIfPol name="{{item.name}}" descr="" ctrl="{{item.stp_control}}" status="{{ 'deleted' if whattodo|default('present', true) == 'absent' else '' }}"/>     </infraInfra> </polUni>
   with_items: "{{ Spanning_Tree_Interface_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

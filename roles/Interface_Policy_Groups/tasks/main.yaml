@@ -22,3 +22,5 @@
     stp_interface_policy: "{{ item.stp_interface_policy | default('') }}"
     state: "{{ whattodo | default('present', true) }}"      
   with_items: "{{ Interface_Policy_Group_task_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

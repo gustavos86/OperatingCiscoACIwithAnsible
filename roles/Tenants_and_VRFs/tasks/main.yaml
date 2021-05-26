@@ -11,6 +11,8 @@
     tenant: "{{ item.Tenant_name }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_vrf_module.html#ansible-collections-cisco-aci-aci-vrf-module
@@ -26,3 +28,5 @@
     vrf: "{{ item.VRF_name }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

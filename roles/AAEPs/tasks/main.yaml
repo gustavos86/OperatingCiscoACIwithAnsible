@@ -13,7 +13,9 @@
     state: "{{ whattodo | default('present', true) }}"
   with_items: 
     - "{{ AAEP_task_config }}"
-
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+    
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_aep_to_domain_module.html#ansible-collections-cisco-aci-aci-aep-to-domain-module
 # APIC
@@ -31,3 +33,5 @@
   with_subelements: 
     - "{{ AAEP_task_config }}"
     - domains
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

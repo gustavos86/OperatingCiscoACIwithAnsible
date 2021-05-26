@@ -20,5 +20,5 @@
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list
-  retries: 5
-  delay: 2
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

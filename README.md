@@ -89,6 +89,14 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
   - BridgeDomains_and_Subnets
   - AppProfiles_and_EPGs
   - Domains_and_EPG_Static_Bindings
+  - vzAny
+  - Associate_L3Out_in_BridgeDomain
+
+  ############ L3Outs ############
+
+  - L3Out_vPC_SVI
+  - L3Out_PortChannel_SubIntf_OSPF
+  - L3Out_Port_SVI_BGP
 ```
 
 3. Run the Ansible Playbook with:

@@ -14,6 +14,8 @@
   with_subelements: 
     - "{{ AAEP_task_config | map(attribute='domains') | list | sum(start=[]) }}"
     - vlan_pools
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_vlan_pool_encap_block_module.html#ansible-collections-cisco-aci-aci-vlan-pool-encap-block-module
@@ -35,3 +37,5 @@
   with_subelements: 
     - "{{ AAEP_task_config | map(attribute='domains') | list | sum(start=[]) | map(attribute='vlan_pools') | list | sum(start=[]) }}"
     - vlans
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

@@ -58,3 +58,5 @@
 
   with_items:
   - "{{ L3Out_Port_SVI_BGP }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

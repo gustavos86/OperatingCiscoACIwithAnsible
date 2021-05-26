@@ -56,3 +56,5 @@
 
   with_items:
   - "{{ L3Out_PortChannel_SubIntf_OSPF }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

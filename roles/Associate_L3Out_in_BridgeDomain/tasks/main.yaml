@@ -14,3 +14,5 @@
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ BridgeDomains_Subnets }}"
   when: item.advertise_via_l3out is defined
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

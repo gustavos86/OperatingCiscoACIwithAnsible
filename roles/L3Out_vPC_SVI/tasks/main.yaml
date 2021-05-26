@@ -53,3 +53,5 @@
       </polUni>
   with_items:
   - "{{ L3Out_vPC_SVI }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
