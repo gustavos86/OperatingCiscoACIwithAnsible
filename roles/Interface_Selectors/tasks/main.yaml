@@ -16,9 +16,11 @@
     interface_type: "{{ item.1.interface_type }}"
     policy_group: "{{ item.1.interface_policy_group }}"
     state: "{{ whattodo | default('present', true) }}"      
-  when: (item.1 != 'continue') and (item.1.interface_type is defined and item.1.interface_policy_group is defined)
+  when: item.1.interface_type is defined and item.1.interface_policy_group is defined
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list
+    - flags:
+      skip_missing: True
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

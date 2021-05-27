@@ -1,5 +1,5 @@
 ################################################################################
-# v0.13 2021-May-26                                                            #
+# v0.14 2021-May-27                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -30,10 +30,6 @@
 
 #All_Leaf_Switches_Policy_Group: default
 
-# Must have below to have port_list empty and avoid error in playbook.
-#  ports_list:
-#  - continue
-
 # port_state can be: enabled or disabled
 
 
@@ -45,13 +41,6 @@ Switches_and_Interfaces_map:
   - switch_name: Leaf101
     pod: 1
     switch_node_id: 101
-    ports_list:
-    - continue
-    #- { port: 1, port_description: ,interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-    #- { port: 2, port_description: ,interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-    #- { port: 3, port_description: ,interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
-    #- { port: 4, port_state: enabled, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-    #- { port: 5, port_state: enabled, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
 
   - switch_name: Leaf102
     pod: 1      
@@ -291,6 +280,43 @@ port_profile_1:
 # Don't remove. Workaround to playbook logic.
 port_profile_dummy:
 - dummy
+
+#####################################
+# roles:                            #
+# - EPG_to_EPG_Contracts            #
+#####################################
+
+EPG_to_EPG_Contracts:
+
+- Tenant_name: Ansible_Tnt
+  Contract_name: v1001_to_v1002_CT
+  Entries:
+  - Entry_name:     web-http
+    ether_type:     ip     # unspecified or ip
+    ip_protocol:    tcp    # unspecified or icmp or tcp or udp
+    dst_port_start: 80
+    dst_port_end:   80
+  - Entry_name:     web-https
+    ether_type:     ip     # unspecified or ip
+    ip_protocol:    tcp    # unspecified or icmp or tcp or udp
+    dst_port_start: 443
+    dst_port_end:   443
+  - Entry_name:     ssh
+    ether_type:     ip     # unspecified or ip
+    ip_protocol:    tcp    # unspecified or icmp or tcp or udp
+    dst_port_start: 22
+    dst_port_end:   22
+  EPGs:
+  - App_Profile: Networks
+    EPG_name: VLAN1001_192_168_1_0_24_EPG
+    consumer_or_provider: consumer          # consumer is SRC / provider is DST
+  - App_Profile: Networks 
+    EPG_name: VLAN1002_192_168_2_0_24_EPG  
+    consumer_or_provider: provider          # consumer is SRC / provider is DST
+# L3Out_ExtEPGs:
+# - L3Out_name: test_L3Out1
+#   ExtEPG_name: ExtEPG
+#   consumer_or_provider: provider          # consumer is SRC / provider is DST
 
 
 ####################################

@@ -3,16 +3,16 @@
 # APIC
 # Tenants > Contracts > Filters
 
-- name: vzAny Filter
+- name: EPG_to_EPG_Contracts Filter
   cisco.aci.aci_filter:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: no
     tenant: "{{ item.Tenant_name }}"
-    filter: default
+    filter: "{{ item.Contract_name }}"
     state: "{{ whattodo | default('present', true) }}"
-  with_items: "{{ Tenants_VRFs }}"
+  with_items: "{{ EPG_to_EPG_Contracts }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
@@ -21,18 +21,23 @@
 # APIC
 # Tenants > Contracts > Filters > Entries
 
-- name: vzAny Filter > Entry
+- name: EPG_to_EPG_Contracts Filter > Entry
   cisco.aci.aci_filter_entry:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: no
-    tenant: "{{ item.Tenant_name }}"
-    filter: default
-    entry: default
-    ether_type: unspecified
+    tenant: "{{ item.0.Tenant_name }}"
+    filter: "{{ item.0.Contract_name }}"
+    entry: "{{ item.1.Entry_name }}"
+    ether_type: "{{ item.1.ether_type | default('unspecified') }}"
+    ip_protocol: "{{ item.1.ip_protocol | default(omit) }}"
+    dst_port_start: "{{ item.1.dst_port_start | default(omit) }}"
+    dst_port_end: "{{ item.1.dst_port_end | default(omit) }}"
     state: "{{ whattodo | default('present', true) }}"
-  with_items: "{{ Tenants_VRFs }}"
+  with_subelements:
+    - "{{ EPG_to_EPG_Contracts }}"
+    - Entries
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
@@ -41,16 +46,16 @@
 # APIC
 # Tenants > Contracts
 
-- name: vzAny Contract
+- name: EPG_to_EPG_Contracts Contract
   cisco.aci.aci_contract:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: no
     tenant: "{{ item.Tenant_name }}"
-    contract: vzAny_CT
+    contract: "{{ item.Contract_name }}"
     state: "{{ whattodo | default('present', true) }}"
-  with_items: "{{ Tenants_VRFs }}"
+  with_items: "{{ EPG_to_EPG_Contracts }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
@@ -59,17 +64,17 @@
 # APIC
 # Tenants > Contracts > Subjects
 
-- name: vzAny Contract > Subject
+- name: EPG_to_EPG_Contracts Contract > Subject
   cisco.aci.aci_contract_subject:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: no
     tenant: "{{ item.Tenant_name }}"
-    contract: vzAny_CT
+    contract: "{{ item.Contract_name }}"
     subject: Subj
     state: "{{ whattodo | default('present', true) }}"
-  with_items: "{{ Tenants_VRFs }}"
+  with_items: "{{ EPG_to_EPG_Contracts }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
@@ -78,65 +83,63 @@
 # APIC
 # Tenants > Contracts > Subjects > Filters
 
-- name: vzAny Contract > Subject > Filter
+- name: EPG_to_EPG_Contracts Contract > Subject > Filter
   cisco.aci.aci_contract_subject_to_filter:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: no
     tenant: "{{ item.Tenant_name }}"
-    contract: vzAny_CT
+    contract: "{{ item.Contract_name }}"
     subject: Subj
-    filter: default
+    filter: "{{ item.Contract_name }}"
     state: "{{ whattodo | default('present', true) }}"
-  with_items: "{{ Tenants_VRFs }}"
+  with_items: "{{ EPG_to_EPG_Contracts }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
-# Module not available
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_contract_module.html#ansible-collections-cisco-aci-aci-epg-to-contract-module
 # APIC
-# Tenants > Networking > VRFs
+# Tenants > Application Profiles > EPG > Contracts
 
-- name: vzAny add Contract as Provider & Consumer in the VRF
-  cisco.aci.aci_rest:
+- name: EPG_to_EPG_Contracts Apply to EPG
+  cisco.aci.aci_epg_to_contract:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
-    validate_certs: no
-    path: /api/mo/uni/tn-{{ item.Tenant_name }}.json
-    method: post
-    content: |
-      {
-          "totalCount": "1",
-          "imdata": [
-              {
-                  "vzAny": {
-                      "attributes": {
-                          "dn": "uni/tn-{{ item.Tenant_name }}/ctx-{{ item.VRF_name }}/any"
-                      },
-                      "children": [
-                          {
-                              "vzRsAnyToProv": {
-                                  "attributes": {
-                                      "tnVzBrCPName": "vzAny_CT",
-                                      "status": "{{ 'deleted' if not item.vzAny else '' }}"
-                                  },
-                              }
-                          },
-                          {
-                              "vzRsAnyToCons": {
-                                  "attributes": {
-                                      "tnVzBrCPName": "vzAny_CT",
-                                      "status": "{{ 'deleted' if not item.vzAny else '' }}"
-                                  }
-                              }
-                          }
-                      ]
-                  }
-              }
-          ]
-      }
-  with_items: "{{ Tenants_VRFs }}"
+    tenant: "{{ item.0.Tenant_name }}"
+    ap: "{{ item.1.App_Profile }}"
+    epg: "{{ item.1.EPG_name }}"
+    contract: "{{ item.0.Contract_name }}"
+    contract_type: "{{ item.1.consumer_or_provider }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_subelements:
+    - "{{ EPG_to_EPG_Contracts }}"
+    - EPGs
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_l3out_extepg_to_contract_module.html#ansible-collections-cisco-aci-aci-l3out-extepg-to-contract-module
+# APIC
+# Tenants > Application Profiles > EPG > Contracts
+
+- name: EPG_to_EPG_Contracts Apply to External EPG
+  cisco.aci.aci_l3out_extepg_to_contract:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    tenant: "{{ item.0.Tenant_name }}"
+    l3out: "{{ item.1.L3Out_name }}"
+    extepg : "{{ item.1.ExtEPG_name }}"
+    contract: "{{ item.0.Contract_name }}"
+    contract_type: "{{ item.1.consumer_or_provider }}"
+    state: "{{ whattodo | default('present', true) }}"
+  with_subelements:
+    - "{{ EPG_to_EPG_Contracts }}"
+    - L3Out_ExtEPGs
+    - flags:
+      skip_missing: True
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

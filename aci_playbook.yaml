@@ -1,5 +1,5 @@
 ################################################################################
-# v0.13 2021-May-26                                                            #
+# v0.14 2021-May-27                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -42,7 +42,6 @@
   - BridgeDomains_and_Subnets
   - AppProfiles_and_EPGs
   - Domains_and_EPG_Static_Bindings
-  - vzAny
   - Associate_L3Out_in_BridgeDomain
 
   ############ L3Outs ############
@@ -50,3 +49,8 @@
   - L3Out_vPC_SVI
   - L3Out_PortChannel_SubIntf_OSPF
   - L3Out_Port_SVI_BGP
+
+  ########### Contracts ###########
+
+  - vzAny                           # 'permit any' for all the EPGs in the VRF
+  - EPG_to_EPG_Contracts
