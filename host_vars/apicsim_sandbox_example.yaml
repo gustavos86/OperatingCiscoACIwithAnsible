@@ -1,5 +1,5 @@
 ################################################################################
-# v0.14 2021-May-27                                                            #
+# v0.15 2021-June-1                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -423,8 +423,10 @@ L3Out_Port_SVI_BGP:
       BGP_Peers:
       - Peer_IP: 10.1.1.2
         Remote_AS: 65001
+        Password: testpass
       - Peer_IP: 10.1.1.3
         Remote_AS: 65001
+        Password: testpass
     - Switch_Pod_ID: 1
       Switch_Node_ID: 104
       Port: 40
@@ -433,6 +435,7 @@ L3Out_Port_SVI_BGP:
       BGP_Peers:
       - Peer_IP: 10.1.2.2
         Remote_AS: 65001
+        Password: testpass
       - Peer_IP: 10.1.2.3
         Remote_AS: 65001
     Router_ID_as_Loopback: "no"

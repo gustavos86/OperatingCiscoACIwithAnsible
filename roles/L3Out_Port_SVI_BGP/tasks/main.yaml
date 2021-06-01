@@ -37,7 +37,8 @@
               <l3extRsPathL3OutAtt addr="{{ Port.IP_Address_Mask }}" autostate="disabled" encap="vlan-{{ Port.VLAN_ID }}" encapScope="local" ifInstT="ext-svi" mac="00:22:BD:F8:19:FF" mode="regular" mtu="{{ item.MTU }}" tDn="topology/pod-{{ Port.Switch_Pod_ID }}/paths-{{ Port.Switch_Node_ID }}/pathep-[eth1/{{ Port.Port }}]">
 
                 {% for BGP_Peer in Port.BGP_Peers %}            
-                <bgpPeerP addr="{{ BGP_Peer.Peer_IP }}" addrTCtrl="af-ucast" allowedSelfAsCnt="3" ctrl="send-com,send-ext-com" ttl="1" weight="0">
+                <bgpPeerP addr="{{ BGP_Peer.Peer_IP }}" addrTCtrl="af-ucast" allowedSelfAsCnt="3" ctrl="send-com,send-ext-com" ttl="1" weight="0" {% if BGP_Peer.Password is defined %}password="{{ BGP_Peer.Password }}"{% endif %}>
+                  <bgpRsPeerPfxPol annotation="" tnBgpPeerPfxPolName=""/>
                   <bgpAsP asn="{{ BGP_Peer.Remote_AS }}"/>
                 </bgpPeerP>
                 {% endfor %}
