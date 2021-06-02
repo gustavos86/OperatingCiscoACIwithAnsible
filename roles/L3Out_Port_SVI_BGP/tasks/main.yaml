@@ -4,6 +4,7 @@
 # APIC
 # Tenants > Networking > L3Outs
 - name: L3Out_Port_SVI_BGP
+  ignore_errors: yes
   cisco.aci.aci_rest:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

@@ -4,6 +4,7 @@
 # Tenants > Contracts > Filters
 
 - name: EPG_to_EPG_Contracts Filter
+  ignore_errors: yes
   cisco.aci.aci_filter:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -22,6 +23,7 @@
 # Tenants > Contracts > Filters > Entries
 
 - name: EPG_to_EPG_Contracts Filter > Entry
+  ignore_errors: yes
   cisco.aci.aci_filter_entry:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -47,6 +49,7 @@
 # Tenants > Contracts
 
 - name: EPG_to_EPG_Contracts Contract
+  ignore_errors: yes
   cisco.aci.aci_contract:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -65,6 +68,7 @@
 # Tenants > Contracts > Subjects
 
 - name: EPG_to_EPG_Contracts Contract > Subject
+  ignore_errors: yes
   cisco.aci.aci_contract_subject:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -84,6 +88,7 @@
 # Tenants > Contracts > Subjects > Filters
 
 - name: EPG_to_EPG_Contracts Contract > Subject > Filter
+  ignore_errors: yes
   cisco.aci.aci_contract_subject_to_filter:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -104,6 +109,7 @@
 # Tenants > Application Profiles > EPG > Contracts
 
 - name: EPG_to_EPG_Contracts Apply to EPG
+  ignore_errors: yes
   cisco.aci.aci_epg_to_contract:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -126,6 +132,7 @@
 # Tenants > Application Profiles > EPG > Contracts
 
 - name: EPG_to_EPG_Contracts Apply to External EPG
+  ignore_errors: yes
   cisco.aci.aci_l3out_extepg_to_contract:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

@@ -3,6 +3,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Global > Attachable Access Entity Profile
 - name: Attachable Access Entity Profiles (AAEP)
+  ignore_errors: yes
   cisco.aci.aci_aep:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -21,6 +22,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Global > Attachable Access Entity Profile
 - name: Attach Domains to AAEPs
+  ignore_errors: yes
   cisco.aci.aci_aep_to_domain:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

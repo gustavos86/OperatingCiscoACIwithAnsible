@@ -4,6 +4,7 @@
 # Tenants > Contracts > Filters
 
 - name: vzAny Filter
+  ignore_errors: yes
   cisco.aci.aci_filter:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -22,6 +23,7 @@
 # Tenants > Contracts > Filters > Entries
 
 - name: vzAny Filter > Entry
+  ignore_errors: yes
   cisco.aci.aci_filter_entry:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -42,6 +44,7 @@
 # Tenants > Contracts
 
 - name: vzAny Contract
+  ignore_errors: yes
   cisco.aci.aci_contract:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -60,6 +63,7 @@
 # Tenants > Contracts > Subjects
 
 - name: vzAny Contract > Subject
+  ignore_errors: yes
   cisco.aci.aci_contract_subject:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -79,6 +83,7 @@
 # Tenants > Contracts > Subjects > Filters
 
 - name: vzAny Contract > Subject > Filter
+  ignore_errors: yes
   cisco.aci.aci_contract_subject_to_filter:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -99,6 +104,7 @@
 # Tenants > Networking > VRFs
 
 - name: vzAny add Contract as Provider & Consumer in the VRF
+  ignore_errors: yes
   cisco.aci.aci_rest:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

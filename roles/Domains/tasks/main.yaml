@@ -3,6 +3,7 @@
 # APIC
 # Fabric > Access Policies > Physical and External Domains
 - name: Domains
+  ignore_errors: yes
   cisco.aci.aci_domain:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -22,6 +23,7 @@
 # APIC
 # Fabric > Access Policies > Physical and External Domains
 - name: Attach VLAN pools to Domains
+  ignore_errors: yes
   cisco.aci.aci_domain_to_vlan_pool:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

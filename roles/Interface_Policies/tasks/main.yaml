@@ -3,6 +3,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Interface > CDP Interface
 - name: CDP Interface policies
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_cdp:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -20,6 +21,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Interface > LLDP Interface
 - name: LLDP Interface policies
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_lldp:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -38,6 +40,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Interface > Fibre Channel Interface
 - name: Fibre Channel Interface policies
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_fc:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -55,6 +58,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Interface > MCP Interface
 - name: MCP Interface policies
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_mcp:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -72,6 +76,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Interface > Link Level
 - name: Link Level policies
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_link_level:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -90,6 +95,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Interface > Port Channel
 - name: Port Channel policies
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_port_channel:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -107,6 +113,7 @@
 # APIC
 # Fabric > Access Policies > Policies > Interface > Spanning Tree Interface
 - name: Spanning Tree Interface policies
+  ignore_errors: yes
   cisco.aci.aci_rest:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

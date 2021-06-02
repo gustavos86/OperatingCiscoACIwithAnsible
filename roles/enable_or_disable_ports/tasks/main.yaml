@@ -3,6 +3,7 @@
 # APIC
 # 
 - name: Disable ports
+  ignore_errors: yes
   cisco.aci.aci_rest:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -22,11 +23,14 @@
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list
+    - flags:
+      skip_missing: True
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
 
 - name: Enable ports
+  ignore_errors: yes
   cisco.aci.aci_rest:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -46,5 +50,7 @@
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list
+    - flags:
+      skip_missing: True
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

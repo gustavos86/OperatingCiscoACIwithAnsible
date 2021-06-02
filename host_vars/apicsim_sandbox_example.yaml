@@ -1,5 +1,5 @@
 ################################################################################
-# v0.15 2021-June-1                                                            #
+# v0.16 2021-June-2                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -32,43 +32,40 @@
 
 # port_state can be: enabled or disabled
 
-
 Switch_name_suffix: '_SwProf'
 Interface_name_suffix: '_IntProf'
 include_node_id_in_switch_profile_name: 'no'
 
 Switches_and_Interfaces_map:
-  - switch_name: Leaf101
+  - switch_name: Leaf1101
     pod: 1
-    switch_node_id: 101
+    switch_node_id: 1101
 
-  - switch_name: Leaf102
+  - switch_name: Leaf1102
     pod: 1      
-    switch_node_id: 102
+    switch_node_id: 1102
     ports_list:
     - { port: 18, port_state: enabled }
     - { port: 19, port_state: enabled }
-    - { port: 20, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 20, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort, state: absent } # optional state: absent
     - { port: 21, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
     - { port: 22, port_state: enabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-    - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
-  - switch_name: Leaf103
+    - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC}
+  - switch_name: Leaf1103
     pod: 1
-    switch_node_id: 103
+    switch_node_id: 1103
     ports_list:
     - { port: 30, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-    - { port: 31, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 31, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
     - { port: 32, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
     - { port: 33, port_state: disabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
-  - switch_name: Leaf104
+  - switch_name: Leaf1104
     pod: 1
-    switch_node_id: 104
+    switch_node_id: 1104
     ports_list:
+    - { port: 33, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
     - { port: 40, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
     - { port: 41, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-    - { port: 42, port_state: enabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-    - { port: 43, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
-
 
 ###################################
 # roles                           #
@@ -232,7 +229,7 @@ Tenants_VRFs:
 
 BridgeDomains_Subnets:
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+#- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1005_192_168_5_0_24_BD, bd_subnet: 192.168.5.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
@@ -259,27 +256,25 @@ BridgeDomains_Subnets:
 # Use Static_Binding: "{{ port_profile_dummy }}" when associating to a VMM domain. Workaround to playbook logic.
 
 AppProfiles_EPGs_Domains_Static_Bindings:
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain,  domain_type: phys, Encap_VLAN: 1005,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware, Static_Binding: "{{ port_profile_dummy }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1003,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1004,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1015,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1006,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1007,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1008,   Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_9_0_24_EPG, BD_name: VLAN1008_192_168_9_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1009,   Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain,  domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1003, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1004, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1005, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1006, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1007, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1008, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_9_0_24_EPG, BD_name: VLAN1008_192_168_9_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1009, Static_Binding: "{{ port_profile_1 }}" }
 
 # "Port-Profiles" Trunk VLANs on links
 # Create the "Port-Profiles" here:
 
 port_profile_1:
-- { Pod_ID: 1, Switch_ID: 112, interface_type: switch_port, port: 1/20 }
-- { Pod_ID: 1, Switch_ID: 113, interface_type: switch_port, port: 1/30 }
-- { Pod_ID: 1, Switch_ID: 111, interface_type: port_channel, port: 101_102_eth_4_5_PC }
-- { Pod_ID: 1, Switch_ID: [111,112], interface_type: vpc, port: 101_102_eth_6_vPC }
-# Don't remove. Workaround to playbook logic.
-port_profile_dummy:
-- dummy
+- { Pod_ID: 1, Switch_ID: 1102, interface_type: switch_port, port: 1/21, state: absent }       # optional  state: absent
+- { Pod_ID: 1, Switch_ID: 1103, interface_type: switch_port, port: 1/30, native_vlan: 1001 }    # optional  native_vlan: 1001
+- { Pod_ID: 1, Switch_ID: 1103, interface_type: port_channel, port: 101_102_eth_4_5_PC }
+- { Pod_ID: 1, Switch_ID: [1103,1104], interface_type: vpc, port: 101_102_eth_6_vPC, native_vlan: 1003 }
+
 
 #####################################
 # roles:                            #

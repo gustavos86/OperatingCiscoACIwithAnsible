@@ -3,6 +3,7 @@
 # APIC
 # Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles
 - name: Leaf Interface Profile
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_leaf_profile:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -19,6 +20,7 @@
 # APIC
 # Fabric > Access Policies > Switches > Leaf Switches > Profiles
 - name: Switch Leaf Profile
+  ignore_errors: yes
   cisco.aci.aci_switch_policy_leaf_profile:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -35,6 +37,7 @@
 # APIC
 # Fabric > Access Policies > Switches > Leaf Switches > Profiles > Leaf Selectors
 - name: Switch Leaf Profile > Leaf Selectors
+  ignore_errors: yes
   cisco.aci.aci_switch_leaf_selector:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -56,6 +59,7 @@
 # APIC
 # Fabric > Access Policies > Switches > Leaf Switches > Profiles > Associated Intreface Selector Profiles
 - name: Switch Leaf Profile > Associated Interface Selector Profiles
+  ignore_errors: yes
   cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

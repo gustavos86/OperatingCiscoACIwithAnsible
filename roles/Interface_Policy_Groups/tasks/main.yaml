@@ -5,6 +5,7 @@
 # Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > PC Interface
 # Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > VPC Interface
 - name: Access Ports, Port-Channels & vPCs
+  ignore_errors: yes
   cisco.aci.aci_interface_policy_leaf_policy_group:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

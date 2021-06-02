@@ -3,6 +3,7 @@
 # APIC
 # Fabric > Access Policies > Pools > VLAN
 - name: VLAN Pools
+  ignore_errors: yes
   cisco.aci.aci_vlan_pool:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -22,6 +23,7 @@
 # APIC
 # Fabric > Access Policies > Pools > VLAN
 - name: Blocks of VLANs in VLAN Pools
+  ignore_errors: yes
   cisco.aci.aci_vlan_pool_encap_block:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

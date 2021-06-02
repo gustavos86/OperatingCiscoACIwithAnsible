@@ -3,6 +3,7 @@
 # APIC
 # Tenants > ALL TENANTS
 - name: Tenants
+  ignore_errors: yes
   cisco.aci.aci_tenant:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -19,6 +20,7 @@
 # APIC
 # Tenants > Tenant > Networking > VRFs
 - name: Tenants > VRFs
+  ignore_errors: yes
   cisco.aci.aci_vrf:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

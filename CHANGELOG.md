@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.16] - 2021-06-02
+
+### Added
+
+- ignore_errors: yes on all tasks
+- optional parameter to remove entry in static binding
+- optional parameter to remove entry in interface selector
+- option for access port 801.p in static binding with parameter name "native_vlan"
+- parameter 'skip_missing: True' to enable_or_disable_ports
+
+### Changed
+
+- Remoted "port_profile_dummy" workaround in Static Bindings section
+
 ## [v0.15] - 2021-06-01
 
 ### Added

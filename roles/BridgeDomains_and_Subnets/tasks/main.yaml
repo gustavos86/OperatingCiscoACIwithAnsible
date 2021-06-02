@@ -3,6 +3,7 @@
 # APIC
 # Tenants > Tenant > Networking > Bridge Domains
 - name: Bridge Domains
+  ignore_errors: yes
   cisco.aci.aci_bd:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -26,6 +27,7 @@
 # APIC
 # Tenants > Tenant > Networking > Bridge Domains > Subnets
 - name: Bridge Domain Subnets
+  ignore_errors: yes
   cisco.aci.aci_bd_subnet:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

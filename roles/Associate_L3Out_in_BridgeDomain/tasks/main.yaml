@@ -3,6 +3,7 @@
 # APIC
 # Tenants > Tenant > Networking > Bridge Domains > Policy > L3 Configurations
 - name: Bridge Domains
+  ignore_errors: yes
   cisco.aci.aci_bd_to_l3out:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"

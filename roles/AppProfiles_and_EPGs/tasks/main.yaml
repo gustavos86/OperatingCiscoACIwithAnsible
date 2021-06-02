@@ -3,6 +3,7 @@
 # APIC
 # Tenants > Tenant > Application Profiles
 - name: Application Profiles
+  ignore_errors: yes
   cisco.aci.aci_ap:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
@@ -20,6 +21,7 @@
 # APIC
 # Tenants > Tenant > Application Profiles > Application EPGs
 - name: EPGs
+  ignore_errors: yes
   cisco.aci.aci_epg:
     hostname: "{{ ansible_host }}"
     username: "{{ username }}"
