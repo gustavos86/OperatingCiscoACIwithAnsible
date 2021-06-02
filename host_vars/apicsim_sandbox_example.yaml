@@ -229,7 +229,7 @@ Tenants_VRFs:
 
 BridgeDomains_Subnets:
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
-#- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1005_192_168_5_0_24_BD, bd_subnet: 192.168.5.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
