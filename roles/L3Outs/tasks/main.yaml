@@ -1,0 +1,19 @@
+---
+# Ansible
+# 
+# APIC
+# Tenants > Networking > L3Outs
+- name: L3Outs
+  ignore_errors: yes
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    path: /api/mo/uni.xml
+    method: post
+    content: "{{ lookup('template', 'L3Outs.xml.j2') }}"
+  with_items:
+  - "{{ L3Outs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
