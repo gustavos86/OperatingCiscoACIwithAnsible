@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.18] - 2021-06-05
+
+### Added
+
+- tags to all roles defined in aci_playbook.yaml. Use the below command to see the list of tags available
+```
+$ ansible-playbook aci_playbook.yaml -i inventory --list-tags
+
+playbook: aci_playbook.yaml
+
+  play #1 (apicsim_sandbox_example): ACI playbook       TAGS: []
+      TASK TAGS: [aaeps, bds, bdtol3out, contracts, domains, epgs, intpolicies, intpolicygroups, intselectors, l3outs, shutdownports, staticbindings, switchprofiles, tenants, vlanpools, vzany]
+```
+
+### Removed
+
+- L3Out_PortChannel_SubIntf_OSPF role
+
+### Note to myself
+
+Tested 'async: 60 poll: 0' in tasks but found that sometimes changes do not happen in APIC.
+
 ## [v0.17] - 2021-06-04
 
 ### Added

@@ -1,5 +1,5 @@
 ################################################################################
-# v0.17 2021-June-4                                                            #
+# v0.18 2021-June-5                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -160,10 +160,10 @@ CDP_config:
   - { name: CDP_Off, admin_state: no }
 LLDP_config:
   - { name: LLDP_On, transmit_state: yes, receive_state: yes }
-  - { name: LLDP_Off, transmit_state: no, receive_state: no }
+  - { name: LLDP_Off, transmit_state: no, receive_state: no  }
 # Lacks option to configure Trunking
 Fibre_Channel_config:
-  - { name: FC_F_Port, port_mode: f }
+  - { name: FC_F_Port, port_mode: f   }
   - { name: FC_NP_Port, port_mode: np }
 MCP_config:
   - { name: MCP_On, admin_state: yes }
@@ -183,7 +183,7 @@ Port_Channel_config:
   - {name: MAC_Pinning_NIC_Load, mode: mac-pin-nicload }
   - {name: Static_Mode, mode: Off }
 Spanning_Tree_Interface_config:
-  - {name: BPDU_Off, stp_control: ""}
+  - {name: BPDU_Off, stp_control: "" }
   - {name: BPDU_Filter, stp_control: bpdu-filter }
   - {name: BPDU_Guard, stp_control: bpdu-guard }
   - {name: BPDU_Filter_Guard, stp_control: "bpdu-filter,bpdu-guard" }
@@ -256,21 +256,21 @@ BridgeDomains_Subnets:
 # Use Static_Binding: "{{ port_profile_dummy }}" when associating to a VMM domain. Workaround to playbook logic.
 
 AppProfiles_EPGs_Domains_Static_Bindings:
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain,  domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1003, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1004, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1005, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1006, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1007, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1008, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_9_0_24_EPG, BD_name: VLAN1008_192_168_9_0_24_BD, domain_name: PhysicalDomain, domain_type: phys,  Encap_VLAN: 1009, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_EPG, BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware                                      }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1003, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1004, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1005_192_168_5_0_24_EPG, BD_name: VLAN1005_192_168_5_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1005, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1006_192_168_6_0_24_EPG, BD_name: VLAN1006_192_168_6_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1006, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1007_192_168_7_0_24_EPG, BD_name: VLAN1007_192_168_7_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1007, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1008, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_9_0_24_EPG, BD_name: VLAN1008_192_168_9_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1009, Static_Binding: "{{ port_profile_1 }}" }
 
 # "Port-Profiles" Trunk VLANs on links
 # Create the "Port-Profiles" here:
 
 port_profile_1:
-- { Pod_ID: 1, Switch_ID: 1102, interface_type: switch_port, port: 1/21, state: absent }       # optional  state: absent
+- { Pod_ID: 1, Switch_ID: 1102, interface_type: switch_port, port: 1/21, state: absent }        # optional  state: absent
 - { Pod_ID: 1, Switch_ID: 1103, interface_type: switch_port, port: 1/30, native_vlan: 1001 }    # optional  native_vlan: 1001
 - { Pod_ID: 1, Switch_ID: 1103, interface_type: port_channel, port: 101_102_eth_4_5_PC }
 - { Pod_ID: 1, Switch_ID: [1103,1104], interface_type: vpc, port: 101_102_eth_6_vPC, native_vlan: 1003 }
@@ -287,18 +287,18 @@ EPG_to_EPG_Contracts:
   Contract_name: v1001_to_v1002_CT
   Entries:
   - Entry_name:     web-http
-    ether_type:     ip     # unspecified or ip
-    ip_protocol:    tcp    # unspecified or icmp or tcp or udp
+    ether_type:     ip     # ether_type: unspecified | ip
+    ip_protocol:    tcp    # ip_protocol: unspecified | icmp | tcp |  udp
     dst_port_start: 80
     dst_port_end:   80
   - Entry_name:     web-https
-    ether_type:     ip     # unspecified or ip
-    ip_protocol:    tcp    # unspecified or icmp or tcp or udp
+    ether_type:     ip     # ether_type: unspecified | ip
+    ip_protocol:    tcp    # ip_protocol: unspecified | icmp | tcp |  udp
     dst_port_start: 443
     dst_port_end:   443
   - Entry_name:     ssh
-    ether_type:     ip     # unspecified or ip
-    ip_protocol:    tcp    # unspecified or icmp or tcp or udp
+    ether_type:     ip     # ether_type: unspecified | ip
+    ip_protocol:    tcp    # ip_protocol: unspecified | icmp | tcp |  udp
     dst_port_start: 22
     dst_port_end:   22
   EPGs:
@@ -317,19 +317,18 @@ EPG_to_EPG_Contracts:
 ####################################
 # roles:                           #
 # - L3Outs                         #
-# - L3Out_PortChannel_SubIntf_OSPF #
 ####################################
 
 L3Outs: 
-  ### Initial configuration section ###
-  - L3Out_name: My_L3Out
+  ### L3Out Initial configuration section ###
+  - L3Out_name: L3Out1
     Tenant_name: Ansible_Tnt
     VRF_name: VRF_TEST
     L3Domain_name: L3-EXTERNAL
     enable_BGP: yes
     enable_OSPF: yes
     OSPF_Area_ID: 0.0.0.23
-    OSPF_Area_Type: nssa        #nssa or regular or stub
+    OSPF_Area_Type: nssa        # OSPF_Area_Type: nssa | regular| stub
     ### Node Profiles ###
     NodeProfiles:
     - NodeProfile_name: NodeProfile
@@ -343,8 +342,8 @@ L3Outs:
         Switch_Router_ID: 4.4.4.4
       ### Static Routes (optional) ###
       Static_Routes:
-      - { Network: 0.0.0.0/0,       Next_Hop: 10.0.1.254, status: '' }         # Set status: 'deleted' to remove entry
-      - { Network: 192.168.91.0/24, Next_Hop: 10.0.1.254, status: 'deleted' }  # Set status: 'deleted' to remove entry
+      - { Network: 0.0.0.0/0,       Next_Hop: 10.0.1.254, status: '' }         # status: 'deleted' to remove entry
+      - { Network: 192.168.91.0/24, Next_Hop: 10.0.1.254, status: 'deleted' }  # status: 'deleted' to remove entry
       - { Network: 192.168.92.0/24, Next_Hop: 10.0.1.254, status: '' }
       - { Network: 192.168.93.0/24, Next_Hop: 10.0.1.254, status: '' }
       - { Network: 192.168.94.0/24, Next_Hop: 10.0.1.254, status: '' }
@@ -352,16 +351,16 @@ L3Outs:
       InterfaceProfiles:
       - InterfaceProfile_name: InterfaceProfile
         Interfaces:
-        - Layer3_type: svi             # choices are: sub-interface, svi
-          Layer2_type: single-port     # choices are: single-port, port-channel, vpc 
-          ### vpc specific section ### # note that Layer2_type: vpc can only be used with Layer3_type: svi
+          ### vpc specific section ###
+        - Layer3_type: svi             # Layer3_type: sub-interface | svi
+          Layer2_type: single-port     # Layer2_type: single-port | port-channel | vpc 
           Switch_Pod_ID: 1             
           Switch_Node_ID: 103
           Port: 40
           IP_Address_Mask: 10.1.1.1/24
-          #############################
           VLAN_ID: 101
           MTU: 9216
+          #############################
           BGP_Peers:
           - Peer_IP: 10.1.1.2
             Remote_AS: 65001
@@ -369,70 +368,93 @@ L3Outs:
           - Peer_IP: 10.1.1.3
             Remote_AS: 65001
             Password: testpass
-        - Layer3_type: svi
-          Layer2_type: vpc            # note that Layer2_type: vpc can only be used with Layer3_type: svi
           ### vpc specific section ###
+        - Layer3_type: svi
+          Layer2_type: vpc            # note that Layer2_type: 'vpc' can only be used with Layer3_type: 'svi'
           Switch_Pod_ID: 1
           Switch_Node_IDs: [103,104]
           vPC_Policy_Group: FW123-A_vPC
           IP_Address_A_Mask: 10.0.1.2/24
           IP_Address_B_Mask: 10.0.1.3/24
           IP_Address_VIP_Mask: 10.0.1.1/24
-          #############################
           VLAN_ID: 102
           MTU: 9216
+          #############################
           BGP_Peers:
           - Peer_IP: 10.1.2.2
             Remote_AS: 65001
             Password: testpass
           - Peer_IP: 10.1.2.3
             Remote_AS: 65001
+          ### port-channel section ###
         - Layer3_type: sub-interface
           Layer2_type: port-channel
-          ### port-channel section ###
           Switch_Pod_ID: 1
           Switch_Node_ID: 103
           PC_Policy_Group: FW123-A_PC
           IP_Address_Mask: 10.1.2.1/24
-          #############################
           VLAN_ID: 103
           MTU: 9216
+          #############################
 
-L3Out_PortChannel_SubIntf_OSPF:
-
-  - L3Out_name: test_L3Out2
+  ### L3Out Initial configuration section ###
+  - L3Out_name: L3Out2
     Tenant_name: Ansible_Tnt
-    VRF_name: VRF_DEV
+    VRF_name: VRF_TEST
     L3Domain_name: L3-EXTERNAL
+    enable_BGP: yes
+    enable_OSPF: yes
+    OSPF_Area_ID: 0.0.0.24
+    OSPF_Area_Type: nssa        # OSPF_Area_Type: nssa | regular| stub
+    ### Node Profiles ###
     NodeProfiles:
-    - Switch_Pod_ID: 1
-      Switch_Node_ID: 103
-      Switch_Router_ID: 3.3.3.3
-    - Switch_Pod_ID: 1
-      Switch_Node_ID: 104
-      Switch_Router_ID: 4.4.4.4
-    PortChannels:
-    - Switch_Pod_ID: 1
-      Switch_Node_ID: 104
-      IP_Address_Mask: 10.22.33.1/31
-      PC_Policy_Group: Port-Channel_A
-      VLAN_ID: 101
-    - Switch_Pod_ID: 1
-      Switch_Node_ID: 103
-      IP_Address_Mask: 10.22.33.3/31
-      PC_Policy_Group: Port-Channel_A
-      VLAN_ID: 101
-    - Switch_Pod_ID: 1
-      Switch_Node_ID: 103
-      IP_Address_Mask: 10.22.33.5/31
-      PC_Policy_Group: Port-Channel_B
-      VLAN_ID: 101
-    - Switch_Pod_ID: 1
-      Switch_Node_ID: 104
-      IP_Address_Mask: 10.22.33.7/31
-      PC_Policy_Group: Port-Channel_B
-      VLAN_ID: 101
-    Router_ID_as_Loopback: "no"
-    MTU: 9216
-    OSPF_Area_ID: 0.0.0.23
-    OSPF_Area_Type: nssa      #nssa or regular or stub
+    - NodeProfile_name: NodeProfile
+      Router_ID_as_Loopback: "no"
+      Switches:
+      - Switch_Pod_ID: 1
+        Switch_Node_ID: 103
+        Switch_Router_ID: 3.3.3.3
+      - Switch_Pod_ID: 1
+        Switch_Node_ID: 104
+        Switch_Router_ID: 4.4.4.4
+      ### Interface Profiles ###
+      InterfaceProfiles:
+      - InterfaceProfile_name: InterfaceProfile
+        Interfaces:
+          ### port-channel section ###
+        - Layer3_type: sub-interface
+          Layer2_type: port-channel
+          Switch_Pod_ID: 1
+          Switch_Node_ID: 103
+          PC_Policy_Group: FW123-A_PC
+          IP_Address_Mask: 10.99.10.1/31
+          VLAN_ID: 201
+          MTU: 9216
+          #############################
+        - Layer3_type: sub-interface
+          Layer2_type: port-channel
+          Switch_Pod_ID: 1
+          Switch_Node_ID: 103
+          PC_Policy_Group: FW123-B_PC
+          IP_Address_Mask: 10.99.10.3/31
+          VLAN_ID: 202
+          MTU: 9216
+          #############################
+        - Layer3_type: sub-interface
+          Layer2_type: port-channel
+          Switch_Pod_ID: 1
+          Switch_Node_ID: 104
+          PC_Policy_Group: FW123-A_PC
+          IP_Address_Mask: 10.99.10.5/31
+          VLAN_ID: 203
+          MTU: 9216
+          #############################
+        - Layer3_type: sub-interface
+          Layer2_type: port-channel
+          Switch_Pod_ID: 1
+          Switch_Node_ID: 104
+          PC_Policy_Group: FW123-B_PC
+          IP_Address_Mask: 10.99.10.7/31
+          VLAN_ID: 204
+          MTU: 9216
+          #############################

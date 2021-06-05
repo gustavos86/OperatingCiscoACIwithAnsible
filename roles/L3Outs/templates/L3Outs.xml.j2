@@ -4,7 +4,7 @@
     <l3extOut dn="uni/tn-{{ item.Tenant_name }}/out-{{ item.L3Out_name }}"  name="{{ item.L3Out_name }}">
     <l3extRsEctx tnFvCtxName="{{ item.VRF_name }}"/>
     <l3extRsL3DomAtt tDn="uni/l3dom-{{ item.L3Domain_name }}"/>
-    {% if item.enable_OSPF %}
+    {% if item.enable_OSPF is defined and item.enable_OSPF %}
     <ospfExtP areaCost="1" areaCtrl="redistribute,summary" areaId="{{ item.OSPF_Area_ID }}" areaType="{{ item.OSPF_Area_Type }}"/>
     {% endif %}
     
@@ -28,7 +28,7 @@
       {% for InterfaceProfile in NodeProfile.InterfaceProfiles %}
       <l3extLIfP name="{{ InterfaceProfile.InterfaceProfile_name }}">
 
-        {% if item.enable_OSPF %}
+        {% if item.enable_OSPF is defined and item.enable_OSPF %}
         <ospfIfP authKeyId="1" authType="none">
           <ospfRsIfPol tnOspfIfPolName="OSPF_P2P"/>
         </ospfIfP>
@@ -47,8 +47,8 @@
         <l3extRsPathL3OutAtt addr="{{ Interface.IP_Address_Mask }}" encap="vlan-{{ Interface.VLAN_ID }}" ifInstT={% if Interface.Layer3_type == 'sub-interface' %}"sub-interface"{% elif Interface.Layer3_type == 'svi' %}"ext-svi"{% endif %} mtu="{{ Interface.MTU }}" tDn="topology/pod-{{ Interface.Switch_Pod_ID }}/paths-{{ Interface.Switch_Node_ID }}/pathep-[eth1/{{ Interface.Port }}]">
         {% endif %}
 
-          {% if item.enable_BGP and Interface.BGP_Peers is defined %}
-          {% for BGP_Peer in Interface.BGP_Peers %}            
+          {% if item.enable_BGP is defined and item.enable_BGP and Interface.BGP_Peers is defined %}
+          {% for BGP_Peer in Interface.BGP_Peers %}
           <bgpPeerP addr="{{ BGP_Peer.Peer_IP }}" ctrl="send-com,send-ext-com" {% if BGP_Peer.Password is defined %}password="{{ BGP_Peer.Password }}"{% endif %}>
             <bgpRsPeerPfxPol tnBgpPeerPfxPolName=""/>
             <bgpAsP asn="{{ BGP_Peer.Remote_AS }}"/>
@@ -70,11 +70,11 @@
     <l3extInstP name="ExtEPG">
       <l3extSubnet ip="0.0.0.0/0" scope="import-security"/>
     </l3extInstP>
-    {% if item.enable_BGP %}
+    {% if item.enable_BGP is defined and item.enable_BGP %}
     <bgpExtP/>
     {% endif %}
    </l3extOut>
-    {% if item.enable_OSPF %}
+    {% if item.enable_OSPF is defined and item.enable_OSPF %}
     <ospfIfPol cost="unspecified" ctrl="mtu-ignore" deadIntvl="6" dn="uni/tn-{{ item.Tenant_name }}/ospfIfPol-OSPF_P2P" helloIntvl="2" name="OSPF_P2P" nameAlias="" nwT="p2p" ownerKey="" pfxSuppress="inherit" prio="1" rexmitIntvl="5" xmitDelay="1"/>
     {% endif %}
   </fvTenant>  

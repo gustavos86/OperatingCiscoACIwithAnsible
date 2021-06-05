@@ -122,7 +122,7 @@
     path: /api/mo/uni.xml
     method: post
     content: |
-       <polUni>     <infraInfra>         <stpIfPol name="{{item.name}}" descr="" ctrl="{{item.stp_control}}" status="{{ 'deleted' if whattodo|default('present', true) == 'absent' else '' }}"/>     </infraInfra> </polUni>
+       <polUni>     <infraInfra>         <stpIfPol name="{{item.name}}" descr="" ctrl="{{item.stp_control}}" status="{{ 'deleted' if whattodo == 'absent' |default('present', true) == 'absent' else '' }}"/>     </infraInfra> </polUni>
   with_items: "{{ Spanning_Tree_Interface_config }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
