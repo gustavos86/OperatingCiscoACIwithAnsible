@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.20] - 2021-06-07
+
+### Added
+
+- bd_state: absent as an optional parameter to delete the Bridge Domain
+- epg_state: absent as an optional parameter to delete the EPG
+- role: Storage_Domains_and_EPG_Static_Bindings with tag: storagestaticbindings to attach Storage Domain to EPG and configure Storage Static Bindings in the EPG
+
+### Changed
+
+- Static Route optional paremeter to delete the static route is state: 'absent' instead of status: 'deleted' to be aligned with all other similar used variables 
+
 ## [v0.19] - 2021-06-07
 
 ### Added

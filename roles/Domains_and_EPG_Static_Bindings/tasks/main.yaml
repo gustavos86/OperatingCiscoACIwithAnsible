@@ -18,6 +18,7 @@
     deploy_immediacy: "{{ VMM_deploy_immediacy | default('lazy') }}"
     resolution_immediacy: "{{ VMM_resolution_immediacy | default('lazy') }}"
     state: "{{ whattodo | default('present', true) }}"
+  when: item.domain_name is defined
   with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

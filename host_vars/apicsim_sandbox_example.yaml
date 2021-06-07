@@ -1,5 +1,5 @@
 ################################################################################
-# v0.18 2021-June-7                                                           #
+# v0.20 2021-June-7                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -9,7 +9,7 @@
 # whattodo (defaults to 'present') possible choices are: 
 # present - Policies are created only if these are not already configured
 # absent - Policies are removed
-# query - Query for status
+# query - Query for state
 # whattodo: present
 
 ###############################
@@ -237,6 +237,9 @@ BridgeDomains_Subnets:
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1007_192_168_7_0_24_BD, bd_subnet: 192.168.7.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, BD_name: VLAN1008_192_168_8_0_24_BD, bd_subnet: 192.168.8.1, bd_subnet_mask: 24, enable_routing: no, scope: ,arp_flooding: yes, l2_unknown_unicast: flood }  
 
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: Storage_BD,  bd_type: fc      }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: Storage_BD2, bd_state: absent }
+
 #####################################
 # roles:                            #
 # - AppProfiles_and_EPGs            #
@@ -266,15 +269,29 @@ AppProfiles_EPGs_Domains_Static_Bindings:
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_8_0_24_EPG, BD_name: VLAN1008_192_168_8_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1008, Static_Binding: "{{ port_profile_1 }}" }
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: Networks, EPG_name: VLAN1008_192_168_9_0_24_EPG, BD_name: VLAN1008_192_168_9_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1009, Static_Binding: "{{ port_profile_1 }}" }
 
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: StorageNetworks,  EPG_name: Storage_EPG, BD_name: Storage_BD, storage_domain_name: storage_Domain, Storage_FC_FCoE_Static_Binding: "{{ port_profile_storage_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: StorageNetworks2, EPG_name: Storage_EPG, BD_name: Storage_BD, storage_domain_name: storage_Domain, Storage_FC_FCoE_Static_Binding: "{{ port_profile_storage_1 }}", epg_state: absent  }
+
 # "Port-Profiles" Trunk VLANs on links
 # Create the "Port-Profiles" here:
 
 port_profile_1:
-- { Pod_ID: 1, Switch_ID: 1102, interface_type: switch_port, port: 1/21, state: absent }        # optional  state: absent
-- { Pod_ID: 1, Switch_ID: 1103, interface_type: switch_port, port: 1/30, native_vlan: 1001 }    # optional  native_vlan: 1001
-- { Pod_ID: 1, Switch_ID: 1103, interface_type: port_channel, port: 101_102_eth_4_5_PC }
-- { Pod_ID: 1, Switch_ID: [1103,1104], interface_type: vpc, port: 101_102_eth_6_vPC, native_vlan: 1003 }
+- { Pod_ID: 1, Switch_ID: 1102,        interface_type: switch_port,  port: 1/21,                state: absent     }    # optional  state: absent
+- { Pod_ID: 1, Switch_ID: 1103,        interface_type: switch_port,  port: 1/30,                native_vlan: 1001 }    # optional  native_vlan: 1001
+- { Pod_ID: 1, Switch_ID: 1103,        interface_type: port_channel, port: 101_102_eth_4_5_PC                     }
+- { Pod_ID: 1, Switch_ID: [1103,1104], interface_type: vpc,          port: 101_102_eth_6_vPC,   native_vlan: 1003 }
 
+port_profile_storage_1:
+- { Pod_ID: 1, Switch_ID: 1101, vsan_ID: 10, port: 1/21                }
+- { Pod_ID: 1, Switch_ID: 1102, vsan_ID: 20, port: 1/31, state: absent }
+- { Pod_ID: 1, Switch_ID: 1101, vsan_ID: 10, port: 1/22                }
+- { Pod_ID: 1, Switch_ID: 1102, vsan_ID: 20, port: 1/32, state: absent }
+- { Pod_ID: 1, Switch_ID: 1103, vsan_ID: 10, port: 1/21                }
+- { Pod_ID: 1, Switch_ID: 1104, vsan_ID: 20, port: 1/21                }
+- { Pod_ID: 1, Switch_ID: 1101, vsan_ID: 10, port: SAN_PolGrp          }
+- { Pod_ID: 1, Switch_ID: 1102, vsan_ID: 20, port: SAN_PolGrp          }
+- { Pod_ID: 1, Switch_ID: 1103, vsan_ID: 10, port: SAN_PolGrp          }
+- { Pod_ID: 1, Switch_ID: 1104, vsan_ID: 20, port: SAN_PolGrp          }
 
 #####################################
 # roles:                            #
@@ -345,11 +362,11 @@ L3Outs:
         Switch_Router_ID: 4.4.4.4
       ### Static Routes (optional) ###
       Static_Routes:
-      - { Network: 0.0.0.0/0,       Next_Hop: 10.0.1.254, status: '' }         # status: 'deleted' to remove entry
-      - { Network: 192.168.91.0/24, Next_Hop: 10.0.1.254, status: 'deleted' }  # status: 'deleted' to remove entry
-      - { Network: 192.168.92.0/24, Next_Hop: 10.0.1.254, status: '' }
-      - { Network: 192.168.93.0/24, Next_Hop: 10.0.1.254, status: '' }
-      - { Network: 192.168.94.0/24, Next_Hop: 10.0.1.254, status: '' }
+      - { Network: 0.0.0.0/0,       Next_Hop: 10.0.1.254, state:         }  # state 'absent' to remove static route
+      - { Network: 192.168.91.0/24, Next_Hop: 10.0.1.254, state: absent  }  # state 'absent' to remove static route
+      - { Network: 192.168.92.0/24, Next_Hop: 10.0.1.254                 }
+      - { Network: 192.168.93.0/24, Next_Hop: 10.0.1.254                 }
+      - { Network: 192.168.94.0/24, Next_Hop: 10.0.1.254                 }
       ### Interface Profiles ###
       InterfaceProfiles:
       - InterfaceProfile_name: InterfaceProfile

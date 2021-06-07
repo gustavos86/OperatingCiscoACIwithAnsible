@@ -16,7 +16,7 @@
         {# Static Routes #}
         {% if NodeProfile.Static_Routes is defined %}
         {% for route in NodeProfile.Static_Routes %}
-        <ipRouteP status="{{ route.status if route.status == 'deleted' else '' }}" ip="{{ route.Network }}" pref="1">
+        <ipRouteP status={% if route.state is defined and route.state == 'absent' %}"deleted"{% else %}""{% endif %} ip="{{ route.Network }}" pref="1">
           <ipNexthopP nhAddr="{{ route.Next_Hop }}" pref="unspecified" type="prefix"/>
         </ipRouteP>            
         {% endfor %}

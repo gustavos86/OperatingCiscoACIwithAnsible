@@ -31,7 +31,7 @@
     ap: "{{ item.AppProfile_name }}"
     epg: "{{ item.EPG_name }}"
     bd: "{{ item.BD_name }}"
-    state: "{{ whattodo | default('present', true) }}"
+    state: "{{ item.epg_state | default('present', true) }}"
   with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

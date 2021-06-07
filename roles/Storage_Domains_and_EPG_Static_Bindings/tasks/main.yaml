@@ -1,0 +1,19 @@
+---
+# Ansible
+# 
+# APIC
+# Tenants > Networking > L3Outs
+- name: Storage Domain to EPG and Static Bindings
+  ignore_errors: yes
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    path: /api/mo/uni.xml
+    method: post
+    content: "{{ lookup('template', 'Storage_Domain_to_EPG_and_StaticBindings.j2') }}"
+  with_items:
+  - "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

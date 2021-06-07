@@ -1,5 +1,5 @@
 ################################################################################
-# v0.18 2021-June-7                                                            #
+# v0.20 2021-June-7                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -38,17 +38,18 @@
   #                             #
   ###############################
 
-  - { role: Tenants_and_VRFs,                tags: tenants        }
-  - { role: BridgeDomains_and_Subnets,       tags: bds            }
-  - { role: AppProfiles_and_EPGs,            tags: epgs           }
-  - { role: Domains_and_EPG_Static_Bindings, tags: staticbindings }
-  - { role: Associate_L3Out_in_BridgeDomain, tags: bdtol3out      }
+  - { role: Tenants_and_VRFs,                        tags: tenants               }
+  - { role: BridgeDomains_and_Subnets,               tags: bds                   }
+  - { role: AppProfiles_and_EPGs,                    tags: epgs                  }
+  - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }
+  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }
+  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }
 
   ############ L3Outs ############
 
-  - { role: L3Outs,                          tags: l3outs         }
+  - { role: L3Outs,                                  tags: l3outs                }
 
   ########### Contracts ###########
 
-  - { role: vzAny,                           tags: vzany          }   # 'permit any' for all the EPGs in the VRF
-  - { role: EPG_to_EPG_Contracts,            tags: contracts      }
+  - { role: vzAny,                                   tags: vzany                 }   # 'permit any' for all the EPGs in the VRF
+  - { role: EPG_to_EPG_Contracts,                    tags: contracts             }
