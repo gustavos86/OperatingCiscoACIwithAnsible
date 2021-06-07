@@ -1,5 +1,5 @@
 ################################################################################
-# v0.18 2021-June-5                                                            #
+# v0.18 2021-June-7                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -329,6 +329,9 @@ L3Outs:
     enable_OSPF: yes
     OSPF_Area_ID: 0.0.0.23
     OSPF_Area_Type: nssa        # OSPF_Area_Type: nssa | regular| stub
+    ### External EPGs ###
+    ExtEPGs:
+    - ExtEPG_name: custom_name_ExtEPG
     ### Node Profiles ###
     NodeProfiles:
     - NodeProfile_name: NodeProfile

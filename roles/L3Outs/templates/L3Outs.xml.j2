@@ -67,9 +67,19 @@
     {# End of Node Profiles #}
     {% endfor %}
 
+    {# External EPGs #}
+    {% if item.ExtEPGs is defined %}
+      {% for ExtEPG in item.ExtEPGs %}
+      <l3extInstP name={% if ExtEPG.ExtEPG_name is defined %}"{{ ExtEPG.ExtEPG_name }}"{% else %}"ExtEPG"{% endif %}>
+        <l3extSubnet ip="0.0.0.0/0" scope="import-security"/>
+      </l3extInstP>
+      {% endfor %}
+    {% else %}
     <l3extInstP name="ExtEPG">
       <l3extSubnet ip="0.0.0.0/0" scope="import-security"/>
     </l3extInstP>
+    {% endif %}
+
     {% if item.enable_BGP is defined and item.enable_BGP %}
     <bgpExtP/>
     {% endif %}
