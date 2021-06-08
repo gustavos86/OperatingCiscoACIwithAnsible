@@ -87,16 +87,16 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
   #                             #
   ###############################
 
-  - Interface_Policies              # CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, Spanning Tree Interface policies
-  - Switch_and_Interface_Profiles   # Add Switches Profiles and Interface Profiles (needed when adding new switches to ACI)
+  - { role: Interface_Policies,              tags: intpolicies     }    # CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, Spanning Tree Interface policies
+  - { role: Switch_and_Interface_Profiles,   tags: switchprofiles  }    # Add Switches Profiles and Interface Profiles (needed when adding new switches to ACI)
 
-  - Interface_Selectors             # Assigns the previous items to specific ports on the Switches
-  - Interface_Policy_Groups         # Creates Interface Access Port, Port-Channels and vPCs
-  - enable_or_disable_ports         # Interfaces (regular operation)
+  - { role: Interface_Selectors,             tags: intselectors    }    # Assigns the previous items to specific ports on the Switches
+  - { role: Interface_Policy_Groups,         tags: intpolicygroups }    # Creates Interface Access Port, Port-Channels and vPCs
+  - { role: enable_or_disable_ports,         tags: shutdownports   }    # Interfaces (regular operation)
 
-  - AAEPs                           # AAEPs, Domains and VLAN Pools
-  - Domains
-  - VLAN_Pools
+  - { role: AAEPs,                           tags: aaeps           }    # AAEPs, Domains and VLAN Pools
+  - { role: Domains,                         tags: domains         } 
+  - { role: VLAN_Pools,                      tags: vlanpools       } 
 
   ###############################
   #                             #
@@ -104,18 +104,21 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
   #                             #
   ###############################
 
-  - Tenants_and_VRFs
-  - BridgeDomains_and_Subnets
-  - AppProfiles_and_EPGs
-  - Domains_and_EPG_Static_Bindings
-  - vzAny
-  - Associate_L3Out_in_BridgeDomain
+  - { role: Tenants_and_VRFs,                        tags: tenants               }
+  - { role: BridgeDomains_and_Subnets,               tags: bds                   }
+  - { role: AppProfiles_and_EPGs,                    tags: epgs                  }
+  - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }
+  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }
+  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }
 
   ############ L3Outs ############
 
-  - L3Out_vPC_SVI
-  - L3Out_PortChannel_SubIntf_OSPF
-  - L3Out_Port_SVI_BGP
+  - { role: L3Outs,                                  tags: l3outs                }
+
+  ########### Contracts ###########
+
+  - { role: vzAny,                                   tags: vzany                 }   # 'permit any' for all the EPGs in the VRF
+  - { role: EPG_to_EPG_Contracts,                    tags: contracts             }
 ```
 
 3. Run the Ansible Playbook with:
@@ -123,6 +126,13 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
 ```
 ansible-playbook aci_playbook.yaml -i inventory
 ```
+
+You can also call only specific roles by specifying tags
+
+```
+ansible-playbook aci_playbook.yaml -i inventory --tags tenants,l3outs
+```
+
 
 ## Directory tree
 
