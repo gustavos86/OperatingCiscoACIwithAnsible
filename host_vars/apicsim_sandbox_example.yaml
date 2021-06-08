@@ -1,5 +1,5 @@
 ################################################################################
-# v0.20 2021-June-7                                                            #
+# v0.21 2021-June-8                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -371,7 +371,7 @@ L3Outs:
       InterfaceProfiles:
       - InterfaceProfile_name: InterfaceProfile
         Interfaces:
-          ### vpc specific section ###
+          ### single-port section ###
         - Layer3_type: svi             # Layer3_type: sub-interface | svi
           Layer2_type: single-port     # Layer2_type: single-port | port-channel | vpc 
           Switch_Pod_ID: 1             
@@ -384,10 +384,14 @@ L3Outs:
           BGP_Peers:
           - Peer_IP: 10.1.1.2
             Remote_AS: 65001
+            Local_AS: 123
             Password: testpass
+            enable_BFD: yes
           - Peer_IP: 10.1.1.3
             Remote_AS: 65001
+            Local_AS: 123
             Password: testpass
+            enable_BFD: yes
           ### vpc specific section ###
         - Layer3_type: svi
           Layer2_type: vpc            # note that Layer2_type: 'vpc' can only be used with Layer3_type: 'svi'

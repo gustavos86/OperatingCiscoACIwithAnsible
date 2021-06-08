@@ -49,8 +49,11 @@
 
           {% if item.enable_BGP is defined and item.enable_BGP and Interface.BGP_Peers is defined %}
           {% for BGP_Peer in Interface.BGP_Peers %}
-          <bgpPeerP addr="{{ BGP_Peer.Peer_IP }}" ctrl="send-com,send-ext-com" {% if BGP_Peer.Password is defined %}password="{{ BGP_Peer.Password }}"{% endif %}>
+          <bgpPeerP addr="{{ BGP_Peer.Peer_IP }}" ctrl="send-com,send-ext-com" {% if BGP_Peer.Password is defined %}password="{{ BGP_Peer.Password }}"{% endif %} {% if BGP_Peer.enable_BFD is defined and BGP_Peer.enable_BFD == true %}peerCtrl="bfd"{% elif BGP_Peer.enable_BFD is defined %}peerCtrl=""{% endif %}>
             <bgpRsPeerPfxPol tnBgpPeerPfxPolName=""/>
+            {% if BGP_Peer.Local_AS is defined %}
+            <bgpLocalAsnP localAsn="{{ BGP_Peer.Local_AS }}" />
+            {% endif %}
             <bgpAsP asn="{{ BGP_Peer.Remote_AS }}"/>
           </bgpPeerP>
           {% endfor %}
