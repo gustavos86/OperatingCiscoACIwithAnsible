@@ -1,5 +1,5 @@
 ################################################################################
-# v0.21 2021-June-8                                                            #
+# v0.22 2021-June-8                                                            #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -88,6 +88,7 @@ Interface_Policy_Group_task_config:
     lldp_policy: LLDP_On
     mcp_policy: MCP_Off
     stp_interface_policy: default
+    l2_interface_policy: PortLocal_scope
 
 ### Port-Channels ###
 #"lag_type: link" is for Port-Channels
@@ -169,26 +170,27 @@ MCP_config:
   - { name: MCP_On, admin_state: yes }
   - { name: MCP_Off, admin_state: no }
 Link_Level_config:
-  - {name: 100G_Link_Policy, speed: 100G }
-  - {name: 40G_Link_Policy, speed: 40G }
-  - {name: 25G_Link_Policy, speed: 25G }
-  - {name: 10G_Link_Policy, speed: 10G }
-  - {name: 1G_Link_Policy, speed: 1G }
-  - {name: 100M_Link_Policy, speed: 100M }
-  - {name: Auto_Link_Policy, speed: inherit }
+  - { name: 100G_Link_Policy, speed: 100G }
+  - { name: 40G_Link_Policy, speed: 40G }
+  - { name: 25G_Link_Policy, speed: 25G }
+  - { name: 10G_Link_Policy, speed: 10G }
+  - { name: 1G_Link_Policy, speed: 1G }
+  - { name: 100M_Link_Policy, speed: 100M }
+  - { name: Auto_Link_Policy, speed: inherit }
 Port_Channel_config:
-  - {name: LACP_Active, mode: active }
-  - {name: LACP_Passive, mode: passive }
-  - {name: MAC_Pinning, mode: mac-pin }
-  - {name: MAC_Pinning_NIC_Load, mode: mac-pin-nicload }
-  - {name: Static_Mode, mode: Off }
+  - { name: LACP_Active, mode: active }
+  - { name: LACP_Passive, mode: passive }
+  - { name: MAC_Pinning, mode: mac-pin }
+  - { name: MAC_Pinning_NIC_Load, mode: mac-pin-nicload }
+  - { name: Static_Mode, mode: Off }
 Spanning_Tree_Interface_config:
-  - {name: BPDU_Off, stp_control: "" }
-  - {name: BPDU_Filter, stp_control: bpdu-filter }
-  - {name: BPDU_Guard, stp_control: bpdu-guard }
-  - {name: BPDU_Filter_Guard, stp_control: "bpdu-filter,bpdu-guard" }
-
-
+  - { name: BPDU_Off, stp_control: "" }
+  - { name: BPDU_Filter, stp_control: bpdu-filter }
+  - { name: BPDU_Guard, stp_control: bpdu-guard }
+  - { name: BPDU_Filter_Guard, stp_control: "bpdu-filter,bpdu-guard" }
+L2_Interface_config:
+  - { name: PortLocal_scope,   vlan_scope: portlocal }
+  - { name: Global_scope,      vlan_scope: global    }
 
 ###############################
 #                             #

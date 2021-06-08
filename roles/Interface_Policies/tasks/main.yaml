@@ -109,6 +109,24 @@
     pause: "{{ loop_control_pause | default(0) }}"
 
 # Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_port_channel_module.html#ansible-collections-cisco-aci-aci-interface-policy-port-channel-module
+# APIC
+# Fabric > Access Policies > Policies > Interface > L2 Interface
+- name: Layer 2 Interface policies
+  ignore_errors: yes
+  cisco.aci.aci_interface_policy_l2:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    l2_policy: '{{ item.name }}'
+    vlan_scope: '{{ item.vlan_scope }}'
+    state: "{{ whattodo | default('present', true) }}"
+  with_items: "{{ L2_Interface_config }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+
+# Ansible
 # Module not available
 # APIC
 # Fabric > Access Policies > Policies > Interface > Spanning Tree Interface
@@ -122,7 +140,7 @@
     path: /api/mo/uni.xml
     method: post
     content: |
-       <polUni>     <infraInfra>         <stpIfPol name="{{item.name}}" descr="" ctrl="{{item.stp_control}}" status="{{ 'deleted' if whattodo == 'absent' |default('present', true) == 'absent' else '' }}"/>     </infraInfra> </polUni>
+       <polUni>     <infraInfra>         <stpIfPol name="{{ item.name }}" descr="" ctrl="{{ item.stp_control }}" {% if whattodo is defined and whattodo == 'absent' %}status="deleted"{% elif whattodo is defined and whattodo == 'query' %}status="modified"{% else %}status=""{% endif %}/>     </infraInfra> </polUni>
   with_items: "{{ Spanning_Tree_Interface_config }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
