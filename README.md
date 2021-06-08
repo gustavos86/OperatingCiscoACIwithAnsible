@@ -5,13 +5,13 @@
 1. Install Python. I.e.
 
 ```
-sudo apt-get install python
+sudo apt install python3
 ```
 
-2.  Install Ansible using pip which is Python's package manager
+2.  Install Ansible using apt or yum package manager
 
 ```
-pip install ansible
+sudo apt install ansible
 ```
 
 Ensure Ansible is installed
@@ -24,6 +24,25 @@ ansible --version
 
 ```
 ansible-galaxy collection install cisco.aci
+```
+
+4. Ensure that the below Python libraries are installed
+
+```
+pip3 install lxml
+pip3 install xmljson
+```
+
+Otherwise you will get the below error message (depending on which of the Python libraries is missing) at runtime when running the Ansible Playbook for some of the roles
+
+```
+"The lxml python library is missing, or lacks etree support."
+
+$ pip3 install lxml
+
+"The xmljson python library is missing, or lacks cobra support."
+
+$ pip3 install xmljson
 ```
 
 ## Configure
