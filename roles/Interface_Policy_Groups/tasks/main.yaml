@@ -22,6 +22,8 @@
     mcp_policy: "{{ item.mcp_policy | default(omit) }}"
     stp_interface_policy: "{{ item.stp_interface_policy | default(omit) }}"
     l2_interface_policy: "{{ item.l2_interface_policy | default(omit) }}"
+    fibre_channel_interface_policy: "{{ item.fibre_channel_interface_policy | default(omit) }}"
+    priority_flow_control_policy: "{{ item.priority_flow_control_policy | default(omit) }}"
     state: "{{ whattodo | default('present', true) }}"      
   with_items: "{{ Interface_Policy_Group_task_config }}"
   loop_control:
