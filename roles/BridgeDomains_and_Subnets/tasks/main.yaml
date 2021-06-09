@@ -12,7 +12,7 @@
     tenant: "{{ item.Tenant_name }}"
     vrf: "{{ item.VRF_name | default(omit) }}"
     bd: "{{ item.BD_name }}"
-    enable_routing: "{{ item.enable_routing | default(omit) }}"
+    enable_routing: "{% if item.bd_type is defined and item.bd_type == 'fc' %}no{% else %}{{ item.enable_routing | default(omit) }}{% endif %}"
     mac_address: "{{ Gateway_MAC_address | default(omit) }}"
     arp_flooding: "{{ item.arp_flooding | default(omit) }}"
     l2_unknown_unicast: "{{ item.l2_unknown_unicast | default(omit) }}"
@@ -38,7 +38,7 @@
     bd: "{{ item.BD_name }}"
     gateway: "{{ item.bd_subnet }}"
     mask: "{{ item.bd_subnet_mask }}"
-    scope: "{{ item.scope | default(private) }}"
+    scope: "{{ item.scope | default(omit) }}"
     state: "{{ whattodo | default('present', true) }}"
   with_items: "{{ BridgeDomains_Subnets }}"
   when: item.bd_subnet is defined and item.bd_subnet_mask is defined

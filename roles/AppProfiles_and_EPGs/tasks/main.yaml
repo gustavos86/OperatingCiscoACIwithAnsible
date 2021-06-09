@@ -30,7 +30,7 @@
     tenant: "{{ item.Tenant_name }}"
     ap: "{{ item.AppProfile_name }}"
     epg: "{{ item.EPG_name }}"
-    bd: "{{ item.BD_name | default('ommit') }}"
+    bd: "{{ item.BD_name | default(omit) }}"
     state: "{{ item.epg_state | default('present', true) }}"
   with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
   loop_control:

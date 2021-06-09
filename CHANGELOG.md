@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.24] - 2021-06-09
+
+### Changed
+
+- interface_type: switch_port or port_channel as required parameter in Storage static binding
+- cisco.aci.aci_bd_subnet scope: "{{ item.scope | default(omit) }}"
+- BD type fc is deployed with Unicast Routing set to disabled
+- cisco.aci.aci_epg bd: "{{ item.BD_name | default(omit) }}"
+- default(omit) for different parameters for tasks in role: Domains_and_EPG_Static_Bindings
+- cisco.aci.aci_static_binding_to_epg interface_mode jinja2 slightly modified
+- host_vars example some small re-arrangements
+
 ## [v0.23] - 2021-06-08
 
 ### Added

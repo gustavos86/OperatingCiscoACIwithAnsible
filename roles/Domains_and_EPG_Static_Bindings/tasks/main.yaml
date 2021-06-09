@@ -15,8 +15,8 @@
     domain: "{{ item.domain_name }}"
     domain_type: "{{ item.domain_type }}"
     vm_provider: "{{ item.VM_platform | default(omit) }}"
-    deploy_immediacy: "{{ VMM_deploy_immediacy | default('lazy') }}"
-    resolution_immediacy: "{{ VMM_resolution_immediacy | default('lazy') }}"
+    deploy_immediacy: "{{ VMM_deploy_immediacy | default(omit) }}"
+    resolution_immediacy: "{{ VMM_resolution_immediacy | default(omit) }}"
     state: "{{ whattodo | default('present', true) }}"
   when: item.domain_name is defined
   with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
@@ -40,10 +40,10 @@
     encap_id: "{{ item.0.Encap_VLAN }}"
     pod_id: "{{ item.1.Pod_ID }}"
     leafs: "{{ item.1.Switch_ID }}"
-    interface_type: "{{ item.1.interface_type}}"
-    interface_mode: "{% if item.1.native_vlan is defined %}{% if item.1.native_vlan == item.0.Encap_VLAN %}native{% else %}trunk{% endif %}{% else %}trunk{% endif %}"
+    interface_type: "{{ item.1.interface_type }}"
+    interface_mode: "{% if item.1.native_vlan is defined and item.1.native_vlan == item.0.Encap_VLAN %}native{% else %}trunk{% endif %}"
     interface: "{{ item.1.port }}"
-    deploy_immediacy: "{{ port_profile_deploy_immediacy | default('lazy') }}" 
+    deploy_immediacy: "{{ port_profile_deploy_immediacy | default(omit) }}" 
     state: "{{ item.1.state | default('present', true) }}"
   when: item.0.domain_type == 'phys'
   with_subelements: 
