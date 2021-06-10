@@ -45,6 +45,12 @@ $ pip3 install lxml
 $ pip3 install xmljson
 ```
 
+Note: If installing a python module with the **pip3 install** command gets stuck in Ubuntu, set the following environment variable in bash and try again:
+
+```
+export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+```
+
 ## Configure
 
 By default, this Ansible playbook is pointing to [ACI Simulator AlwaysOn Sandbox](https://devnetsandbox.cisco.com/RM/Diagram/Index/5a229a7c-95d5-4cfd-a651-5ee9bc1b30e2?diagramType=Topology) which is free to use for testing purposes.
@@ -133,6 +139,16 @@ You can also call only specific roles by specifying tags
 ansible-playbook aci_playbook.yaml -i inventory --tags tenants,l3outs
 ```
 
+Another way to see the available tags is with the commmand
+
+```
+ansible-playbook aci_playbook.yaml -i inventory --list-tags
+
+playbook: aci_playbook.yaml
+
+  play #1 (apicsim_sandbox_example): ACI playbook       TAGS: []
+      TASK TAGS: [bds, epgs, intpolicygroups, intselectors, l3outs, staticbindings, tenants, vlanpools, vzany]
+```
 
 ## Directory tree
 
