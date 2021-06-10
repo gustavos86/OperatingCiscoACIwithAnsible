@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.26] - 2021-06-10
+
+### Added
+
+- some comments to the main playbook
+
+### Changed
+
+- Default parameters for arp_flooding and l2_unknown_unicast for Bridge Domains
+- vzAny tasks omits when vzAny parameter is not defined
+- reviewed vzAny behavior. vzAny set to 'no' removes association at VRF level but keeps Contracts and Filters, etc
+
 ## [v0.25] - 2021-06-10
 
 ### Added
