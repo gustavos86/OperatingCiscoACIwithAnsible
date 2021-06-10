@@ -87,16 +87,16 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
   #                             #
   ###############################
 
-  - { role: Interface_Policies,              tags: intpolicies     }    # CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, Spanning Tree Interface policies
-  - { role: Switch_and_Interface_Profiles,   tags: switchprofiles  }    # Add Switches Profiles and Interface Profiles (needed when adding new switches to ACI)
+  - { role: Interface_Policies,              tags: intpolicies     }    # create all policies like CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, MCP, Layer 2 Interface, Spanning Tree Interface
+  - { role: Switch_and_Interface_Profiles,   tags: switchprofiles  }    # create Switch Profiles and Interface Profiles (needed only when adding new switches to ACI)
 
-  - { role: Interface_Selectors,             tags: intselectors    }    # Assigns the previous items to specific ports on the Switches
-  - { role: Interface_Policy_Groups,         tags: intpolicygroups }    # Creates Interface Access Port, Port-Channels and vPCs
-  - { role: enable_or_disable_ports,         tags: shutdownports   }    # Interfaces (regular operation)
+  - { role: Interface_Selectors,             tags: intselectors    }    # provision ports defined in Switches_and_Interfaces_map: ports_list with a Policy Group
+  - { role: Interface_Policy_Groups,         tags: intpolicygroups }    # create Interface Access Port, Port-Channels and vPCs
+  - { role: enable_or_disable_ports,         tags: shutdownports   }    # enable or disable interfaces defined in Switches_and_Interfaces_map
 
-  - { role: AAEPs,                           tags: aaeps           }    # AAEPs, Domains and VLAN Pools
-  - { role: Domains,                         tags: domains         } 
-  - { role: VLAN_Pools,                      tags: vlanpools       } 
+  - { role: AAEPs,                           tags: aaeps           }    # create AAEPs and attach Domains to AAEPs
+  - { role: Domains,                         tags: domains         }    # create Domains and attach VLAN pools to Domains
+  - { role: VLAN_Pools,                      tags: vlanpools       }    # create VLAN Pools and its corresponding blocks of VLANs 
 
   ###############################
   #                             #
@@ -104,21 +104,21 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
   #                             #
   ###############################
 
-  - { role: Tenants_and_VRFs,                        tags: tenants               }
-  - { role: BridgeDomains_and_Subnets,               tags: bds                   }
-  - { role: AppProfiles_and_EPGs,                    tags: epgs                  }
-  - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }
-  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }
-  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }
+  - { role: Tenants_and_VRFs,                        tags: tenants               }   # create Tenants and VRFs
+  - { role: BridgeDomains_and_Subnets,               tags: bds                   }   # create Bridge Domains and Bridge Domain subnets
+  - { role: AppProfiles_and_EPGs,                    tags: epgs                  }   # create Application Profiles and EPGs
+  - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }   # attach Domain to EPGs and deploy the Static Bindings to the EPG
+  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }   # attach Storage Domain to the EPG and deploy FC/FCoE Static Bindings to the EPG
+  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }   # associates L3Out to Bridge Domain
 
   ############ L3Outs ############
 
-  - { role: L3Outs,                                  tags: l3outs                }
+  - { role: L3Outs,                                  tags: l3outs                }   # create L3Outs
 
   ########### Contracts ###########
 
-  - { role: vzAny,                                   tags: vzany                 }   # 'permit any' for all the EPGs in the VRF
-  - { role: EPG_to_EPG_Contracts,                    tags: contracts             }
+  - { role: vzAny,                                   tags: vzany                 }   # create free communication between all the EPGs in the VRF
+  - { role: EPG_to_EPG_Contracts,                    tags: contracts             }   # create contracts between EPGs or External EPGs
 ```
 
 3. Run the Ansible Playbook with:
@@ -138,53 +138,74 @@ ansible-playbook aci_playbook.yaml -i inventory --tags tenants,l3outs
 
 ```
 $ tree OperatingCiscoACIwithAnsible/
-
 OperatingCiscoACIwithAnsible/
 ├── CHANGELOG.md
 ├── README.md
 ├── aci_playbook.yaml
 ├── host_vars
-│   └── apicsim_sandbox_example.yaml
+│   └── apicsim_sandbox_example.yaml
 ├── inventory
 └── roles
     ├── AAEPs
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
     ├── AppProfiles_and_EPGs
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
+    ├── Associate_L3Out_in_BridgeDomain
+    │   └── tasks
+    │       └── main.yaml
     ├── BridgeDomains_and_Subnets
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
     ├── Domains
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
     ├── Domains_and_EPG_Static_Bindings
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
+    ├── EPG_to_EPG_Contracts
+    │   └── tasks
+    │       └── main.yaml
     ├── Interface_Policies
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
     ├── Interface_Policy_Groups
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
     ├── Interface_Selectors
-    │   └── tasks
-    │       └── main.yaml
+    │   ├── defaults
+    │   │   └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
+    ├── L3Outs
+    │   ├── tasks
+    │   │   └── main.yaml
+    │   └── templates
+    │       └── L3Outs.xml.j2
+    ├── Storage_Domains_and_EPG_Static_Bindings
+    │   ├── tasks
+    │   │   └── main.yaml
+    │   └── templates
+    │       └── Storage_Domain_to_EPG_and_StaticBindings.j2
     ├── Switch_and_Interface_Profiles
-    │   └── tasks
-    │       └── main.yaml
+    │   ├── defaults
+    │   │   └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
     ├── Tenants_and_VRFs
-    │   └── tasks
-    │       └── main.yaml
+    │   └── tasks
+    │       └── main.yaml
     ├── VLAN_Pools
-    │   └── tasks
-    │       └── main.yaml
-    └── enable_or_disable_ports
+    │   └── tasks
+    │       └── main.yaml
+    ├── enable_or_disable_ports
+    │   └── tasks
+    │       └── main.yaml
+    ├── shutdown_unused_ports
+    └── vzAny
         └── tasks
             └── main.yaml
-
-26 directories, 17 files
 ```
 
 
