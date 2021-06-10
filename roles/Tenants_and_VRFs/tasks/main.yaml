@@ -28,7 +28,7 @@
     validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     vrf: "{{ item.VRF_name }}"
-    state: "{{ whattodo | default('present', true) }}"
+    state: "{{ item.vrf_state | default('present', true) }}"
   with_items: "{{ Tenants_VRFs }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

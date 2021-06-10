@@ -1,9 +1,11 @@
 ################################################################################
-# v0.24 2021-June-9                                                            #
+# v0.25 2021-June-10                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
 #                                                                              #
+# Ansible playbook hosted in                                                   #
+# https://github.com/gustavos86/OperatingCiscoACIwithAnsible                   #
 ################################################################################
 
 # whattodo (defaults to 'present') possible choices are: 
@@ -131,10 +133,10 @@ AAEP_task_config:
   - name: DC_AAEP
     domains:
       - domain_type: phys
-        domain_name: PhysicalDomain
+        domain_name: DC_PhysDomain
         vlan_pools:
-        - vlan_pool_name: Phys_StaticVlanPool
-          vlan_pool_allocation_mode: static    # dynamic for VMM integration
+        - vlan_pool_name: DC_PhysDomainVlanPool
+          vlan_pool_allocation_mode: static    # nees to be set to 'dynamic' for VMM integration
           vlans:
           - { vlan_range_start: 1001, vlan_range_end: 1049, description: 'test' }
           - { vlan_range_start: 1050, vlan_range_end: 1099, description: 'test' }
@@ -142,9 +144,9 @@ AAEP_task_config:
           - { vlan_range_start: 1150, vlan_range_end: 1199, description: 'test' }
           - { vlan_range_start: 1200, vlan_range_end: 1250, description: 'test' }   
       - domain_type: l3dom
-        domain_name: RoutedDomain
+        domain_name: DC_L3Domain
         vlan_pools:
-        - vlan_pool_name: Routed_StaticVlanPool
+        - vlan_pool_name: DC_L3DomainVlanPool
           vlan_pool_allocation_mode: static
           vlans:
           - { vlan_range_start: 200, vlan_range_end: 249, description: 'test' }
@@ -209,7 +211,7 @@ Tenants_VRFs:
 - { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV , vzAny: yes }
 - { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST, vzAny: yes }
 - { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV , vzAny: yes }
-- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST, vzAny: yes }
+- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST, vzAny: yes, vrf_state: absent }
 
 ###################################
 # roles:                          #
@@ -235,10 +237,10 @@ BridgeDomains_Subnets:
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: Simplest_BD                    }
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: Deleted_BD,   bd_state: absent }
 
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: no, scope: "public,shared", arp_flooding: yes, l2_unknown_unicast: flood }  
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: no, scope: public,          arp_flooding: yes, l2_unknown_unicast: flood }  
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: no,                         arp_flooding: yes, l2_unknown_unicast: flood }  
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24, enable_routing: no,                         arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: yes, scope: "public,shared", arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: yes, scope: public,          arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: yes,                         arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24, enable_routing: no,                          arp_flooding: yes, l2_unknown_unicast: flood }  
 
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: Storage_BD,  bd_type: fc       }  
 

@@ -1,9 +1,11 @@
 ################################################################################
-# v0.24 2021-June-9                                                            #
+# v0.25 2021-June-10                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
 #                                                                              #
+# Ansible playbook hosted in                                                   #
+# https://github.com/gustavos86/OperatingCiscoACIwithAnsible                   #
 ################################################################################
 
 - name: ACI playbook
@@ -12,7 +14,7 @@
   gather_facts: no
 
   vars:
-    loop_control_pause: 0           # Adds a delay between loop iterations. Required when the APIC cannot handle the rate of all the connections
+    loop_control_pause: 0          # adds a delay between loop iterations. Required when the APIC cannot handle the rate of all the connections
 
   roles:
   ###############################
@@ -21,16 +23,16 @@
   #                             #
   ###############################
 
-  - { role: Interface_Policies,              tags: intpolicies     }    # CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, Spanning Tree Interface policies
-  - { role: Switch_and_Interface_Profiles,   tags: switchprofiles  }    # Add Switches Profiles and Interface Profiles (needed when adding new switches to ACI)
+  - { role: Interface_Policies,              tags: intpolicies     }    # create all policies like CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, MCP, Layer 2 Interface, Spanning Tree Interface
+  - { role: Switch_and_Interface_Profiles,   tags: switchprofiles  }    # create Switch Profiles and Interface Profiles (needed only when adding new switches to ACI)
 
-  - { role: Interface_Selectors,             tags: intselectors    }    # Assigns the previous items to specific ports on the Switches
-  - { role: Interface_Policy_Groups,         tags: intpolicygroups }    # Creates Interface Access Port, Port-Channels and vPCs
-  - { role: enable_or_disable_ports,         tags: shutdownports   }    # Interfaces (regular operation)
+  - { role: Interface_Selectors,             tags: intselectors    }    # provision ports defined in Switches_and_Interfaces_map: ports_list with a Policy Group
+  - { role: Interface_Policy_Groups,         tags: intpolicygroups }    # create Interface Access Port, Port-Channels and vPCs
+  - { role: enable_or_disable_ports,         tags: shutdownports   }    # enable or disable interfaces defined in Switches_and_Interfaces_map
 
-  - { role: AAEPs,                           tags: aaeps           }    # AAEPs, Domains and VLAN Pools
-  - { role: Domains,                         tags: domains         } 
-  - { role: VLAN_Pools,                      tags: vlanpools       } 
+  - { role: AAEPs,                           tags: aaeps           }    # create AAEPs and attach Domains to AAEPs
+  - { role: Domains,                         tags: domains         }    # create Domains and attach VLAN pools to Domains
+  - { role: VLAN_Pools,                      tags: vlanpools       }    # create VLAN Pools and its corresponding blocks of VLANs 
 
   ###############################
   #                             #
@@ -38,18 +40,18 @@
   #                             #
   ###############################
 
-  - { role: Tenants_and_VRFs,                        tags: tenants               }
-  - { role: BridgeDomains_and_Subnets,               tags: bds                   }
-  - { role: AppProfiles_and_EPGs,                    tags: epgs                  }
-  - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }
-  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }
-  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }
+  - { role: Tenants_and_VRFs,                        tags: tenants               }   # create Tenants and VRFs
+  - { role: BridgeDomains_and_Subnets,               tags: bds                   }   # create Bridge Domains and Bridge Domain subnets
+  - { role: AppProfiles_and_EPGs,                    tags: epgs                  }   # create Application Profiles and EPGs
+  - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }   # attach Domain to EPGs and deploy the Static Bindings to the EPG
+  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }   # attach Storage Domain to the EPG and deploy FC/FCoE Static Bindings to the EPG
+  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }   # associates L3Out to Bridge Domain
 
   ############ L3Outs ############
 
-  - { role: L3Outs,                                  tags: l3outs                }
+  - { role: L3Outs,                                  tags: l3outs                }   # create L3Outs
 
   ########### Contracts ###########
 
-  - { role: vzAny,                                   tags: vzany                 }   # 'permit any' for all the EPGs in the VRF
-  - { role: EPG_to_EPG_Contracts,                    tags: contracts             }
+  - { role: vzAny,                                   tags: vzany                 }   # create free communication between all the EPGs in the VRF
+  - { role: EPG_to_EPG_Contracts,                    tags: contracts             }   # create contracts between EPGs or External EPGs
