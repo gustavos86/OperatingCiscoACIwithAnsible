@@ -194,9 +194,6 @@ OperatingCiscoACIwithAnsible/
     │   │   └── main.yaml
     │   └── templates
     │       └── L3Outs.xml.j2
-    ├── MSO_Schemas_Templates
-    ├── MSO_Tenants_Sites
-    │   └── tasks
     ├── Storage_Domains_and_EPG_Static_Bindings
     │   ├── tasks
     │   │   └── main.yaml
