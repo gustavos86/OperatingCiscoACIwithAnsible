@@ -166,9 +166,6 @@ OperatingCiscoACIwithAnsible/
     ├── AppProfiles_and_EPGs
     │   └── tasks
     │       └── main.yaml
-    ├── Associate_L3Out_in_BridgeDomain
-    │   └── tasks
-    │       └── main.yaml
     ├── BridgeDomains_and_Subnets
     │   └── tasks
     │       └── main.yaml
@@ -197,6 +194,9 @@ OperatingCiscoACIwithAnsible/
     │   │   └── main.yaml
     │   └── templates
     │       └── L3Outs.xml.j2
+    ├── MSO_Schemas_Templates
+    ├── MSO_Tenants_Sites
+    │   └── tasks
     ├── Storage_Domains_and_EPG_Static_Bindings
     │   ├── tasks
     │   │   └── main.yaml
@@ -216,10 +216,7 @@ OperatingCiscoACIwithAnsible/
     ├── enable_or_disable_ports
     │   └── tasks
     │       └── main.yaml
-    ├── shutdown_unused_ports
-    └── vzAny
-        └── tasks
-            └── main.yaml
+    └── shutdown_unused_ports
 ```
 
 
