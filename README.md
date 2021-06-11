@@ -110,12 +110,11 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
   #                             #
   ###############################
 
-  - { role: Tenants_and_VRFs,                        tags: tenants               }   # create Tenants and VRFs
+  - { role: Tenants_and_VRFs,                        tags: tenants               }   # create Tenants and VRFs. It can optionally deploy a complete vzAny configuration for a given VRF
   - { role: BridgeDomains_and_Subnets,               tags: bds                   }   # create Bridge Domains and Bridge Domain subnets
   - { role: AppProfiles_and_EPGs,                    tags: epgs                  }   # create Application Profiles and EPGs
   - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }   # attach Domain to EPGs and deploy the Static Bindings to the EPG
   - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }   # attach Storage Domain to the EPG and deploy FC/FCoE Static Bindings to the EPG
-  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }   # associates L3Out to Bridge Domain
 
   ############ L3Outs ############
 
@@ -123,7 +122,6 @@ my_apic_controller ansible_host=url_or_IP_address username=yourusername password
 
   ########### Contracts ###########
 
-  - { role: vzAny,                                   tags: vzany                 }   # create free communication between all the EPGs in the VRF
   - { role: EPG_to_EPG_Contracts,                    tags: contracts             }   # create contracts between EPGs or External EPGs
 ```
 
@@ -142,12 +140,12 @@ ansible-playbook aci_playbook.yaml -i inventory --tags tenants,l3outs
 Another way to see the available tags is with the commmand
 
 ```
-ansible-playbook aci_playbook.yaml -i inventory --list-tags
+$ ansible-playbook aci_playbook.yaml -i inventory --list-tags
 
 playbook: aci_playbook.yaml
 
   play #1 (apicsim_sandbox_example): ACI playbook       TAGS: []
-      TASK TAGS: [bds, epgs, intpolicygroups, intselectors, l3outs, staticbindings, tenants, vlanpools, vzany]
+      TASK TAGS: [aaeps, bds, contracts, domains, epgs, intpolicies, intpolicygroups, intselectors, l3outs, shutdownports, staticbindings, storagestaticbindings, switchprofiles, tenants, vlanpools]
 ```
 
 ## Directory tree
