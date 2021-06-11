@@ -1,5 +1,5 @@
 ################################################################################
-# v0.26 2021-June-10                                                           #
+# v0.27 2021-June-11                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -40,12 +40,11 @@
   #                             #
   ###############################
 
-  - { role: Tenants_and_VRFs,                        tags: tenants               }   # create Tenants and VRFs
+  - { role: Tenants_and_VRFs,                        tags: tenants               }   # create Tenants and VRFs. It can optionally deploy a complete vzAny configuration for a given VRF
   - { role: BridgeDomains_and_Subnets,               tags: bds                   }   # create Bridge Domains and Bridge Domain subnets
   - { role: AppProfiles_and_EPGs,                    tags: epgs                  }   # create Application Profiles and EPGs
   - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }   # attach Domain to EPGs and deploy the Static Bindings to the EPG
   - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }   # attach Storage Domain to the EPG and deploy FC/FCoE Static Bindings to the EPG
-  - { role: Associate_L3Out_in_BridgeDomain,         tags: bdtol3out             }   # associates L3Out to Bridge Domain
 
   ############ L3Outs ############
 
@@ -53,5 +52,4 @@
 
   ########### Contracts ###########
 
-  - { role: vzAny,                                   tags: vzany                 }   # create free communication between all the EPGs in the VRF
   - { role: EPG_to_EPG_Contracts,                    tags: contracts             }   # create contracts between EPGs or External EPGs

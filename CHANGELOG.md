@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.27] - 2021-06-11
+
+### Added
+
+- Some more documentation to the vars yaml file in host_vars
+
+### Changed
+
+- migrated role: bdtol3out to now be part of role: BridgeDomains_and_Subnets
+- migrated role: vzAny     to now be part of role: Tenants_and_VRFs
+
 ## [v0.26] - 2021-06-10
 
 ### Added

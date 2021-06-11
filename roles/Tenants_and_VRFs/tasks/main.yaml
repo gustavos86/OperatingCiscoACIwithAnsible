@@ -32,3 +32,158 @@
   with_items: "{{ Tenants_VRFs }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_filter_module.html#ansible-collections-cisco-aci-aci-filter-module
+# APIC
+# Tenants > Contracts > Filters
+
+- name: vzAny Filter
+  ignore_errors: yes
+  cisco.aci.aci_filter:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    filter: vzAny_Filter
+    state: "{% if item.vzAny == 'present' %}present{% elif item.vzAny == 'absent' %}query{% endif %}"
+  with_items: "{{ Tenants_VRFs }}"
+  when: item.vzAny is defined and item.vzAny == 'present'
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_filter_entry_module.html#ansible-collections-cisco-aci-aci-filter-entry-module
+# APIC
+# Tenants > Contracts > Filters > Entries
+
+- name: vzAny Filter > Entry
+  ignore_errors: yes
+  cisco.aci.aci_filter_entry:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    filter: vzAny_Filter
+    entry: default
+    ether_type: unspecified
+    state: "{% if item.vzAny == 'present' %}present{% elif item.vzAny == 'absent' %}query{% endif %}"
+  with_items: "{{ Tenants_VRFs }}"
+  when: item.vzAny is defined and item.vzAny == 'present'
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_module.html#ansible-collections-cisco-aci-aci-contract-module
+# APIC
+# Tenants > Contracts
+
+- name: vzAny Contract
+  ignore_errors: yes
+  cisco.aci.aci_contract:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    contract: vzAny_CT
+    state: "{% if item.vzAny == 'present' %}present{% elif item.vzAny == 'absent' %}query{% endif %}"
+  with_items: "{{ Tenants_VRFs }}"
+  when: item.vzAny is defined and item.vzAny == 'present'
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_subject_module.html#ansible-collections-cisco-aci-aci-contract-subject-module
+# APIC
+# Tenants > Contracts > Subjects
+
+- name: vzAny Contract > Subject
+  ignore_errors: yes
+  cisco.aci.aci_contract_subject:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    contract: vzAny_CT
+    subject: Subj
+    state: "{% if item.vzAny == 'present' %}present{% elif item.vzAny == 'absent' %}query{% endif %}"
+  with_items: "{{ Tenants_VRFs }}"
+  when: item.vzAny is defined and item.vzAny == 'present'
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_contract_subject_to_filter_module.html#ansible-collections-cisco-aci-aci-contract-subject-to-filter-module
+# APIC
+# Tenants > Contracts > Subjects > Filters
+
+- name: vzAny Contract > Subject > Filter
+  ignore_errors: yes
+  cisco.aci.aci_contract_subject_to_filter:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    contract: vzAny_CT
+    subject: Subj
+    filter: vzAny_Filter
+    state: "{% if item.vzAny == 'present' %}present{% elif item.vzAny == 'absent' %}query{% endif %}"
+  with_items: "{{ Tenants_VRFs }}"
+  when: item.vzAny is defined and item.vzAny == 'present'
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# Module not available
+# APIC
+# Tenants > Networking > VRFs
+
+- name: vzAny add Contract as Provider & Consumer in the VRF
+  ignore_errors: yes
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    path: /api/mo/uni/tn-{{ item.Tenant_name }}.json
+    method: post
+    content: |
+      {
+          "totalCount": "1",
+          "imdata": [
+              {
+                  "vzAny": {
+                      "attributes": {
+                          "dn": "uni/tn-{{ item.Tenant_name }}/ctx-{{ item.VRF_name }}/any"
+                      },
+                      "children": [
+                          {
+                              "vzRsAnyToProv": {
+                                  "attributes": {
+                                      "tnVzBrCPName": "vzAny_CT",
+                                      "status": "{% if item.vzAny == 'present' %}{% elif item.vzAny == 'absent' %}deleted{% endif %}"
+                                  },
+                              }
+                          },
+                          {
+                              "vzRsAnyToCons": {
+                                  "attributes": {
+                                      "tnVzBrCPName": "vzAny_CT",
+                                      "status": "{% if item.vzAny == 'present' %}{% elif item.vzAny == 'absent' %}deleted{% endif %}"
+                                  }
+                              }
+                          }
+                      ]
+                  }
+              }
+          ]
+      }
+  with_items: "{{ Tenants_VRFs }}"
+  when: item.vzAny is defined
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

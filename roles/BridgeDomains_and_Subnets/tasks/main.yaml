@@ -18,7 +18,7 @@
     l2_unknown_unicast: "{{ item.l2_unknown_unicast | default('proxy') }}"
     l3_unknown_multicast: "{{ item.l3_unknown_multicast | default(omit) }}"
     bd_type: "{{ item.bd_type | default(omit) }}"
-    state: "{{ item.bd_state | default('present', true) }}"
+    state: "{% if item.bd_state is defined and item.bd_state == 'absent' %}absent{% else %}present{% endif %}"
   with_items: "{{ BridgeDomains_Subnets }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
@@ -39,8 +39,28 @@
     gateway: "{{ item.bd_subnet }}"
     mask: "{{ item.bd_subnet_mask }}"
     scope: "{{ item.scope | default(omit) }}"
-    state: "{{ whattodo | default('present', true) }}"
+    state: "{% if item.bd_state is defined and item.bd_state == 'absent' %}query{% else %}present{% endif %}"
   with_items: "{{ BridgeDomains_Subnets }}"
   when: item.bd_subnet is defined and item.bd_subnet_mask is defined
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_to_l3out_module.html#ansible-collections-cisco-aci-aci-bd-to-l3out-module
+# APIC
+# Tenants > Tenant > Networking > Bridge Domains > Policy > L3 Configurations
+- name: Associate L3Out to Bridge Domain
+  ignore_errors: yes
+  cisco.aci.aci_bd_to_l3out:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    bd: "{{ item.BD_name }}"
+    l3out: "{{ item.advertise_via_l3out }}"
+    state: "{% if item.bd_state is defined and item.bd_state == 'absent' %}query{% else %}present{% endif %}"
+  with_items: "{{ BridgeDomains_Subnets }}"
+  when: item.advertise_via_l3out is defined
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

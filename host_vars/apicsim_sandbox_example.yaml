@@ -1,5 +1,5 @@
 ################################################################################
-# v0.26 2021-June-10                                                           #
+# v0.27 2021-June-11                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -202,14 +202,12 @@ L2_Interface_config:
 #                             #
 ###############################
 
-
 ###################################################################
 # roles:                                                          #
 # - Tenants_and_VRFs                                              #
 #                                                                 #
 # run with:                                                       #
 # ansible-playbook aci_playbook.yaml -i inventory --tags tenants  #
-# ansible-playbook aci_playbook.yaml -i inventory --tags vzany    #
 #                                                                 #
 ###################################################################
 
@@ -218,73 +216,83 @@ L2_Interface_config:
 # Tenant_name:
 # VRF_name:
 #
-# - Required parameters with --tags vzany
+# - Optional parameters with --tags tenants
 #
-# vzAny: yes or no
-#
-# - Optional parameters:
-#
-# vrf_state: absent or present         # default is present
+# vzAny:     present or absent       # default is to ignore any vzAny configuration
+#                                    # vzAny set to absent only removes association of the vzAny_CT to the VRF,
+#                                    # contract named vzAny_CT is not removed inside the Tenant
+# vrf_state: present or absent       # default is present. Set to absent to delete only the VRF. Tenant is not deleted
 
 Tenants_VRFs:
-- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV,  vzAny: yes }
-- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST, vzAny: no  }
-- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV              }
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV,  vzAny: present    }
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST, vzAny: absent     }
+- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV                     }
 - { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST, vrf_state: absent }
 
-###############################################################
-# roles:                                                      #
-# - BridgeDomains_and_Subnets                                 #
-#                                                             #
-# run with:                                                   #
-# ansible-playbook aci_playbook.yaml -i inventory --tags bds  #
-#                                                             #
-###############################################################
+##############################################################
+# roles:                                                     #
+# - BridgeDomains_and_Subnets                                #
+#                                                            #
+# run with:                                                  #
+# ansible-playbook aci_playbook.yaml -i inventory --tags bds #
+#                                                            #
+##############################################################
 
 # BD Subnet is created for those Bridge domains which have the optional parameters bd_subnet: and bd_subnet_mask: defined
-# scope: is only defined when the above condition is met
+# scope: is configured only when the above condition is met
 #
-# - Required parameters:
+# - Required parameters with --tags bds
 #
 # Tenant_name:
 # BD_name:
 #
-# - Optional parameters:
+# - Optional parameters with --tags bds
 #
 # enable_routing: yes or no                 # default is no
 #
+# scope:                                    # default is set none of the below options
 # scope: public                             # this is "Advertised Externally"
 # scope: shared                             # this is "Shared Between VRFs"
 # scope: "public,shared"                    # this is "Advertised Externally" & "Shared Between VRFs"
 #
-# arp_flooding: no or yes                   # default is yes
+# advertise_via_l3out:                      # L3Out name should be set here
+#
+# arp_flooding: yes or no                   # default is yes
 # l2_unknown_unicast: proxy or flood        # default is proxy
 # l3_unknown_multicast: flood or opt-flood  # default is flood
 #
-# bd_state: absent or present               # default is present
+# bd_state: present or absent               # default is present. Set to absent to delete the Bridge Domain
 #
-# Gateway_MAC_address: 02:00:25:00:11:28    # sets the MAC address for all the BD Subnets in the playbook. Global parameter
+# bd_type: fc                               # to make the Bridge Domain type FC ( required for FibreChannel and FCoE )
+#
+# Gateway_MAC_address: 02:00:25:00:11:28    # sets the MAC address for all the BD Subnets in the playbook. This is a Global parameter imapcting all BD subnets
 
 BridgeDomains_Subnets:
 # Simplest BD example
-- { Tenant_name: Ansible_Tnt, BD_name: Simplest_BD                    }
+- { Tenant_name: Ansible_Tnt, BD_name: Simplest_BD                  }
 # Delete BD example
-- { Tenant_name: Ansible_Tnt, BD_name: Deleted_BD,   bd_state: absent }
+- { Tenant_name: Ansible_Tnt, BD_name: Deleted_BD, bd_state: absent }
 # More BD examples
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: yes, scope: "public,shared" }  
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: yes, scope: public,         }  
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: yes,                        }  
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24,                                             }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: yes, scope: "public,shared" }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: VLAN1002_192_168_2_0_24_BD, bd_subnet: 192.168.2.1, bd_subnet_mask: 24, enable_routing: yes, scope: public,         }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: VLAN1003_192_168_3_0_24_BD, bd_subnet: 192.168.3.1, bd_subnet_mask: 24, enable_routing: yes,                        }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: VLAN1004_192_168_4_0_24_BD, bd_subnet: 192.168.4.1, bd_subnet_mask: 24,                                             }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: VLAN1005_192_168_5_0_24_BD, bd_subnet: 192.168.5.1, bd_subnet_mask: 24, enable_routing: yes, scope: public, advertise_via_l3out: L3Out1 }
 # Storage type BD example
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: Storage_BD,  bd_type: fc }  
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: Storage_BD, bd_type: fc }  
 
+################################################################################
+# roles:                                                                       #
+# - AppProfiles_and_EPGs                                                       #
+# - Domains_and_EPG_Static_Bindings                                            #
+#                                                                              #
+# run with:                                                                    #
+# ansible-playbook aci_playbook.yaml -i inventory --tags epgs                  #
+# ansible-playbook aci_playbook.yaml -i inventory --tags staticbindings        #
+# ansible-playbook aci_playbook.yaml -i inventory --tags storagestaticbindings #
+#                                                                              #
+################################################################################
 
-#####################################
-# roles:                            #
-# - AppProfiles_and_EPGs            #
-# - Domains_and_EPG_Static_Bindings #
-#####################################
-#
 # Optional parameters:
 # VMM_deploy_immediacy:          lazy or immediate                   # default is lazy
 # VMM_resolution_immediacy:      lazy or immediate or pre-provision  # default is lazy
@@ -300,15 +308,27 @@ AppProfiles_EPGs_Domains_Static_Bindings:
 - { Tenant_name: Ansible_Tnt, AppProfile_name: Networks, EPG_name: SimplestEPG                    }
 - { Tenant_name: Ansible_Tnt, AppProfile_name: Networks, EPG_name: Deleted_EPG, epg_state: absent }
 
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_VM,  BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware                                      }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1003, Static_Binding: "{{ port_profile_1 }}" }
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1004, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_VM,  BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware                                      }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1003, Static_Binding: "{{ port_profile_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1004, Static_Binding: "{{ port_profile_1 }}" }
 
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: StorageNetworks, EPG_name: Storage_EPG, BD_name: Storage_BD, storage_domain_name: FC_Domain, Storage_FC_FCoE_Static_Binding: "{{ port_profile_storage_1 }}" }
 
-# "Port-Profiles" Trunk VLANs on links
-# Create the "Port-Profiles" here:
+# "Port-Profiles" are variables that should be referenced from the EPG
+# in Static_Binding: or Storage_FC_FCoE_Static_Binding:
+# 
+# - Required parameters
+#
+# Pod_ID:
+# Switch_ID:
+# interface_type:
+# port:
+#
+# - Optional parameters
+#
+# native_vlan:             # When the port is deployed in the correct EPG, it is configured as 802.1P instead of as trunk
+# state: absent            # Deletes the Static Bind entry in the EPG
 
 port_profile_1:
 - { Pod_ID: 1, Switch_ID: 1102,        interface_type: switch_port,  port: 1/21,                state: absent     }    # optional  state: absent
