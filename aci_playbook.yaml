@@ -1,5 +1,5 @@
 ################################################################################
-# v0.27 2021-June-11                                                           #
+# v0.28 2021-June-12                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -23,16 +23,16 @@
   #                             #
   ###############################
 
-  - { role: Interface_Policies,              tags: intpolicies     }    # create all policies like CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, MCP, Layer 2 Interface, Spanning Tree Interface
-  - { role: Switch_and_Interface_Profiles,   tags: switchprofiles  }    # create Switch Profiles and Interface Profiles (needed only when adding new switches to ACI)
+  - { role: Interface_Policies,              tags: [intpolicies,     allFabricAccess] } # create all policies like CDP, LLDP, Fibre Channel, MCP, Link Level, Port Channel, MCP, Layer 2 Interface, Spanning Tree Interface
+  - { role: Switch_and_Interface_Profiles,   tags: [switchprofiles,  allFabricAccess] } # create Switch Profiles and Interface Profiles (needed only when adding new switches to ACI)
 
-  - { role: Interface_Selectors,             tags: intselectors    }    # provision ports defined in Switches_and_Interfaces_map: ports_list with a Policy Group
-  - { role: Interface_Policy_Groups,         tags: intpolicygroups }    # create Interface Access Port, Port-Channels and vPCs
-  - { role: enable_or_disable_ports,         tags: shutdownports   }    # enable or disable interfaces defined in Switches_and_Interfaces_map
+  - { role: Interface_Selectors,             tags: [intselectors,    allFabricAccess] } # provision ports defined in Switches_and_Interfaces_map: ports_list with a Policy Group
+  - { role: Interface_Policy_Groups,         tags: [intpolicygroups, allFabricAccess] } # create Interface Access Port, Port-Channels and vPCs
+  - { role: enable_or_disable_ports,         tags: [shutdownports,   allFabricAccess] } # enable or disable interfaces defined in Switches_and_Interfaces_map
 
-  - { role: AAEPs,                           tags: aaeps           }    # create AAEPs and attach Domains to AAEPs
-  - { role: Domains,                         tags: domains         }    # create Domains and attach VLAN pools to Domains
-  - { role: VLAN_Pools,                      tags: vlanpools       }    # create VLAN Pools and its corresponding blocks of VLANs 
+  - { role: AAEPs,                           tags: [aaeps,           allFabricAccess] } # create AAEPs and attach Domains to AAEPs
+  - { role: Domains,                         tags: [domains,         allFabricAccess] } # create Domains and attach VLAN pools to Domains
+  - { role: VLAN_Pools,                      tags: [vlanpools,       allFabricAccess] } # create VLAN Pools and its corresponding blocks of VLANs 
 
   ###############################
   #                             #
@@ -40,16 +40,16 @@
   #                             #
   ###############################
 
-  - { role: Tenants_and_VRFs,                        tags: tenants               }   # create Tenants and VRFs. It can optionally deploy a complete vzAny configuration for a given VRF
-  - { role: BridgeDomains_and_Subnets,               tags: bds                   }   # create Bridge Domains and Bridge Domain subnets
-  - { role: AppProfiles_and_EPGs,                    tags: epgs                  }   # create Application Profiles and EPGs
-  - { role: Domains_and_EPG_Static_Bindings,         tags: staticbindings        }   # attach Domain to EPGs and deploy the Static Bindings to the EPG
-  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: storagestaticbindings }   # attach Storage Domain to the EPG and deploy FC/FCoE Static Bindings to the EPG
+  - { role: Tenants_and_VRFs,                        tags: [tenants,               allTenants] } # create Tenants and VRFs. It can optionally deploy a complete vzAny configuration for a given VRF
+  - { role: BridgeDomains_and_Subnets,               tags: [bds,                   allTenants] } # create Bridge Domains and Bridge Domain subnets
+  - { role: AppProfiles_and_EPGs,                    tags: [epgs,                  allTenants] } # create Application Profiles and EPGs
+  - { role: Domains_and_EPG_Static_Bindings,         tags: [staticbindings,        allTenants] } # attach Domain to EPGs and deploy the Static Bindings to the EPG
+  - { role: Storage_Domains_and_EPG_Static_Bindings, tags: [storagestaticbindings, allTenants] } # attach Storage Domain to the EPG and deploy FC/FCoE Static Bindings to the EPG
 
   ############ L3Outs ############
 
-  - { role: L3Outs,                                  tags: l3outs                }   # create L3Outs
+  - { role: L3Outs,                                  tags: [l3outs,                allTenants] }   # create L3Outs
 
   ########### Contracts ###########
 
-  - { role: EPG_to_EPG_Contracts,                    tags: contracts             }   # create contracts between EPGs or External EPGs
+  - { role: EPG_to_EPG_Contracts,                    tags: [contracts,             allTenants] }   # create contracts between EPGs or External EPGs

@@ -1,5 +1,5 @@
 ################################################################################
-# v0.27 2021-June-11                                                           #
+# v0.28 2021-June-12                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -14,11 +14,14 @@
 # query - Query for state
 # whattodo: present
 
-###############################
-#                             #
-#       Access Policies       #
-#                             #
-###############################
+##########################################################################
+#                                                                        #
+#                           Access Policies                              #
+#                                                                        #
+# run with:                                                              #
+# ansible-playbook aci_playbook.yaml -i inventory --tags allFabricAccess #
+#                                                                        #
+##########################################################################
 
 ###################################
 # roles:                          #
@@ -29,7 +32,6 @@
 
 ### Switches and Interfaces mapping ###
 # Optional. Switch Policy Group attached to all Switch Profiles. Comment if not needed.
-
 #All_Leaf_Switches_Policy_Group: default
 
 # port_state can be: enabled or disabled
@@ -49,37 +51,56 @@ Switches_and_Interfaces_map:
     ports_list:
     - { port: 18, port_state: enabled }
     - { port: 19, port_state: enabled }
-    - { port: 20, port_state: enabled, port_description: ,               interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort, state: absent } # optional state: absent
-    - { port: 21, port_state: enabled,                                   interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-    - { port: 22, port_state: enabled,                                   interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-    - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC}
+    - { port: 20, port_state: enabled, port_description: ,               interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort                }
+    - { port: 21, port_state: enabled,                                   interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort, state: absent } # optional state: absent
+    - { port: 22, port_state: enabled,                                   interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC                      }
+    - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc,          interface_policy_group: 101_102_eth_6_vPC                       }
   - switch_name: Leaf1103
     pod: 1
     switch_node_id: 1103
     ports_list:
-    - { port: 30, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
-    - { port: 31, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-    - { port: 32, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC }
-    - { port: 33, port_state: disabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+    - { port: 30, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort }
+    - { port: 31, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC       }
+    - { port: 32, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC       }
+    - { port: 33, port_state: disabled, port_description: FirewallA,      interface_type: vpc,          interface_policy_group: 101_102_eth_6_vPC        }
   - switch_name: Leaf1104
     pod: 1
     switch_node_id: 1104
     ports_list:
-    - { port: 33, port_state: enabled, port_description: FirewallA,      interface_type: vpc, interface_policy_group: 101_102_eth_6_vPC }
+    - { port: 33, port_state: enabled, port_description: FirewallA,      interface_type: vpc,         interface_policy_group: 101_102_eth_6_vPC        }
     - { port: 40, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
     - { port: 41, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
 
-###################################
-# roles                           #
-# - Interface_Policy_Groups       #
-###################################
+##########################################################################
+# roles:                                                                 #
+# - Interface_Policy_Groups                                              #
+#                                                                        #
+# run with:                                                              #
+# ansible-playbook aci_playbook.yaml -i inventory --tags intpolicygroups #
+#                                                                        #
+##########################################################################
 
-# Add new Interface Policy Groups
-# Specially useful to add Port-Channels and vPCs
+# - Required parameters with --tags intpolicygroups 
+#
+# interface_policy_group:
+# lag_type:                 # configures Access Port or Port-Channel or vPC
+# port_channel_policy:      # required only for Port-Channel or vPC
+#
+# - Optional parameters with --tags intpolicygroups 
+#
+# AAEP:
+# link_level_policy:
+# cdp_policy:
+# lldp_policy:
+# mcp_policy:
+# stp_interface_policy:
+# l2_interface_policy:
+# fibre_channel_interface_policy:
+# priority_flow_control_policy:
+# monitoring_policy:
 
 ### Individual Ports ###
 # "lag_type: leaf" is for Access Ports
-# Do not add "port_channel_policy" parameter here
 
 Interface_Policy_Group_task_config:
   - interface_policy_group: Auto_CDP_LLDP_AccessPort
@@ -89,46 +110,48 @@ Interface_Policy_Group_task_config:
     cdp_policy: CDP_On
     lldp_policy: LLDP_On
     mcp_policy: MCP_Off
-    stp_interface_policy: default
     l2_interface_policy: PortLocal_scope
     fibre_channel_interface_policy: FCOE_F_TrunkOff_FCPolicy
     priority_flow_control_policy: PFC_Auto
+    monitoring_policy: test
 
 ### Port-Channels ###
-#"lag_type: link" is for Port-Channels
+# "lag_type: link" is for Port-Channels
 
   - interface_policy_group: 101_102_eth_4_5_PC
     lag_type: link
-    port_channel_policy: Static_Mode
+    port_channel_policy: LACP_Active
     AAEP: DC_AAEP
     link_level_policy: Auto_Link_Policy
     cdp_policy: CDP_On
     lldp_policy: LLDP_On
-    mcp_policy: MCP_Off
-    stp_interface_policy: default
+    mcp_policy: MCP_On
+    stp_interface_policy: BPDU_Filter
 
 ###      vPCs     ###
-# vPCs. "lag_type: node" is for vPCs
+# "lag_type: node" is for vPCs
 
   - interface_policy_group: 101_102_eth_6_vPC
     lag_type: node
-    port_channel_policy: Static_Mode
+    port_channel_policy: LACP_Active
     AAEP: DC_AAEP
     link_level_policy: Auto_Link_Policy
     cdp_policy: CDP_On
     lldp_policy: LLDP_On
-    mcp_policy: MCP_Off
-    stp_interface_policy: default
 
+######################################################################
+# roles:                                                             #
+# - AAEPs                                                            #
+# - Domains                                                          #
+# - VLAN_Pools                                                       #
+#                                                                    #
+# run with:                                                          #
+# ansible-playbook aci_playbook.yaml -i inventory --tags aaeps       #
+# ansible-playbook aci_playbook.yaml -i inventory --tags domains     #
+# ansible-playbook aci_playbook.yaml -i inventory --tags vlanpools   #
+#                                                                    #
+######################################################################
 
-###################################
-# roles:                          #
-# - AAEPs                         #
-# - Domains                       #
-# - VLAN_Pools                    #
-###################################
-
-# AAEPs, Domains and VLAN Pools
 AAEP_task_config:
   - name: DC_AAEP
     domains:
@@ -154,53 +177,58 @@ AAEP_task_config:
           - { vlan_range_start: 300, vlan_range_end: 349, description: 'test' }
           - { vlan_range_start: 350, vlan_range_end: 399, description: 'test' }                    
 
-###################################
-# roles:                          #
-# - Interface_Policies            #
-###################################
+######################################################################
+# roles:                                                             #
+# - Interface_Policies                                               #
+#                                                                    #
+# run with:                                                          #
+# ansible-playbook aci_playbook.yaml -i inventory --tags intpolicies #
+#                                                                    #
+######################################################################
 
-# Interface Policies. Naming convention can be modified here.
 CDP_config:
-  - { name: CDP_On, admin_state: yes }
-  - { name: CDP_Off, admin_state: no }
+  - { name: CDP_On,  admin_state: yes }
+  - { name: CDP_Off, admin_state: no  }
 LLDP_config:
   - { name: LLDP_On, transmit_state: yes, receive_state: yes }
   - { name: LLDP_Off, transmit_state: no, receive_state: no  }
-# Lacks option to configure Trunking
 Fibre_Channel_config:
-  - { name: FC_F_Port, port_mode: f   }
+  - { name: FC_F_Port,  port_mode: f  }
   - { name: FC_NP_Port, port_mode: np }
 MCP_config:
   - { name: MCP_On, admin_state: yes }
   - { name: MCP_Off, admin_state: no }
 Link_Level_config:
-  - { name: 100G_Link_Policy, speed: 100G }
-  - { name: 40G_Link_Policy, speed: 40G }
-  - { name: 25G_Link_Policy, speed: 25G }
-  - { name: 10G_Link_Policy, speed: 10G }
-  - { name: 1G_Link_Policy, speed: 1G }
-  - { name: 100M_Link_Policy, speed: 100M }
+  - { name: 100G_Link_Policy, speed: 100G    }
+  - { name: 40G_Link_Policy,  speed: 40G     }
+  - { name: 25G_Link_Policy,  speed: 25G     }
+  - { name: 10G_Link_Policy,  speed: 10G     }
+  - { name: 1G_Link_Policy,   speed: 1G      }
+  - { name: 100M_Link_Policy, speed: 100M    }
   - { name: Auto_Link_Policy, speed: inherit }
 Port_Channel_config:
-  - { name: LACP_Active, mode: active }
-  - { name: LACP_Passive, mode: passive }
-  - { name: MAC_Pinning, mode: mac-pin }
+  - { name: LACP_Active,          mode: active          }
+  - { name: LACP_Passive,         mode: passive         }
+  - { name: MAC_Pinning,          mode: mac-pin         }
   - { name: MAC_Pinning_NIC_Load, mode: mac-pin-nicload }
-  - { name: Static_Mode, mode: Off }
+  - { name: Static_Mode,          mode: Off             }
 Spanning_Tree_Interface_config:
-  - { name: BPDU_Off, stp_control: "" }
-  - { name: BPDU_Filter, stp_control: bpdu-filter }
-  - { name: BPDU_Guard, stp_control: bpdu-guard }
+  - { name: BPDU_Off,          stp_control: ""                       }
+  - { name: BPDU_Filter,       stp_control: bpdu-filter              }
+  - { name: BPDU_Guard,        stp_control: bpdu-guard               }
   - { name: BPDU_Filter_Guard, stp_control: "bpdu-filter,bpdu-guard" }
 L2_Interface_config:
-  - { name: PortLocal_scope,   vlan_scope: portlocal }
-  - { name: Global_scope,      vlan_scope: global    }
+  - { name: PortLocal_scope,   vlan_scope: portlocal                 }
+  - { name: Global_scope,      vlan_scope: global                    }
 
-###############################
-#                             #
-#           Tenants           #
-#                             #
-###############################
+#####################################################################
+#                                                                   #
+#                                Tenants                            #
+#                                                                   #
+# run with:                                                         #
+# ansible-playbook aci_playbook.yaml -i inventory --tags allTenants #
+#                                                                   #
+#####################################################################
 
 ###################################################################
 # roles:                                                          #
@@ -348,28 +376,32 @@ port_profile_storage_1:
 - { Pod_ID: 1, Switch_ID: 1103, interface_type: port_channel, vsan_ID: 10, port: SAN_PolGrp          }
 - { Pod_ID: 1, Switch_ID: 1104, interface_type: port_channel, vsan_ID: 20, port: SAN_PolGrp          }
 
-#####################################
-# roles:                            #
-# - EPG_to_EPG_Contracts            #
-#####################################
+####################################################################
+# roles:                                                           #
+# - EPG_to_EPG_Contracts                                           #
+#                                                                  #
+# run with:                                                        #
+# ansible-playbook aci_playbook.yaml -i inventory --tags contracts #
+#                                                                  #
+####################################################################
 
 EPG_to_EPG_Contracts:
 
-- Tenant_name: Ansible_Tnt
-  Contract_name: v1001_to_v1002_CT
+- Tenant_name:   Ansible_Tnt
+  Contract_name: v1001_to_v1003_CT
   Entries:
   - Entry_name:     web-http
-    ether_type:     ip     # ether_type: unspecified | ip
+    ether_type:     ip     # ether_type:  unspecified | ip
     ip_protocol:    tcp    # ip_protocol: unspecified | icmp | tcp |  udp
     dst_port_start: 80
     dst_port_end:   80
   - Entry_name:     web-https
-    ether_type:     ip     # ether_type: unspecified | ip
+    ether_type:     ip     # ether_type:  unspecified | ip
     ip_protocol:    tcp    # ip_protocol: unspecified | icmp | tcp |  udp
     dst_port_start: 443
     dst_port_end:   443
   - Entry_name:     ssh
-    ether_type:     ip     # ether_type: unspecified | ip
+    ether_type:     ip     # ether_type:  unspecified | ip
     ip_protocol:    tcp    # ip_protocol: unspecified | icmp | tcp |  udp
     dst_port_start: 22
     dst_port_end:   22
@@ -378,19 +410,21 @@ EPG_to_EPG_Contracts:
     EPG_name: VLAN1001_192_168_1_0_24_EPG
     consumer_or_provider: consumer          # consumer is SRC / provider is DST
   - App_Profile: Networks 
-    EPG_name: VLAN1002_192_168_2_0_24_EPG  
+    EPG_name: VLAN1003_192_168_3_0_24_EPG  
     consumer_or_provider: provider          # consumer is SRC / provider is DST
 # L3Out_ExtEPGs:
 # - L3Out_name: test_L3Out1
 #   ExtEPG_name: ExtEPG
 #   consumer_or_provider: provider          # consumer is SRC / provider is DST
 
-
-####################################
-# roles:                           #
-# - L3Outs                         #
-####################################
-
+#################################################################
+# roles:                                                        #
+# - L3Outs                                                      #
+#                                                               #
+# run with:                                                     #
+# ansible-playbook aci_playbook.yaml -i inventory --tags l3outs #
+#                                                               #
+#################################################################
 L3Outs: 
   ### L3Out Initial configuration section ###
   - L3Out_name: L3Out1

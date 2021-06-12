@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.28] - 2021-06-12
+
+### Added
+
+- Tag to run all Fabric > Access Policies related roles
+- Tag to run all Tenants related roles
+- monitoring_policy to Port Groups
+
+### Changed
+
+- better validation for Port Group access ports to ignore port_channel_policy and avoid an error
+
 ## [v0.27] - 2021-06-11
 
 ### Added

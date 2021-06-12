@@ -13,8 +13,8 @@
     validate_certs: no
     policy_group: "{{ item.interface_policy_group }}"
     lag_type: "{{ item.lag_type }}"
-    # port_channel_policy is only for Port-Channel & vPC
-    port_channel_policy: "{{ item.port_channel_policy | default(omit) }}"
+    # port_channel_policy must be ommited when lag_type: leaf
+    port_channel_policy: "{% if item.lag_type != 'leaf' %}{{ item.port_channel_policy }}{% else %}{{ item.DummyItem | default(omit) }}{% endif %}"
     aep: "{{ item.AAEP | default(omit) }}"
     link_level_policy: "{{ item.link_level_policy | default(omit) }}"
     cdp_policy: "{{ item.cdp_policy | default(omit) }}"
@@ -24,6 +24,7 @@
     l2_interface_policy: "{{ item.l2_interface_policy | default(omit) }}"
     fibre_channel_interface_policy: "{{ item.fibre_channel_interface_policy | default(omit) }}"
     priority_flow_control_policy: "{{ item.priority_flow_control_policy | default(omit) }}"
+    monitoring_policy: "{{ item.monitoring_policy | default(omit) }}"
     state: "{{ whattodo | default('present', true) }}"      
   with_items: "{{ Interface_Policy_Group_task_config }}"
   loop_control:
