@@ -60,5 +60,6 @@
   ###############################
 
   # IMPORTANT. Does not run by default when no tag is specified
+  # run with: ansible-playbook aci_playbook.yaml -i inventory --tags shutdownports
 
   - { role: enable_or_disable_ports, tags: [shutdownports, never] } # enable or disable interfaces defined in Switches_and_Interfaces_map
