@@ -1,5 +1,5 @@
 ################################################################################
-# v0.28 2021-June-12                                                           #
+# v0.29 2021-June-13                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -23,22 +23,56 @@
 #                                                                        #
 ##########################################################################
 
-###################################
-# roles:                          #
-# - Interface_Selectors           #
-# - Switch_and_Interface_Profiles #
-# - enable_or_disable_ports       #
-###################################
+#########################################################################
+# roles:                                                                #
+# - Interface_Selectors                                                 #
+# - Switch_and_Interface_Profiles                                       #
+# - enable_or_disable_ports                                             #
+#                                                                       #
+# run with:                                                             #
+# ansible-playbook aci_playbook.yaml -i inventory --tags intselectors   #
+# ansible-playbook aci_playbook.yaml -i inventory --tags switchprofiles #
+# ansible-playbook aci_playbook.yaml -i inventory --tags shutdownports  #
+#                                                                       #
+#########################################################################
 
-### Switches and Interfaces mapping ###
-# Optional. Switch Policy Group attached to all Switch Profiles. Comment if not needed.
-#All_Leaf_Switches_Policy_Group: default
+# - Required parameters with --tags intselectors
+#
+# switch_name:                                       # IMPORTANT. the switch_name: variable must match the Interface Profile name
+# - ports_list:
+# port:                                              # Port number
+# interface_type: switch_port or port_channel of vpc
+# interface_policy_group:                            # Interface Policy Group as configured in ACI
+#
+# - Optional parameters with --tags intselectors
+#
+# - ports_list:
+# port_description:                              # IMPORTANT. When present, the Interface Selector name is defined by this variable, otherwise a default value is set
+#                                                # also, this text defines the port description located in
+#                                                # Fabric > Inventory > Pod > Leaf > Interfaces > Physical Interfaces > eth1/x > "Description:" field
+#                                                # via CLI in the Switch can be seen with 'show interface description' or 'show interface status'
+#
+# state: absent                                  # Removes the Interface Selector from the configuration
 
-# port_state can be: enabled or disabled
+# - Required parameters with --tags switchprofiles 
+#
+#  switch_name:                                    # hostname chosen to name the Switch
+#  switch_node_id:                                 # Switch Node ID as configured in ACI
+#
+# - Optional parameters with --tags switchprofiles
+#
+# All_Leaf_Switches_Policy_Group: default          # Switch Policy Group attached to all Switch Profiles. This is a Global parameter
+# Switch_name_suffix: '_SwProf'                    # text appended to the Switch Profile name. This is a Global parameter
+# Interface_name_suffix: '_IntProf'                # text appended to the Interface Profile name. This is a Global parameter
+# include_node_id_in_switch_profile_name: 'yes'    # Node ID inserted as part of the name to Switch Profiles and Interface Profiles. This is a Global parameter
 
-Switch_name_suffix: '_SwProf'
-Interface_name_suffix: '_IntProf'
-include_node_id_in_switch_profile_name: 'no'
+# - Required parameters with --tags shutdownports  # IMPORTANT. Does not run by default when no tag is specified
+#
+# pod:
+# switch_node_id:
+# - ports_list:
+# port:
+# port_state: enabled or disabled                  # set value to disabled to shutdown the port. Default is to perform no action on the port status
 
 Switches_and_Interfaces_map:
   - switch_name: Leaf1101
@@ -52,7 +86,7 @@ Switches_and_Interfaces_map:
     - { port: 18, port_state: enabled }
     - { port: 19, port_state: enabled }
     - { port: 20, port_state: enabled, port_description: ,               interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort                }
-    - { port: 21, port_state: enabled,                                   interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort, state: absent } # optional state: absent
+    - { port: 21, port_state: enabled,                                   interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort, state: absent }
     - { port: 22, port_state: enabled,                                   interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC                      }
     - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc,          interface_policy_group: 101_102_eth_6_vPC                       }
   - switch_name: Leaf1103
@@ -247,14 +281,15 @@ L2_Interface_config:
 # - Optional parameters with --tags tenants
 #
 # vzAny:     present or absent       # default is to ignore any vzAny configuration
-#                                    # vzAny set to absent only removes association of the vzAny_CT to the VRF,
-#                                    # contract named vzAny_CT is not removed inside the Tenant
-# vrf_state: present or absent       # default is present. Set to absent to delete only the VRF. Tenant is not deleted
+#                                    # vzAny set to absent only removes the association of the vzAny_CT as Provider & Consumer with the VRF,
+#                                    # the contract named vzAny_CT is not removed inside the Tenant
+#
+# vrf_state: present or absent       # default is present. Set to absent it removes only the VRF. Tenant is not deleted
 
 Tenants_VRFs:
-- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV,  vzAny: present    }
-- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST, vzAny: absent     }
-- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV                     }
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_DEV                     }
+- { Tenant_name: Ansible_Tnt,  VRF_name: VRF_TEST, vzAny: present    }
+- { Tenant_name: Ansible_Tnt2, VRF_name: VRF_DEV,  vzAny: absent     }
 - { Tenant_name: Ansible_Tnt2, VRF_name: VRF_TEST, vrf_state: absent }
 
 ##############################################################
@@ -289,7 +324,7 @@ Tenants_VRFs:
 # l2_unknown_unicast: proxy or flood        # default is proxy
 # l3_unknown_multicast: flood or opt-flood  # default is flood
 #
-# bd_state: present or absent               # default is present. Set to absent to delete the Bridge Domain
+# bd_state: present or absent               # default is present. Set to absent to remove the entire Bridge Domain
 #
 # bd_type: fc                               # to make the Bridge Domain type FC ( required for FibreChannel and FCoE )
 #
@@ -356,7 +391,7 @@ AppProfiles_EPGs_Domains_Static_Bindings:
 # - Optional parameters
 #
 # native_vlan:             # When the port is deployed in the correct EPG, it is configured as 802.1P instead of as trunk
-# state: absent            # Deletes the Static Bind entry in the EPG
+# state: absent            # removes the Static Bind entry in the EPG
 
 port_profile_1:
 - { Pod_ID: 1, Switch_ID: 1102,        interface_type: switch_port,  port: 1/21,                state: absent     }    # optional  state: absent
@@ -451,8 +486,8 @@ L3Outs:
         Switch_Router_ID: 4.4.4.4
       ### Static Routes (optional) ###
       Static_Routes:
-      - { Network: 0.0.0.0/0,       Next_Hop: 10.0.1.254, state:         }  # state 'absent' to remove static route
-      - { Network: 192.168.91.0/24, Next_Hop: 10.0.1.254, state: absent  }  # state 'absent' to remove static route
+      - { Network: 0.0.0.0/0,       Next_Hop: 10.0.1.254, state:         }  # state: absent to remove static route
+      - { Network: 192.168.91.0/24, Next_Hop: 10.0.1.254, state: absent  }  # state: absent to remove static route
       - { Network: 192.168.92.0/24, Next_Hop: 10.0.1.254                 }
       - { Network: 192.168.93.0/24, Next_Hop: 10.0.1.254                 }
       - { Network: 192.168.94.0/24, Next_Hop: 10.0.1.254                 }

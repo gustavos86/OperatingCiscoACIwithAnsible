@@ -2,6 +2,7 @@
 # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_access_port_to_interface_policy_leaf_profile_module.html
 # APIC
 # Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > Interface Selectors
+
 - name: Interface Selectors
   ignore_errors: yes
   cisco.aci.aci_access_port_to_interface_policy_leaf_profile:
@@ -18,6 +19,32 @@
     policy_group: "{{ item.1.interface_policy_group }}"
     state: "{{ item.1.state | default('present', true) }}"      
   when: item.1.interface_type is defined and item.1.interface_policy_group is defined
+  with_subelements: 
+    - "{{ Switches_and_Interfaces_map }}"
+    - ports_list
+    - flags:
+      skip_missing: True
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+- name: Add description to ports
+  ignore_errors: yes
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    path: /api/node/mo/uni/infra/hpaths-{{ item.0.switch_node_id }}_eth1_{{ item.1.port }}.json
+    method: post
+    content: |
+      {
+        "infraHPathS": {
+          "attributes": {
+            "descr": "{{ item.1.port_description }}"
+          }
+        }
+      }
+  when: item.1.port_description is defined
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list

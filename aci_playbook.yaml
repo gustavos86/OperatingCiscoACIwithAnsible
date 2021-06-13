@@ -1,5 +1,5 @@
 ################################################################################
-# v0.28 2021-June-12                                                           #
+# v0.29 2021-June-13                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -28,7 +28,6 @@
 
   - { role: Interface_Selectors,             tags: [intselectors,    allFabricAccess] } # provision ports defined in Switches_and_Interfaces_map: ports_list with a Policy Group
   - { role: Interface_Policy_Groups,         tags: [intpolicygroups, allFabricAccess] } # create Interface Access Port, Port-Channels and vPCs
-  - { role: enable_or_disable_ports,         tags: [shutdownports,   allFabricAccess] } # enable or disable interfaces defined in Switches_and_Interfaces_map
 
   - { role: AAEPs,                           tags: [aaeps,           allFabricAccess] } # create AAEPs and attach Domains to AAEPs
   - { role: Domains,                         tags: [domains,         allFabricAccess] } # create Domains and attach VLAN pools to Domains
@@ -48,8 +47,18 @@
 
   ############ L3Outs ############
 
-  - { role: L3Outs,                                  tags: [l3outs,                allTenants] }   # create L3Outs
+  - { role: L3Outs,                                  tags: [l3outs,                allTenants] } # create L3Outs
 
   ########### Contracts ###########
 
-  - { role: EPG_to_EPG_Contracts,                    tags: [contracts,             allTenants] }   # create contracts between EPGs or External EPGs
+  - { role: EPG_to_EPG_Contracts,                    tags: [contracts,             allTenants] } # create contracts between EPGs or External EPGs
+
+  ###############################
+  #                             #
+  #          Operations         #
+  #                             #
+  ###############################
+
+  # IMPORTANT. Does not run by default when no tag is specified
+
+  - { role: enable_or_disable_ports, tags: [shutdownports, never] } # enable or disable interfaces defined in Switches_and_Interfaces_map

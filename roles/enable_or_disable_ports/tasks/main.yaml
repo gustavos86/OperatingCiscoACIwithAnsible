@@ -1,7 +1,12 @@
 # Ansible
 # Module not available
 # APIC
-# 
+#
+---
+- pause:
+    prompt: "CAUTION! Do you really wish to shutdown some of the ports? Type yes and ENTER to agree, otherwise this task is ignored"
+  register: myAnswer
+
 - name: Disable ports
   ignore_errors: yes
   cisco.aci.aci_rest:
@@ -19,7 +24,7 @@
           }
         }
       }
-  when: (item.1 != 'continue') and ( item.1.port_state == 'disabled' )
+  when: myAnswer['user_input'] == 'yes' and item.1.port_state == 'disabled'
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list
@@ -27,7 +32,6 @@
       skip_missing: True
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
-
 
 - name: Enable ports
   ignore_errors: yes
@@ -46,7 +50,7 @@
           }
         }
       }
-  when: (item.1 != 'continue') and ( item.1.port_state == 'enabled' )
+  when: myAnswer['user_input'] == 'yes' and item.1.port_state == 'enabled'
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list

@@ -1,2 +1,3 @@
 Switch_name_suffix: ''
 Interface_name_suffix: ''
+include_node_id_in_switch_profile_name: 'no'
