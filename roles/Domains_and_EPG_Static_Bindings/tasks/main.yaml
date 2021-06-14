@@ -18,7 +18,7 @@
     deploy_immediacy: "{{ VMM_deploy_immediacy | default(omit) }}"
     resolution_immediacy: "{{ VMM_resolution_immediacy | default(omit) }}"
     state: "{{ whattodo | default('present', true) }}"
-  when: item.domain_name is defined
+  when: (item.epg_state is not defined or item.epg_state != 'absent') and item.domain_name is defined
   with_items: "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
@@ -45,7 +45,7 @@
     interface: "{{ item.1.port }}"
     deploy_immediacy: "{{ port_profile_deploy_immediacy | default(omit) }}" 
     state: "{{ item.1.state | default('present', true) }}"
-  when: item.0.domain_type == 'phys'
+  when: (item.0.epg_state is not defined or item.0.epg_state != 'absent') and item.0.domain_type == 'phys'
   with_subelements: 
   - "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
   - Static_Binding

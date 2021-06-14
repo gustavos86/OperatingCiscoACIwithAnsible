@@ -1,5 +1,5 @@
 ################################################################################
-# v0.29 2021-June-13                                                           #
+# v0.30 2021-June-14                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -356,27 +356,23 @@ BridgeDomains_Subnets:
 #                                                                              #
 ################################################################################
 
-# Optional parameters:
-# VMM_deploy_immediacy:          lazy or immediate                   # default is lazy
-# VMM_resolution_immediacy:      lazy or immediate or pre-provision  # default is lazy
-# port_profile_deploy_immediacy: lazy or immediate                   # default is lazy 
+# - Optional parameters with --tags staticbindings                   # This acction attaches Domain to EPG and configures Static Bindings in the EPG
 #
-# Config (uncomment if required):
-# VMM_deploy_immediacy:          immediate
-# VMM_resolution_immediacy:      pre-provision 
-# port_profile_deploy_immediacy: immediate
-#
+# VMM_deploy_immediacy:          lazy or immediate                   # default is lazy. When VMM Domain is attached to EPG. This is a Global parameter
+# VMM_resolution_immediacy:      lazy or immediate or pre-provision  # default is lazy. When VMM Domain is attached to EPG. This is a Global parameter
+# port_profile_deploy_immediacy: lazy or immediate                   # default is lazy. When Static Binding is configured in the EPG. This is a Global parameter
 
 AppProfiles_EPGs_Domains_Static_Bindings:
-- { Tenant_name: Ansible_Tnt, AppProfile_name: Networks, EPG_name: SimplestEPG                    }
-- { Tenant_name: Ansible_Tnt, AppProfile_name: Networks, EPG_name: Deleted_EPG, epg_state: absent }
+- { Tenant_name: Ansible_Tnt, AppProfile_name: Networks, EPG_name: SimplestEPG                     }
+- { Tenant_name: Ansible_Tnt, AppProfile_name: Networks, EPG_name: Deleted_EPG,  epg_state: absent }
+- { Tenant_name: Ansible_Tnt, AppProfile_name: Networks, EPG_name: Deleted2_EPG, epg_state: absent, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}"  }
 
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1002_192_168_2_0_24_VM,  BD_name: VLAN1002_192_168_2_0_24_BD, domain_name: VMM_Domain_test, domain_type: vmm, VM_platform: vmware                                      }
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1003_192_168_3_0_24_EPG, BD_name: VLAN1003_192_168_3_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1003, Static_Binding: "{{ port_profile_1 }}" }
 - { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, AppProfile_name: Networks, EPG_name: VLAN1004_192_168_4_0_24_EPG, BD_name: VLAN1004_192_168_4_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1004, Static_Binding: "{{ port_profile_1 }}" }
 
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: StorageNetworks, EPG_name: Storage_EPG, BD_name: Storage_BD, storage_domain_name: FC_Domain, Storage_FC_FCoE_Static_Binding: "{{ port_profile_storage_1 }}" }
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_TEST, AppProfile_name: StorageNetworks, EPG_name: Storage_EPG,  BD_name: Storage_BD, storage_domain_name: FC_Domain, Storage_FC_FCoE_Static_Binding: "{{ port_profile_storage_1 }}" }
 
 # "Port-Profiles" are variables that should be referenced from the EPG
 # in Static_Binding: or Storage_FC_FCoE_Static_Binding:

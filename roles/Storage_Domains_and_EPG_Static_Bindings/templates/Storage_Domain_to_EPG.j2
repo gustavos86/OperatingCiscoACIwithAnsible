@@ -1,0 +1,10 @@
+<polUni>
+  <fvTenant name="{{ item.Tenant_name }}" status="modified">
+    <fvAp name="{{ item.AppProfile_name }}">
+      <fvAEPg name="{{ item.EPG_name }}" status="">
+
+        <fvRsDomAtt tDn="uni/fc-{{ item.storage_domain_name }}"/>
+      </fvAEPg>
+    </fvAp>
+  </fvTenant>  
+</polUni>

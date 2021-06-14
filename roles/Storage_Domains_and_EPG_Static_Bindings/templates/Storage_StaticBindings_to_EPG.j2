@@ -1,0 +1,15 @@
+<polUni>
+  <fvTenant name="{{ item.0.Tenant_name }}" status="modified">
+    <fvAp name="{{ item.0.AppProfile_name }}">
+      <fvAEPg name="{{ item.0.EPG_name }}" status="">
+
+            {% if item.1.interface_type == 'switch_port' %}
+        <fvRsFcPathAtt tDn="topology/pod-{{ item.1.Pod_ID }}/paths-{{ item.1.Switch_ID }}/pathep-[eth{{ item.1.port }}]" vsan="vsan-{{ item.1.vsan_ID }}" vsanMode="native" status={% if item.1.state is defined and item.1.state == 'absent' %}"deleted"{% else %}""{% endif %}/>
+            {% elif item.1.interface_type == 'port_channel' %}
+        <fvRsFcPathAtt tDn="topology/pod-{{ item.1.Pod_ID }}/paths-{{ item.1.Switch_ID }}/pathep-[{{ item.1.port }}]"    vsan="vsan-{{ item.1.vsan_ID }}" vsanMode="native" status={% if item.1.state is defined and item.1.state == 'absent' %}"deleted"{% else %}""{% endif %}/>
+            {% endif %}
+
+      </fvAEPg>
+    </fvAp>
+  </fvTenant>  
+</polUni>

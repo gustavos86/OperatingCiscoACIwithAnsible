@@ -2,8 +2,8 @@
 # Ansible
 # 
 # APIC
-# Tenants > Networking > L3Outs
-- name: Storage Domain to EPG and Static Bindings
+# Tenants > Tenant > Application Profiles > Application EPGs > Domains
+- name: Storage Domain to EPG
   ignore_errors: yes
   cisco.aci.aci_rest:
     hostname: "{{ ansible_host }}"
@@ -12,8 +12,32 @@
     validate_certs: no
     path: /api/mo/uni.xml
     method: post
-    content: "{{ lookup('template', 'Storage_Domain_to_EPG_and_StaticBindings.j2') }}"
+    content: "{{ lookup('template', 'Storage_Domain_to_EPG.j2') }}"
+  when: (item.epg_state is not defined or item.epg_state != 'absent') and item.storage_domain_name is defined
   with_items:
   - "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# 
+# APIC
+# Tenants > Tenant > Application Profiles > Application EPGs > Fibre Channel (Paths)
+- name: FC/FCoE Static Bindings to EPG 
+  ignore_errors: yes
+  cisco.aci.aci_rest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    path: /api/mo/uni.xml
+    method: post
+    content: "{{ lookup('template', 'Storage_StaticBindings_to_EPG.j2') }}"
+  when: (item.0.epg_state is not defined or item.0.epg_state != 'absent')
+  with_subelements:
+  - "{{ AppProfiles_EPGs_Domains_Static_Bindings }}"
+  - Storage_FC_FCoE_Static_Binding
+  - flags:
+    skip_missing: True
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
