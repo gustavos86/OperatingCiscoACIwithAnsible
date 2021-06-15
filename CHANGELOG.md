@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.32] - 2021-06-15
+
+### Added
+
+- first MSO modules (limited deployment)
+
+### Changed
+
+- Added condition to "Add description to ports" as switch_node_id is required
+- Port's decription will be removed when Interface Selector is removed
+
 ## [v0.31] - 2021-06-15
 
 - Added role to onboard a new switch to ACI

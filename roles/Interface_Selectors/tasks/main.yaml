@@ -40,11 +40,15 @@
       {
         "infraHPathS": {
           "attributes": {
+          {% if item.1.state is defined and item.1.state == 'absent' %}
+            "descr": ""
+          {% else %}
             "descr": "{{ item.1.port_description }}"
+          {% endif %}
           }
         }
       }
-  when: item.1.port_description is defined
+  when: (item.1.port_description is defined) and (item.0.switch_node_id is defined)
   with_subelements: 
     - "{{ Switches_and_Interfaces_map }}"
     - ports_list

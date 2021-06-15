@@ -1,5 +1,5 @@
 ################################################################################
-# v0.31 2021-June-15                                                           #
+# v0.32 2021-June-15                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -46,13 +46,14 @@
 #
 # - Optional parameters with --tags intselectors
 #
+# switch_node_id:                                # IMPORTANT. When present along with port_description:, the Interface Selector name is also configured as the port description
 # - ports_list:
 # port_description:                              # IMPORTANT. When present, the Interface Selector name is defined by this variable, otherwise a default value is set
-#                                                # also, this text defines the port description located in
+#                                                # also, this text is also configured as the port description located in
 #                                                # Fabric > Inventory > Pod > Leaf > Interfaces > Physical Interfaces > eth1/x > "Description:" field
 #                                                # via CLI in the Switch can be seen with 'show interface description' or 'show interface status'
 #
-# state: absent                                  # Removes the Interface Selector from the configuration
+# state: absent                                  # Removes the Interface Selector from the configuration. Removes the port description as well
 
 # - Required parameters with --tags switchprofiles 
 #
