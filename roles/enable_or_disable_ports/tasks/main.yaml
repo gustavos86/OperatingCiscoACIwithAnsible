@@ -1,8 +1,8 @@
+---
 # Ansible
 # Module not available
 # APIC
 #
----
 - pause:
     prompt: "CAUTION! Do you really wish to shutdown some of the ports? Type yes and ENTER to agree, otherwise this task is ignored"
   register: myAnswer

@@ -1,0 +1,28 @@
+
+---
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_fabric_node_module.html#ansible-collections-cisco-aci-aci-fabric-node-module
+# APIC
+# Fabric > Inventory > Fabric Membership
+- pause:
+    prompt: "CAUTION! You will onboard a new Switch to the APIC. It is suggested to perform this action just once. Type yes and ENTER to agree, otherwise this task is ignored"
+  register: myAnswerOnboardSwitch
+
+- name: Adding new Switch to ACI
+  ignore_errors: yes
+  cisco.aci.aci_fabric_node:
+    hostname: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    switch: "{{ item.switch_name }}"
+    serial: "{{ item.SERIAL }}"
+    pod_id: "{{ item.pod }}"
+    node_id: "{{ item.switch_node_id }}"
+    role: leaf
+    validate_certs: no
+  when:
+     (item.switch_name is defined) and (item.SERIAL is defined) and (item.pod is defined) and (item.switch_node_id is defined) and (myAnswerOnboardSwitch['user_input'] == 'yes')
+  with_items: 
+    "{{ Switches_and_Interfaces_map }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

@@ -1,5 +1,5 @@
 ################################################################################
-# v0.30 2021-June-14                                                           #
+# v0.31 2021-June-15                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -58,8 +58,9 @@
   #          Operations         #
   #                             #
   ###############################
-
   # IMPORTANT. Does not run by default when no tag is specified
+  
   # run with: ansible-playbook aci_playbook.yaml -i inventory --tags shutdownports
-
   - { role: enable_or_disable_ports, tags: [shutdownports, never] } # enable or disable interfaces defined in Switches_and_Interfaces_map
+  # run with: ansible-playbook aci_playbook.yaml -i inventory --tags onboardswtich
+  - { role: onboard_new_switch,      tags: [onboardswtich, never] } # adds a new Switch to the Pod and configures it Out-of-Band and Inband IP addresses

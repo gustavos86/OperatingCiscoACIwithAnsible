@@ -1,5 +1,5 @@
 ################################################################################
-# v0.30 2021-June-14                                                           #
+# v0.31 2021-June-15                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -74,14 +74,23 @@
 # port:
 # port_state: enabled or disabled                  # set value to disabled to shutdown the port. Default is to perform no action on the port status
 
+# - Required parameters with --tags onboardswtich  # IMPORTANT. Does not run by default when no tag is specified
+#
+# SERIAL:
+# switch_name:
+# pod:
+# switch_node_id:
+
 Switches_and_Interfaces_map:
   - switch_name: Leaf1101
     pod: 1
     switch_node_id: 1101
+    SERIAL: FDO2031124L
 
   - switch_name: Leaf1102
     pod: 1      
     switch_node_id: 1102
+    SERIAL: FDO2031124M
     ports_list:
     - { port: 18, port_state: enabled }
     - { port: 19, port_state: enabled }
@@ -89,17 +98,21 @@ Switches_and_Interfaces_map:
     - { port: 21, port_state: enabled,                                   interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort, state: absent }
     - { port: 22, port_state: enabled,                                   interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC                      }
     - { port: 23, port_state: enabled, port_description: FirewallA,      interface_type: vpc,          interface_policy_group: 101_102_eth_6_vPC                       }
+    
   - switch_name: Leaf1103
     pod: 1
     switch_node_id: 1103
+    SERIAL: FDO2031124O
     ports_list:
     - { port: 30, port_state: disabled, port_description: VMwareCluster1, interface_type: switch_port,  interface_policy_group: Auto_CDP_LLDP_AccessPort }
     - { port: 31, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC       }
     - { port: 32, port_state: disabled, port_description: Router,         interface_type: port_channel, interface_policy_group: 101_102_eth_4_5_PC       }
     - { port: 33, port_state: disabled, port_description: FirewallA,      interface_type: vpc,          interface_policy_group: 101_102_eth_6_vPC        }
+
   - switch_name: Leaf1104
     pod: 1
     switch_node_id: 1104
+    SERIAL: FDO2031124P
     ports_list:
     - { port: 33, port_state: enabled, port_description: FirewallA,      interface_type: vpc,         interface_policy_group: 101_102_eth_6_vPC        }
     - { port: 40, port_state: enabled, port_description: VMwareCluster1, interface_type: switch_port, interface_policy_group: Auto_CDP_LLDP_AccessPort }
