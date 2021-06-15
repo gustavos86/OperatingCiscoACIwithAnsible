@@ -1,0 +1,57 @@
+- name: MSO Schemas and Templates
+  ignore_errors: yes
+  cisco.mso.mso_schema_template:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    tenant: "{{ item.0.Tenant_name }}"
+    template: "{{ item.1.Template_name }}"
+    state: present
+  with_subelements:
+  - "{{ Schemas_Templates }}"
+  - Templates
+  - flags:
+    skip_missing: True
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+- name: Pre-processing variable
+  ignore_errors: yes
+  set_fact:
+    test_var: >
+      {{ test_var|d([])
+        + [ {} | combine(item[0]) | combine(item[1]) ]
+      }}
+  with_subelements:
+  - "{{ Schemas_Templates }}"
+  - Templates
+  - flags:
+    skip_missing: True
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+#- debug:
+#    msg: "{{ item }}"
+#  with_items:
+#  - "{{ test_var }}"
+
+- name:  MSO add Sites to Schemas
+  ignore_errors: yes
+  cisco.mso.mso_schema_site:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.1 }}"
+    state: present
+  with_subelements:
+  - "{{ test_var }}"
+  - Sites
+  - flags:
+    skip_missing: True
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

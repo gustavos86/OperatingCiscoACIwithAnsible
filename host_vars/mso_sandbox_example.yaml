@@ -1,0 +1,28 @@
+Tenants_Sites:
+- { Tenant_name: Ansible_Tnt, Tenant_in_Sites: [site1] }   # Tenant_in_Sites: [site1,site2]
+
+Schemas_Templates:
+- Schema_name: Ansible_Schema
+  Tenant_name: Ansible_Tnt
+  Templates:
+  - Template_name: VLC
+    Sites: [site1]         
+  - Template_name: BDS
+    Sites: [site1]
+  - Template_name: VLC_BDS
+    Sites: [site1,site2]  # Sites: [site1,site2]
+
+BridgeDomains:
+- { Schemas_Templates: Ansible_Schema, Template_name: VLC, Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: no, scope: "public,shared", arp_flooding: yes, l2_unknown_unicast: flood }  
+
+EPGs:
+- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
+
+port_profile_1:
+- { Pod_ID: 1, Switch_ID: 1102,        interface_type: switch_port,  port: 1/21,                state: absent     }    # optional  state: absent
+- { Pod_ID: 1, Switch_ID: 1103,        interface_type: switch_port,  port: 1/30,                native_vlan: 1001 }    # optional  native_vlan: 1001
+- { Pod_ID: 1, Switch_ID: 1103,        interface_type: port_channel, port: 101_102_eth_4_5_PC                     }
+- { Pod_ID: 1, Switch_ID: [1103,1104], interface_type: vpc,          port: 101_102_eth_6_vPC,   native_vlan: 1003 }
+
+L3Outs:
+- { L3Out_name: L3Out1 }

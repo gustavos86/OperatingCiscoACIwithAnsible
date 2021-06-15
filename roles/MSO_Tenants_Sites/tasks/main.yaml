@@ -1,0 +1,31 @@
+- name: MSO Tenants
+  ignore_errors: yes
+  cisco.mso.mso_tenant:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.Tenant_name }}"
+    state: present
+  with_items:
+  - "{{ Tenants_Sites }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+- name: MSO associate Tenant to Sites
+  ignore_errors: yes
+  cisco.mso.mso_tenant_site:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    tenant: "{{ item.0.Tenant_name }}"
+    site: "{{ item.1 }}"
+    state: present
+  with_subelements: 
+    - "{{ Tenants_Sites }}"
+    - Tenant_in_Sites
+    - flags:
+      skip_missing: True
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

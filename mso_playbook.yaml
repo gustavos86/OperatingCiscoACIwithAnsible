@@ -1,0 +1,27 @@
+################################################################################
+# v0.32 2021-June-15                                                           #
+# This Ansible playbook comes with no guarantees                               #
+# The use of this Ansible playbook is responsibility solely of who executes it #
+# No liabilities shall be deemed to the creator of this Ansible playbook       #
+#                                                                              #
+# Ansible playbook hosted in                                                   #
+# https://github.com/gustavos86/OperatingCiscoACIwithAnsible                   #
+################################################################################
+
+- name: MSO playbook
+  hosts: mso_sandbox_example
+  connection: local
+  gather_facts: no
+
+  vars:
+    loop_control_pause: 0          # adds a delay between loop iterations. Required if the MSO cannot handle the rate of all the connections
+
+  roles:
+  ###############################
+  #                             #
+  #   Multi-Site Orchestrator   #
+  #                             #
+  ###############################
+
+  - MSO_Tenants_Sites
+  - MSO_Schemas_Templates
