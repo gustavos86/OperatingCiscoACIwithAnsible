@@ -1,0 +1,93 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_bd_module.html#ansible-collections-cisco-mso-mso-schema-template-bd-module
+# MSO
+# Application Management > Schemas > Templates > TEMPLATES > BRIDGE DOMAIN
+
+- name: MSO Bridge Domain - Template level
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_bd:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    bd: "{{ item.BD_name }}"
+    layer2_stretch: "{{ item.layer2_stretch }}"
+    vrf:
+      name: "{{ item.VRF_info.VRF_name }}"
+      schema: "{{ item.VRF_info.Schema_name }}"
+      template: "{{ item.VRF_info.Template_name }}"
+    state: present
+  with_items: "{{ BridgeDomains }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_bd_module.html#ansible-collections-cisco-mso-mso-schema-site-bd-module
+# MSO
+# Application Management > Schemas > Templates > SITES > BRIDGE DOMAIN
+
+- name: MSO Bridge Domain - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_bd:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.1 }}"
+    bd: "{{ item.0.BD_name }}"
+    state: present
+  with_subelements:
+  - "{{ BridgeDomains }}"
+  - Sites
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_bd_subnet_module.html#ansible-collections-cisco-mso-mso-schema-template-bd-subnet-module
+# MSO
+# Application Management > Schemas > Templates > TEMPLATES > BRIDGE DOMAIN > Subnets
+
+- name: MSO Bridge Domain Subnets - Template level
+  cisco.mso.mso_schema_template_bd_subnet:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    bd: "{{ item.BD_name }}"
+    subnet: "{{ item.bd_subnet_mask }}"
+    state: present
+  with_items: "{{ BridgeDomains }}"
+  when: item.layer2_stretch == true
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_bd_subnet_module.html#ansible-collections-cisco-mso-mso-schema-site-bd-subnet-module
+# MSO
+# Application Management > Schemas > Templates > SITES > BRIDGE DOMAIN > Subnets
+
+- name: MSO Bridge Domain Subnets - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_bd_subnet:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.1 }}"
+    bd: "{{ item.0.BD_name }}"
+    subnet: "{{ item.0.bd_subnet_mask }}"
+    state: present
+  with_subelements:
+  - "{{ BridgeDomains }}"
+  - Sites
+  when: item.0.layer2_stretch == false
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

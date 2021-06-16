@@ -1,0 +1,42 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_anp_module.html#ansible-collections-cisco-mso-mso-schema-template-anp-module
+# MSO
+# Application Management > Schemas > Templates > TEMPLATES > AP
+
+- name:  MSO Application Profile - Template level
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_anp:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    anp: "{{ item.AppProfile_name }}"
+    state: present
+  with_items: "{{ ApplicationProfiles }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_anp_module.html#ansible-collections-cisco-mso-mso-schema-site-anp-module
+# MSO
+# Application Management > Schemas > Templates > SITES > AP
+
+- name:  MSO Application Profile - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_anp:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    anp: "{{ item.0.AppProfile_name }}"
+    site: "{{ item.1 }}"
+    state: present
+  with_subelements: 
+  - "{{ ApplicationProfiles }}"
+  - Sites
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

@@ -1,0 +1,42 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_bd_module.html#ansible-collections-cisco-mso-mso-schema-template-bd-module
+# MSO
+# Application Management > Schemas > Templates > TEMPLATES > VRF
+
+- name: MSO VRF - Template level
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_vrf:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    vrf: "{{ item.VRF_name }}"
+    state: present
+  with_items: "{{ VRFs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_vrf_module.html#ansible-collections-cisco-mso-mso-schema-site-vrf-module
+# MSO
+# Application Management > Schemas > Templates > SITES > VRF
+
+- name: MSO VRF - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_vrf:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    vrf: "{{ item.0.VRF_name }}"
+    site: "{{ item.1 }}"
+    state: present
+  with_subelements: 
+  - "{{ VRFs }}"
+  - Sites
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

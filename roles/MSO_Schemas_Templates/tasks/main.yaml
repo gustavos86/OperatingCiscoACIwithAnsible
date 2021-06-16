@@ -1,3 +1,8 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_module.html#ansible-collections-cisco-mso-mso-schema-template-module
+# MSO
+# Application Management > Schemas > Templates
+
 - name: MSO Schemas and Templates
   ignore_errors: yes
   cisco.mso.mso_schema_template:
@@ -36,6 +41,11 @@
 #    msg: "{{ item }}"
 #  with_items:
 #  - "{{ test_var }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_module.html#ansible-collections-cisco-mso-mso-schema-site-module
+# MSO
+# Application Management > Schemas > Templates > Sites
 
 - name:  MSO add Sites to Schemas
   ignore_errors: yes

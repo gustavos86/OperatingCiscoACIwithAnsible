@@ -1,0 +1,60 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_anp_epg_module.html#ansible-collections-cisco-mso-mso-schema-template-anp-epg-module
+# MSO
+# Application Management > Schemas > Templates > SITE > AP > EPG > Domains
+
+- name: MSO Domain in EPG - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_anp_epg_domain:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.1 }}"
+    anp: "{{ item.0.AppProfile_name }}"
+    epg: "{{ item.0.EPG_name }}"
+    domain_association_type:  "{{ item.0.domain_type }}"
+    domain_profile: "{{ item.0.domain_name }}"
+    deployment_immediacy: lazy
+    resolution_immediacy: lazy
+    state: present
+  with_subelements: 
+  - "{{ EPGs }}"
+  - Sites
+  when: (item.0.domain_name is defined) and (item.0.domain_type is defined)
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_anp_epg_module.html#ansible-collections-cisco-mso-mso-schema-template-anp-epg-module
+# MSO
+# Application Management > Schemas > Templates > SITE > AP > EPG > Static ports
+
+- name: MSO Static Ports in EPG - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_anp_epg_staticport:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    site: "{{ item.1 }}"
+    anp: "{{ item.AppProfile_name }}"
+    epg: "{{ item.EPG_name }}"
+    #### PENDING #### This will require pre-processing the variable as I cannot go 3 levels deep into the with_subelements loop
+    type: port
+    pod: pod-1
+    leaf: 101
+    path: eth1/1
+    vlan: 126
+    #### PENDING ####
+    state: present
+  with_subelements: 
+  - "{{ EPGs }}"
+  - Sites
+  when: item.0.Static_Binding is defined
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

@@ -1,22 +1,100 @@
+################################################################################
+# v0.33 2021-June-16                                                           #
+# This Ansible playbook comes with no guarantees                               #
+# The use of this Ansible playbook is responsibility solely of who executes it #
+# No liabilities shall be deemed to the creator of this Ansible playbook       #
+#                                                                              #
+# Ansible playbook hosted in                                                   #
+# https://github.com/gustavos86/OperatingCiscoACIwithAnsible                   #
+################################################################################
+
+##################################################################
+# roles:                                                         #
+# - MSO_Tenants_Sites                                            #
+#                                                                #
+# run with:                                                      #
+# ansible-playbook mso_playbook.yaml -i inventory --tags tenants #
+#                                                                #
+##################################################################
+
 Tenants_Sites:
 - { Tenant_name: Ansible_Tnt, Tenant_in_Sites: [site1] }   # Tenant_in_Sites: [site1,site2]
+
+##################################################################
+# roles:                                                         #
+# - MSO_Schemas_Templates                                        #
+#                                                                #
+# run with:                                                      #
+# ansible-playbook mso_playbook.yaml -i inventory --tags schemas #
+#                                                                #
+##################################################################
 
 Schemas_Templates:
 - Schema_name: Ansible_Schema
   Tenant_name: Ansible_Tnt
   Templates:
-  - Template_name: VLC
+  - Template_name: Site1
     Sites: [site1]         
-  - Template_name: BDS
-    Sites: [site1]
-  - Template_name: VLC_BDS
+  - Template_name: Site2
+    Sites: [site2]
+  - Template_name: Site1_Site2
     Sites: [site1,site2]  # Sites: [site1,site2]
 
+###############################################################
+# roles:                                                      #
+# - MSO_VRFs                                                  #
+#                                                             #
+# run with:                                                   #
+# ansible-playbook mso_playbook.yaml -i inventory --tags vrfs #
+#                                                             #
+###############################################################
+
+# - Required parameters with --tags vrfs
+#
+# Schema_name:
+# Template_name:
+# Sites:
+# VRF_name:
+
+VRFs:
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Sites: [site1,site2], VRF_name: VRF_Site1_Site2 }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       Sites: [site1],       VRF_name: VRF_Site1       }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       VRF_name: VRF_Site2       }
+
+##############################################################
+# roles:                                                     #
+# - MSO_BridgeDomains_and_Subnets                            #
+#                                                            #
+# run with:                                                  #
+# ansible-playbook mso_playbook.yaml -i inventory --tags bds #
+#                                                            #
+##############################################################
+
+# - Required parameters with --tags bds
+#
+# Schemas_name:
+# Template_name:
+# Sites:
+# VRF_info:
+# BD_name:
+#
+# - Optional parameters with --tags bds
+#
+
 BridgeDomains:
-- { Schemas_Templates: Ansible_Schema, Template_name: VLC, Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV, BD_name: VLAN1001_192_168_1_0_24_BD, bd_subnet: 192.168.1.1, bd_subnet_mask: 24, enable_routing: no, scope: "public,shared", arp_flooding: yes, l2_unknown_unicast: flood }  
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Sites: [site1,site2], VRF_info: { Schema_name: Ansible_Schema, Template_name: Site1_Site2, VRF_name: VRF_Site1_Site2 }, BD_name: VLAN1012_192_168_12_0_24_BD, layer2_stretch: yes, bd_subnet_mask: 192.168.12.1/24 }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       Sites: [site1],       VRF_info: { Schema_name: Ansible_Schema, Template_name: Site1,       VRF_name: VRF_Site1       }, BD_name: VLAN1001_192_168_1_0_24_BD,  layer2_stretch: no,  bd_subnet_mask: 192.168.1.1/24  }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       VRF_info: { Schema_name: Ansible_Schema, Template_name: Site2,       VRF_name: VRF_Site2       }, BD_name: VLAN1002_192_168_2_0_24_BD,  layer2_stretch: no,  bd_subnet_mask: 192.168.2.1/24  }
+
+ApplicationProfiles:
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Sites: [site1,site2], AppProfile_name: Networks_Site1_Site2 }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       Sites: [site1],       AppProfile_name: Networks_Site1 }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       AppProfile_name: Networks_Site2 }
 
 EPGs:
-- { Tenant_name: Ansible_Tnt, VRF_name: VRF_DEV,  AppProfile_name: Networks, EPG_name: VLAN1001_192_168_1_0_24_EPG, BD_name: VLAN1001_192_168_1_0_24_BD, domain_name: PhysicalDomain, domain_type: phys, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Sites: [site1,site2], VRF_name: VRF_Site1_Site2, AppProfile_name: Networks_Site1_Site2, EPG_name: VLAN1012_192_168_12_0_24_EPG, BD_info: { Schema_name: Ansible_Schema, Template_name: Site1_Site2, BD_name: VLAN1012_192_168_12_0_24_BD }, domain_name: PhysicalDomain, domain_type: physicalDomain }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       Sites: [site1],       VRF_name: VRF_Site1,       AppProfile_name: Networks_Site1,       EPG_name: VLAN1001_192_168_1_0_24_EPG,  BD_info: { Schema_name: Ansible_Schema, Template_name: Site1,       BD_name: VLAN1001_192_168_1_0_24_BD  }, domain_name: PhysicalDomain, domain_type: physicalDomain, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       VRF_name: VRF_Site2,       AppProfile_name: Networks_Site2,       EPG_name: VLAN1002_192_168_2_0_24_EPG,  BD_info: { Schema_name: Ansible_Schema, Template_name: Site2,       BD_name: VLAN1002_192_168_2_0_24_BD  }, domain_name: PhysicalDomain, domain_type: physicalDomain }
 
 port_profile_1:
 - { Pod_ID: 1, Switch_ID: 1102,        interface_type: switch_port,  port: 1/21,                state: absent     }    # optional  state: absent

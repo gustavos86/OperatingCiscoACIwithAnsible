@@ -1,0 +1,48 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_anp_epg_module.html#ansible-collections-cisco-mso-mso-schema-template-anp-epg-module
+# MSO
+# Application Management > Schemas > Templates > TEMPLATES > EPG
+
+- name: MSO EPG - Template level
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_anp_epg:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    anp: "{{ item.AppProfile_name }}"
+    epg: "{{ item.EPG_name }}"
+    bd:
+      name: "{{ item.BD_info.BD_name }}"
+      schema: "{{ item.BD_info.Schema_name }}"
+      template: "{{ item.BD_info.Template_name }}"
+    state: present
+  with_items: "{{ EPGs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_anp_epg_module.html#ansible-collections-cisco-mso-mso-schema-site-anp-epg-module
+# MSO
+# Application Management > Schemas > Templates > SITES > EPG
+
+- name: MSO EPG - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_anp_epg:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    anp: "{{ item.0.AppProfile_name }}"
+    epg: "{{ item.0.EPG_name }}"
+    site: "{{ item.1 }}"
+    state: present
+  with_subelements: 
+  - "{{ EPGs }}"
+  - Sites
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
