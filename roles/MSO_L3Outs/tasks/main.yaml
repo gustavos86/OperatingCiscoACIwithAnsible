@@ -1,0 +1,100 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_l3out_module.html#ansible-collections-cisco-mso-mso-schema-template-l3out-module
+# MSO
+# Application Management > Schemas > Templates > TEMPLATES > L3OUT
+
+- name: MSO L3Out - Template level
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_l3out:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    l3out: "{{ item.L3Out_name }}"
+    vrf:
+      schema: "{{ item.VRF_info.Schema_name }}"
+      template: "{{ item.VRF_info.Template_name }}"
+      name: "{{ item.VRF_info.VRF_name }}"
+    state: present
+  with_items: "{{ L3Outs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_l3out_module.html#ansible-collections-cisco-mso-mso-schema-site-l3out-module
+# MSO
+# Application Management > Schemas > Templates > SITE > L3OUT
+
+- name: MSO L3Out - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_l3out:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.1 }}"
+    l3out: "{{ item.0.L3Out_name }}"
+    vrf:
+      schema: "{{ item.0.VRF_info.Schema_name }}"
+      template: "{{ item.0.VRF_info.Template_name }}"
+      name: "{{ item.0.VRF_info.VRF_name }}"
+    state: present
+  with_subelements:
+  - "{{ L3Outs }}"
+  - Sites
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_external_epg_module.html#ansible-collections-cisco-mso-mso-schema-template-external-epg-module
+# MSO
+# Application Management > Schemas > Templates > TEMPLATES > EXTERNAL EPG
+
+- name: MSO External EPG - Template level
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_external_epg:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    external_epg: "{{ item.ExtEPG_name }}"
+    vrf:
+      schema: "{{ item.VRF_info.Schema_name }}"
+      template: "{{ item.VRF_info.Template_name }}"
+      name: "{{ item.VRF_info.VRF_name }}"
+    l3out:
+      name: "{{ item.L3Out_name }}"
+    state: present
+  with_items: "{{ L3Outs }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_site_external_epg_module.html#ansible-collections-cisco-mso-mso-schema-site-external-epg-module
+# MSO
+# Application Management > Schemas > Templates > SITE > EXTERNAL EPG
+
+- name: MSO External EPG - Site level
+  ignore_errors: yes
+  cisco.mso.mso_schema_site_external_epg:    
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.1 }}"
+    external_epg: "{{ item.0.ExtEPG_name }}"
+    l3out: "{{ item.0.L3Out_name }}"
+    state: present
+  with_subelements:
+  - "{{ L3Outs }}"
+  - Sites
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

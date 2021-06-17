@@ -15,9 +15,9 @@
     bd: "{{ item.BD_name }}"
     layer2_stretch: "{{ item.layer2_stretch }}"
     vrf:
-      name: "{{ item.VRF_info.VRF_name }}"
       schema: "{{ item.VRF_info.Schema_name }}"
       template: "{{ item.VRF_info.Template_name }}"
+      name: "{{ item.VRF_info.VRF_name }}"
     state: present
   with_items: "{{ BridgeDomains }}"
   loop_control:

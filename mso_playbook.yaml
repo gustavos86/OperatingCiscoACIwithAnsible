@@ -1,5 +1,5 @@
 ################################################################################
-# v0.33 2021-June-16                                                           #
+# v0.34 2021-June-17                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -23,10 +23,12 @@
   #                             #
   ###############################
 
-  - { role: MSO_Tenants_Sites,                   tags: tenants        }
-  - { role: MSO_Schemas_Templates,               tags: schemas        }
-  - { role: MSO_VRFs,                            tags: vrfs           }
-  - { role: MSO_BridgeDomains_and_Subnets,       tags: bds            }
-  - { role: MSO_AppProfiles,                     tags: aps            }
-  - { role: MSO_EPGs,                            tags: epgs           }
-  - { role: MSO_Domains_and_EPG_Static_Bindings, tags: staticbindings }
+  - { role: MSO_Tenants_Sites,                   tags: tenants         }
+  - { role: MSO_Schemas_Templates,               tags: schemas         }
+  - { role: MSO_VRFs,                            tags: vrfs            }
+  - { role: MSO_BridgeDomains_and_Subnets,       tags: bds             }
+  - { role: MSO_AppProfiles,                     tags: aps             }
+  - { role: MSO_EPGs,                            tags: epgs            }
+  - { role: MSO_Domains_and_EPG_Static_Bindings, tags: staticbindings  }
+  - { role: MSO_L3Outs,                          tags: l3outs          }
+  - { role: MSO_Deploy_action,                   tags: [deploy, never] }

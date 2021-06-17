@@ -1,0 +1,18 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_deploy_module.html#ansible-collections-cisco-mso-mso-schema-template-deploy-module
+# MSO
+# Application Management > Schemas > Templates > Deploy to sites
+
+- name: MSO Schema > Template > Deploy to sites
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_deploy:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    state: "{{ item.deploy_state }}"
+  with_items: "{{ Deploy_to_sites }}"
+  loop_control:
+    pause: "{{ loop_control_pause | default(0) }}"

@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.35]
+
+### To be implemented:
+
+- cisco.mso.mso_schema_template_external_epg_subnet in External EPG
+- Make External EPG creation optional in APIC L3Out
+
+## [v0.34] - 2021-06-17
+
+### Added
+
+- deploy EPG Static Bindings in MSO
+- deploy L3Outs in MSO
+- role to trigger the deployment of objects from MSO to APICs in MSO
+- deploy External EPG as part of L3Out in MSO
+
 ## [v0.33] - 2021-06-16
 
 ### Added

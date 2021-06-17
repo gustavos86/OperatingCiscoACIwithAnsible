@@ -10,20 +10,18 @@
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: no
-    schema: "{{ item.0.Schema_name }}"
-    template: "{{ item.0.Template_name }}"
-    site: "{{ item.1 }}"
-    anp: "{{ item.0.AppProfile_name }}"
-    epg: "{{ item.0.EPG_name }}"
-    domain_association_type:  "{{ item.0.domain_type }}"
-    domain_profile: "{{ item.0.domain_name }}"
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    site: "{{ item.Site }}"
+    anp: "{{ item.AppProfile_name }}"
+    epg: "{{ item.EPG_name }}"
+    domain_association_type:  "{{ item.domain_type }}"
+    domain_profile: "{{ item.domain_name }}"
     deployment_immediacy: lazy
     resolution_immediacy: lazy
     state: present
-  with_subelements: 
-  - "{{ EPGs }}"
-  - Sites
-  when: (item.0.domain_name is defined) and (item.0.domain_type is defined)
+  with_items: "{{ EPGs_Domains_Static_Bindings_Site_level }}"
+  when: (item.domain_name is defined) and (item.domain_type is defined)
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
@@ -39,22 +37,22 @@
     username: "{{ username }}"
     password: "{{ password }}"
     validate_certs: no
-    schema: "{{ item.Schema_name }}"
-    template: "{{ item.Template_name }}"
-    site: "{{ item.1 }}"
-    anp: "{{ item.AppProfile_name }}"
-    epg: "{{ item.EPG_name }}"
-    #### PENDING #### This will require pre-processing the variable as I cannot go 3 levels deep into the with_subelements loop
-    type: port
-    pod: pod-1
-    leaf: 101
-    path: eth1/1
-    vlan: 126
-    #### PENDING ####
-    state: present
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.0.Site }}"
+    anp: "{{ item.0.AppProfile_name }}"
+    epg: "{{ item.0.EPG_name }}"
+    pod: "{{ item.1.Pod }}"
+    leaf: "{{ item.1.Leaf }}"
+    type: "{{ item.1.type }}"
+    path: "{{ item.1.port }}"
+    vlan: "{{ item.0.Encap_VLAN }}"
+    mode: "{% if item.1.native_vlan is defined and item.1.native_vlan == item.0.Encap_VLAN %}native{% else %}regular{% endif %}"
+    state: "{{ item.1.state | default('present', true) }}"
   with_subelements: 
-  - "{{ EPGs }}"
-  - Sites
-  when: item.0.Static_Binding is defined
+  - "{{ EPGs_Domains_Static_Bindings_Site_level }}"
+  - Static_Binding
+  - flags:
+    skip_missing: True
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

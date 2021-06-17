@@ -1,5 +1,5 @@
 ################################################################################
-# v0.33 2021-June-16                                                           #
+# v0.34 2021-June-17                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -92,15 +92,29 @@ ApplicationProfiles:
 - { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       AppProfile_name: Networks_Site2 }
 
 EPGs:
-- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Sites: [site1,site2], VRF_name: VRF_Site1_Site2, AppProfile_name: Networks_Site1_Site2, EPG_name: VLAN1012_192_168_12_0_24_EPG, BD_info: { Schema_name: Ansible_Schema, Template_name: Site1_Site2, BD_name: VLAN1012_192_168_12_0_24_BD }, domain_name: PhysicalDomain, domain_type: physicalDomain }
-- { Schema_name: Ansible_Schema, Template_name: Site1,       Sites: [site1],       VRF_name: VRF_Site1,       AppProfile_name: Networks_Site1,       EPG_name: VLAN1001_192_168_1_0_24_EPG,  BD_info: { Schema_name: Ansible_Schema, Template_name: Site1,       BD_name: VLAN1001_192_168_1_0_24_BD  }, domain_name: PhysicalDomain, domain_type: physicalDomain, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
-- { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       VRF_name: VRF_Site2,       AppProfile_name: Networks_Site2,       EPG_name: VLAN1002_192_168_2_0_24_EPG,  BD_info: { Schema_name: Ansible_Schema, Template_name: Site2,       BD_name: VLAN1002_192_168_2_0_24_BD  }, domain_name: PhysicalDomain, domain_type: physicalDomain }
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Sites: [site1,site2], VRF_name: VRF_Site1_Site2, AppProfile_name: Networks_Site1_Site2, EPG_name: VLAN1012_192_168_12_0_24_EPG, BD_info: { Schema_name: Ansible_Schema, Template_name: Site1_Site2, BD_name: VLAN1012_192_168_12_0_24_BD } }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       Sites: [site1],       VRF_name: VRF_Site1,       AppProfile_name: Networks_Site1,       EPG_name: VLAN1001_192_168_1_0_24_EPG,  BD_info: { Schema_name: Ansible_Schema, Template_name: Site1,       BD_name: VLAN1001_192_168_1_0_24_BD  } }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       VRF_name: VRF_Site2,       AppProfile_name: Networks_Site2,       EPG_name: VLAN1002_192_168_2_0_24_EPG,  BD_info: { Schema_name: Ansible_Schema, Template_name: Site2,       BD_name: VLAN1002_192_168_2_0_24_BD  } }
+
+EPGs_Domains_Static_Bindings_Site_level:
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Site: site1, AppProfile_name: Networks_Site1_Site2, EPG_name: VLAN1012_192_168_12_0_24_EPG, domain_name: PhysicalDomain, domain_type: physicalDomain, Encap_VLAN: 1012, Static_Binding: "{{ port_profile_1 }}" }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       Site: site1, AppProfile_name: Networks_Site1,       EPG_name: VLAN1001_192_168_1_0_24_EPG,  domain_name: PhysicalDomain, domain_type: physicalDomain, Encap_VLAN: 1001, Static_Binding: "{{ port_profile_1 }}" }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       Site: site2, AppProfile_name: Networks_Site2,       EPG_name: VLAN1002_192_168_2_0_24_EPG,  domain_name: PhysicalDomain, domain_type: physicalDomain, Encap_VLAN: 1002, Static_Binding: "{{ port_profile_1 }}" }
 
 port_profile_1:
-- { Pod_ID: 1, Switch_ID: 1102,        interface_type: switch_port,  port: 1/21,                state: absent     }    # optional  state: absent
-- { Pod_ID: 1, Switch_ID: 1103,        interface_type: switch_port,  port: 1/30,                native_vlan: 1001 }    # optional  native_vlan: 1001
-- { Pod_ID: 1, Switch_ID: 1103,        interface_type: port_channel, port: 101_102_eth_4_5_PC                     }
-- { Pod_ID: 1, Switch_ID: [1103,1104], interface_type: vpc,          port: 101_102_eth_6_vPC,   native_vlan: 1003 }
+- { Pod: pod-1, Leaf: "1102",      type: port, port: eth1/21,            state: absent     } # optional  state: absent
+- { Pod: pod-1, Leaf: "1103",      type: port, port: eth1/30,            native_vlan: 1001 } # optional  native_vlan: 1001
+- { Pod: pod-1, Leaf: "1103",      type: dpc,  port: 101_102_eth_4_5_PC                    }
+- { Pod: pod-1, Leaf: "1103-1104", type: vpc,  port: 101_102_eth_6_vPC,  native_vlan: 1002 }
 
 L3Outs:
-- { L3Out_name: L3Out1 }
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, Sites: [site1,site2], L3Out_name: L3Out1_2, ExtEPG_name: ExtEPG1_2, VRF_info: { Schema_name: Ansible_Schema, Template_name: Site1_Site2, VRF_name: VRF_Site1_Site2 } }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       Sites: [site1],       L3Out_name: L3Out1,   ExtEPG_name: ExtEPG1,   VRF_info: { Schema_name: Ansible_Schema, Template_name: Site1,       VRF_name: VRF_Site1       } }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       Sites: [site2],       L3Out_name: L3Out2,   ExtEPG_name: ExtEPG2,   VRF_info: { Schema_name: Ansible_Schema, Template_name: Site2,       VRF_name: VRF_Site2       } }
+
+# deploy_state deploy or status or undeploy
+
+Deploy_to_sites:
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, deploy_state: deploy }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       deploy_state: deploy }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       deploy_state: deploy }
