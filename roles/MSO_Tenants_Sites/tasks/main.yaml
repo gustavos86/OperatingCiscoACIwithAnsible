@@ -1,9 +1,15 @@
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_tenant_module.html#ansible-collections-cisco-mso-mso-tenant-module
+# MSO
+# Application Management > Tenants
+
 - name: MSO Tenants
   ignore_errors: yes
   cisco.mso.mso_tenant:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    login_domain: "{{ login_domain | default(omit) }}"
     validate_certs: no
     tenant: "{{ item.Tenant_name }}"
     state: present
@@ -12,12 +18,18 @@
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
 
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_tenant_site_module.html#ansible-collections-cisco-mso-mso-tenant-site-module
+# MSO
+# Application Management > Tenants > Associated Sites
+
 - name: MSO associate Tenant to Sites
   ignore_errors: yes
   cisco.mso.mso_tenant_site:
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    login_domain: "{{ login_domain | default(omit) }}"
     validate_certs: no
     tenant: "{{ item.0.Tenant_name }}"
     site: "{{ item.1 }}"

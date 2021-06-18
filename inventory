@@ -1,2 +1,2 @@
 apicsim_sandbox_example ansible_host=sandboxapicdc.cisco.com username=admin password=ciscopsdt
-mso_sandbox_example     ansible_host=10.10.20.60             username=admin password=C1sco!234567
+mso_sandbox_example     ansible_host=10.10.20.60             username=admin password=C1sco!234567 login_domain=Local

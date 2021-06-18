@@ -4,7 +4,7 @@
 # Application Management > Schemas > Templates > Deploy to sites
 
 - pause:
-    prompt: "CAUTION! Do you really wish to deploy templates from MSO to APICs? Type yes and ENTER to agree, otherwise this task is ignored"
+    prompt: "CAUTION! Do you really wish to deploy or undeploy templates (push config) from MSO to APICs? Type yes and ENTER to agree, otherwise this task is ignored"
   register: myAnswerMSOdeployAction
 
 - name: MSO Schema > Template > Deploy to sites
@@ -13,11 +13,15 @@
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    login_domain: "{{ login_domain | default(omit) }}"
     validate_certs: no
-    schema: "{{ item.Schema_name }}"
-    template: "{{ item.Template_name }}"
-    state: "{{ item.deploy_state }}"
-  with_items: "{{ Deploy_to_sites }}"
+    schema: "{{ item.0.Schema_name }}"
+    template: "{{ item.0.Template_name }}"
+    site: "{{ item.1 }}"
+    state: "{{ item.0.deploy_state }}"
+  with_subelements:
+  - "{{ Deploy_to_sites }}"
+  - Sites
   when: myAnswerMSOdeployAction['user_input'] == 'yes'
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

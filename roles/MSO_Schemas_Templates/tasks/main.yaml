@@ -9,6 +9,7 @@
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    login_domain: "{{ login_domain | default(omit) }}"
     validate_certs: no
     schema: "{{ item.0.Schema_name }}"
     tenant: "{{ item.0.Tenant_name }}"
@@ -53,6 +54,7 @@
     host: "{{ ansible_host }}"
     username: "{{ username }}"
     password: "{{ password }}"
+    login_domain: "{{ login_domain | default(omit) }}"
     validate_certs: no
     schema: "{{ item.0.Schema_name }}"
     template: "{{ item.0.Template_name }}"

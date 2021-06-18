@@ -1,5 +1,5 @@
 ################################################################################
-# v0.35 2021-June-18                                                           #
+# v0.36 2021-June-18                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -115,6 +115,6 @@ L3Outs:
 # deploy_state deploy or status or undeploy
 
 Deploy_to_sites:
-- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, deploy_state: deploy }
-- { Schema_name: Ansible_Schema, Template_name: Site1,       deploy_state: deploy }
-- { Schema_name: Ansible_Schema, Template_name: Site2,       deploy_state: deploy }
+- { Schema_name: Ansible_Schema, Template_name: Site1_Site2, deploy_state: deploy, Sites: [site1,site2] }
+- { Schema_name: Ansible_Schema, Template_name: Site1,       deploy_state: deploy, Sites: [site1] }
+- { Schema_name: Ansible_Schema, Template_name: Site2,       deploy_state: deploy, Sites: [site2] }
