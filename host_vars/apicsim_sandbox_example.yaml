@@ -1,5 +1,5 @@
 ################################################################################
-# v0.34 2021-June-17                                                           #
+# v0.35 2021-June-18                                                           #
 # This Ansible playbook comes with no guarantees                               #
 # The use of this Ansible playbook is responsibility solely of who executes it #
 # No liabilities shall be deemed to the creator of this Ansible playbook       #
@@ -470,9 +470,16 @@ EPG_to_EPG_Contracts:
 # ansible-playbook aci_playbook.yaml -i inventory --tags l3outs #
 #                                                               #
 #################################################################
+
+# - Optional parameters
+#
+# MSO_L3Out: yes         # When this variable is present and set to yes, VRF_name and ExtEPG are not created in the L3Out
+#                        # The expectation is that the L3Out is created by the MSO. In the L3Out, VRF_name and ExtEPG are created by the MSO as well
+
 L3Outs: 
   ### L3Out Initial configuration section ###
   - L3Out_name: L3Out1
+    #MSO_L3Out: yes
     Tenant_name: Ansible_Tnt
     VRF_name: VRF_TEST
     L3Domain_name: L3-EXTERNAL

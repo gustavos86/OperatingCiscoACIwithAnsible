@@ -3,6 +3,10 @@
 # MSO
 # Application Management > Schemas > Templates > Deploy to sites
 
+- pause:
+    prompt: "CAUTION! Do you really wish to deploy templates from MSO to APICs? Type yes and ENTER to agree, otherwise this task is ignored"
+  register: myAnswerMSOdeployAction
+
 - name: MSO Schema > Template > Deploy to sites
   ignore_errors: yes
   cisco.mso.mso_schema_template_deploy:
@@ -14,5 +18,6 @@
     template: "{{ item.Template_name }}"
     state: "{{ item.deploy_state }}"
   with_items: "{{ Deploy_to_sites }}"
+  when: myAnswerMSOdeployAction['user_input'] == 'yes'
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"

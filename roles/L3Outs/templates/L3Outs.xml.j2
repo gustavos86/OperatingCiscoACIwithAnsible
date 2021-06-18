@@ -2,7 +2,10 @@
   {# Initial configuration section #}
   <fvTenant name="{{ item.Tenant_name }}" status="modified">
     <l3extOut dn="uni/tn-{{ item.Tenant_name }}/out-{{ item.L3Out_name }}"  name="{{ item.L3Out_name }}">
+    {# Ignore VRF_name when MSO_L3Out is present and set to yes #}
+    {% if (item.MSO_L3Out is defined and item.MSO_L3Out is not true) or (item.MSO_L3Out is not defined) %}
     <l3extRsEctx tnFvCtxName="{{ item.VRF_name }}"/>
+    {% endif %}
     <l3extRsL3DomAtt tDn="uni/l3dom-{{ item.L3Domain_name }}"/>
     {% if item.enable_OSPF is defined and item.enable_OSPF %}
     <ospfExtP areaCost="1" areaCtrl="redistribute,summary" areaId="{{ item.OSPF_Area_ID }}" areaType="{{ item.OSPF_Area_Type }}"/>
@@ -71,6 +74,8 @@
     {% endfor %}
 
     {# External EPGs #}
+    {# Ignore VRF_name when MSO_L3Out is present and set to yes #}
+    {% if (item.MSO_L3Out is defined and item.MSO_L3Out is not true) or (item.MSO_L3Out is not defined) %}
     {% if item.ExtEPGs is defined %}
       {% for ExtEPG in item.ExtEPGs %}
       <l3extInstP name={% if ExtEPG.ExtEPG_name is defined %}"{{ ExtEPG.ExtEPG_name }}"{% else %}"ExtEPG"{% endif %}>
@@ -81,6 +86,7 @@
     <l3extInstP name="ExtEPG">
       <l3extSubnet ip="0.0.0.0/0" scope="import-security"/>
     </l3extInstP>
+    {% endif %}
     {% endif %}
 
     {% if item.enable_BGP is defined and item.enable_BGP %}

@@ -98,3 +98,25 @@
   - Sites
   loop_control:
     pause: "{{ loop_control_pause | default(0) }}"
+
+# Ansible
+# https://docs.ansible.com/ansible/latest/collections/cisco/mso/mso_schema_template_external_epg_subnet_module.html#ansible-collections-cisco-mso-mso-schema-template-external-epg-subnet-module
+# MSO
+# Application Management > Schemas > Templates > SITE > EXTERNAL EPG
+
+- name: MSO External EPG Subnet - Template level
+  ignore_errors: yes
+  cisco.mso.mso_schema_template_external_epg_subnet:
+    host: "{{ ansible_host }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    validate_certs: no
+    schema: "{{ item.Schema_name }}"
+    template: "{{ item.Template_name }}"
+    external_epg: "{{ item.ExtEPG_name }}"
+    subnet: 0.0.0.0/0
+    scope:
+    - import-security
+    state: present
+  with_items: "{{ L3Outs }}"
+  delegate_to: localhost

@@ -4,12 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v0.35]
+## [v0.35] - 2021-06-18
 
-### To be implemented:
+### Added
 
-- cisco.mso.mso_schema_template_external_epg_subnet in External EPG
-- Make External EPG creation optional in APIC L3Out
+- Subnet 0.0.0.0/0 in External EPG in MSO
+- Make a parameter to omit creating the External EPG and VRF name in the L3Out when pushing the L3Out config to the APIC from the aci_ansible.yaml playbook
+- Created confirmation to deploy templates from MSO to APICs
 
 ## [v0.34] - 2021-06-17
 
