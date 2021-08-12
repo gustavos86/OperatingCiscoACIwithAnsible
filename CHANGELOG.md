@@ -4,9 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## ToDo:
+
+- Ansible playbook authenticating with Public/Private key
+- vzAny config in MSO
+- On MSO, be able to choose Application Profiles from different Templates?
+- Test again MSO_L3Out, make sure the option to set it to string 'yes' or to boolean True works OK
+
+
 ## [v0.37] - PENDING
 
-- vzAny config in MSO
+- See ToDo list above
 
 ## [v0.36] - 2021-06-18
 
